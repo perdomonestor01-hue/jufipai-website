@@ -3460,8 +3460,8 @@ ${formObject.name}`);
                 'process2-desc': 'Complete automation blueprint with AI integration plan and cost projections',
                 'process3-title': 'Entry-Level Implementation',
                 'process3-desc': 'If you love our plan, we implement it at affordable entry-level pricing',
-                'free-badge': '100% FREE',
-                'approve-badge': 'ONLY IF YOU APPROVE'
+                'badge-free': '100% FREE',
+                'badge-approve': 'ONLY IF YOU APPROVE'
             },
             es: {
                 // Navigation  
@@ -3519,8 +3519,8 @@ ${formObject.name}`);
                 'process2-desc': 'Plan completo de automatización con plan de integración AI y proyecciones de costos',
                 'process3-title': 'Implementación Nivel de Entrada',
                 'process3-desc': 'Si te encanta nuestro plan, lo implementamos con precios accesibles de nivel de entrada',
-                'free-badge': '100% GRATIS',
-                'approve-badge': 'SOLO SI APRUEBAS'
+                'badge-free': '100% GRATIS',
+                'badge-approve': 'SOLO SI APRUEBAS'
             }
         };
 
@@ -3569,13 +3569,16 @@ ${formObject.name}`);
             const languageSwitch = document.getElementById('languageSwitch');
             const languageOptions = languageSwitch.querySelectorAll('.language-option');
             
-            // Load saved preference
+            // Load saved preference (default to English)
             const savedLang = localStorage.getItem('preferred-language') || 'en';
             if (savedLang === 'es') {
                 languageSwitch.classList.add('spanish');
                 languageOptions[0].classList.remove('active');
                 languageOptions[1].classList.add('active');
                 translatePage('es');
+            } else {
+                // Ensure we start in English
+                translatePage('en');
             }
             
             languageOptions.forEach(option => {
