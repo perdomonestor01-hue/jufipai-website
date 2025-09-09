@@ -3670,7 +3670,15 @@ ${formObject.name}`);
             }
         };
 
+        // 🚨 ULTIMATE ENGLISH FAILSAFE - Set before anything else
         let currentLang = 'en';
+        
+        // Clear any problematic localStorage immediately
+        if (typeof Storage !== 'undefined') {
+            localStorage.removeItem('preferred-language');
+            localStorage.setItem('preferred-language', 'en');
+            console.log('🇺🇸 EMERGENCY: Forced English preference in localStorage');
+        }
 
         // 🔧 EMERGENCY RESET FUNCTION - For testing and debugging
         function resetToEnglish() {
@@ -3833,28 +3841,22 @@ ${formObject.name}`);
             
             console.log('🌍 Initializing language system...');
             
-            // FORCE English on page load (override any localStorage)
-            // Only respect saved Spanish preference if explicitly saved
-            const savedLang = localStorage.getItem('preferred-language');
-            console.log(`💾 Saved language preference: ${savedLang || 'none'}`);
+            // 🚨 ALWAYS START IN ENGLISH - NO EXCEPTIONS
+            console.log('🚨 FORCE ENGLISH INITIALIZATION - Clearing any Spanish preferences');
             
-            // Default to English unless user explicitly chose Spanish
-            if (savedLang === 'es') {
-                console.log('🇪🇸 Loading Spanish (user preference)');
-                languageSwitch.classList.add('spanish');
-                languageOptions[0].classList.remove('active');
-                languageOptions[1].classList.add('active');
-                translatePage('es');
-            } else {
-                console.log('🇺🇸 Loading English (default)');
-                // Force English state
-                languageSwitch.classList.remove('spanish');
-                languageOptions[1].classList.remove('active');
-                languageOptions[0].classList.add('active');
-                translatePage('en');
-                // Set English as default preference
-                localStorage.setItem('preferred-language', 'en');
-            }
+            // Clear any existing language preference and force English
+            localStorage.removeItem('preferred-language');
+            localStorage.setItem('preferred-language', 'en');
+            
+            // Force English visual state
+            languageSwitch.classList.remove('spanish');
+            languageOptions[1].classList.remove('active');  // Remove Spanish active
+            languageOptions[0].classList.add('active');     // Set English active
+            
+            // Force translate to English immediately
+            console.log('🇺🇸 FORCING English (always default)');
+            translatePage('en');
+            currentLang = 'en';  // Explicitly set current language
             
             languageOptions.forEach(option => {
                 option.addEventListener('click', function() {
