@@ -2021,10 +2021,10 @@
             border-image: linear-gradient(135deg, #fbbf24, #f59e0b, #ea580c) 1;
             border-radius: 24px;
             padding: 0;
-            width: 450px;
-            max-width: 90vw; /* Mobile responsive width */
-            max-height: 70vh;
-            overflow: hidden;
+            width: 500px; /* Increased from 450px */
+            max-width: 95vw; /* Increased from 90vw for mobile */
+            max-height: 85vh; /* Increased from 70vh */
+            overflow: visible; /* Changed from hidden to visible */
             box-shadow: 
                 0 20px 60px rgba(0, 0, 0, 0.5),
                 0 8px 32px rgba(251, 191, 36, 0.15),
@@ -2037,10 +2037,15 @@
         /* Mobile popup positioning */
         @media (max-width: 768px) {
             .premium-popup-content {
-                width: 90vw !important;
-                max-width: 350px !important;
-                max-height: 80vh;
+                width: 95vw !important;
+                max-width: 400px !important; /* Increased from 350px */
+                max-height: 90vh !important; /* Increased from 80vh */
                 /* Remove position/top overrides - let JavaScript handle positioning */
+            }
+            
+            .popup-content-wrapper {
+                max-height: 70vh !important; /* Increased for mobile */
+                padding: 1rem 1.5rem !important; /* Slightly reduced padding for mobile */
             }
             
             .premium-popup-content::after {
@@ -2140,7 +2145,7 @@
 
         .popup-content-wrapper {
             padding: 1.5rem 2rem;
-            max-height: 50vh;
+            max-height: 60vh; /* Increased from 50vh to show more content */
             overflow-y: auto;
         }
 
@@ -3353,7 +3358,7 @@ ${formObject.name}`);
                         popupTop = scrollTop + (viewportHeight * 0.3);
                     }
                     
-                    popup.style.cssText = `display: block; position: absolute; left: 50%; top: ${popupTop}px; transform: translateX(-50%); z-index: 1000; width: 90vw; max-width: 350px;`;
+                    popup.style.cssText = `display: block; position: absolute; left: 50%; top: ${popupTop}px; transform: translateX(-50%); z-index: 1000; width: 95vw; max-width: 400px;`;
                     
                     // Smooth scroll to popup if it's positioned below viewport
                     setTimeout(() => {
@@ -3373,7 +3378,7 @@ ${formObject.name}`);
                     const popupTop = cardRect.top + scrollTop;
                     
                     // Ensure popup stays within viewport
-                    const popupWidth = 450;
+                    const popupWidth = 500; // Updated to match new CSS width
                     const viewportWidth = window.innerWidth;
                     const finalLeft = Math.min(popupLeft, viewportWidth - popupWidth - 20);
                     
