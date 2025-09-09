@@ -3526,6 +3526,17 @@ ${formObject.name}`);
 
         let currentLang = 'en';
 
+        // 🔧 EMERGENCY RESET FUNCTION - For testing and debugging
+        function resetToEnglish() {
+            console.log('🚨 EMERGENCY RESET: Forcing English');
+            localStorage.removeItem('preferred-language');
+            localStorage.setItem('preferred-language', 'en');
+            location.reload();
+        }
+        
+        // Make reset function globally accessible for console debugging
+        window.resetToEnglish = resetToEnglish;
+
         function translatePage(lang) {
             currentLang = lang;
             console.log(`🌍 Translating to: ${lang}`);
@@ -3674,16 +3685,29 @@ ${formObject.name}`);
             const languageSwitch = document.getElementById('languageSwitch');
             const languageOptions = languageSwitch.querySelectorAll('.language-option');
             
-            // Load saved preference (default to English)
-            const savedLang = localStorage.getItem('preferred-language') || 'en';
+            console.log('🌍 Initializing language system...');
+            
+            // FORCE English on page load (override any localStorage)
+            // Only respect saved Spanish preference if explicitly saved
+            const savedLang = localStorage.getItem('preferred-language');
+            console.log(`💾 Saved language preference: ${savedLang || 'none'}`);
+            
+            // Default to English unless user explicitly chose Spanish
             if (savedLang === 'es') {
+                console.log('🇪🇸 Loading Spanish (user preference)');
                 languageSwitch.classList.add('spanish');
                 languageOptions[0].classList.remove('active');
                 languageOptions[1].classList.add('active');
                 translatePage('es');
             } else {
-                // Ensure we start in English
+                console.log('🇺🇸 Loading English (default)');
+                // Force English state
+                languageSwitch.classList.remove('spanish');
+                languageOptions[1].classList.remove('active');
+                languageOptions[0].classList.add('active');
                 translatePage('en');
+                // Set English as default preference
+                localStorage.setItem('preferred-language', 'en');
             }
             
             languageOptions.forEach(option => {
