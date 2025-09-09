@@ -3528,18 +3528,41 @@ ${formObject.name}`);
 
         function translatePage(lang) {
             currentLang = lang;
+            console.log(`🌍 Translating to: ${lang}`);
+            
+            let translatedCount = 0;
+            let failedCount = 0;
             
             // Update all elements with data-translate attribute
             document.querySelectorAll('[data-translate]').forEach(element => {
                 const key = element.getAttribute('data-translate');
-                if (translations[lang][key]) {
+                
+                if (translations[lang] && translations[lang][key]) {
+                    const translationText = translations[lang][key];
+                    
+                    // Enhanced translation application
                     if (element.innerHTML.includes('<strong>') || element.innerHTML.includes('<br>')) {
-                        element.innerHTML = translations[lang][key];
+                        element.innerHTML = translationText;
                     } else {
-                        element.textContent = translations[lang][key];
+                        element.textContent = translationText;
                     }
+                    
+                    translatedCount++;
+                    console.log(`✅ Translated ${key}: "${translationText}"`);
+                } else {
+                    failedCount++;
+                    console.warn(`❌ Missing translation for key: "${key}" in language: "${lang}"`);
                 }
             });
+            
+            console.log(`📊 Translation Summary: ${translatedCount} successful, ${failedCount} failed`);
+            
+            // Deploy certified translation agents (failsafe)
+            if (lang === 'es') {
+                forceServiceCardTranslation();
+            } else if (lang === 'en') {
+                forceEnglishTranslation();
+            }
 
             // Update placeholders
             document.querySelectorAll('[data-translate-placeholder]').forEach(element => {
@@ -3562,6 +3585,88 @@ ${formObject.name}`);
 
             // Save preference
             localStorage.setItem('preferred-language', lang);
+        }
+
+        // 🚀 CERTIFIED ESP TRANSLATION AGENT - Failsafe Service Cards
+        function forceServiceCardTranslation() {
+            console.log('🔧 Deploying certified ESP agents for service cards...');
+            
+            const serviceTranslations = {
+                'service1-title': 'Integración AI + Automatización',
+                'service1-desc': 'Más allá del despliegue básico de AI - creamos automatización inteligente que conecta ChatGPT, Claude, Groq, y DeepSeek con tus sistemas existentes, eliminando completamente la intervención humana.',
+                'service2-title': 'Automatización Google Workspace',
+                'service2-desc': 'Transformamos Google Workspace de una herramienta a un ecosistema inteligente. Flujos de trabajo automatizados, procesamiento inteligente de documentos, y gestión de datos sin intervención.',
+                'service3-title': 'Códigos QR y Automatización de Entrenamiento',
+                'service3-desc': 'Sistemas QR inteligentes que no solo proporcionan información - activan flujos de trabajo de entrenamiento automatizados, rastrean progreso, y adaptan contenido basado en comportamiento del usuario.',
+                'service4-title': 'Reportes Auto-Generados',
+                'service4-desc': 'Reportes que se crean a sí mismos. Nuestros agentes AI monitorean continuamente tus datos, generan insights, y entregan reportes comprensivos sin ninguna entrada manual.',
+                'service5-title': 'Eliminación Completa de Tareas',
+                'service5-desc': 'No solo automatizamos tareas - las eliminamos. Nuestros agentes inteligentes manejan flujos de trabajo completos de principio a fin, aprendiendo y mejorando continuamente.',
+                'service6-title': 'Estrategia de Transformación AI',
+                'service6-desc': 'Identificamos cada proceso manual en tu negocio y creamos agentes AI autónomos para manejarlos, entregando ahorros de costos y eficiencia sin precedentes.'
+            };
+            
+            // Force translate all service cards with direct DOM manipulation
+            document.querySelectorAll('.service-card').forEach((card, index) => {
+                const titleKey = `service${index + 1}-title`;
+                const descKey = `service${index + 1}-desc`;
+                
+                const titleElement = card.querySelector('h3');
+                const descElement = card.querySelector('p');
+                
+                if (titleElement && serviceTranslations[titleKey]) {
+                    titleElement.textContent = serviceTranslations[titleKey];
+                    console.log(`🎯 ESP Agent deployed: ${titleKey}`);
+                }
+                
+                if (descElement && serviceTranslations[descKey]) {
+                    descElement.textContent = serviceTranslations[descKey];
+                    console.log(`🎯 ESP Agent deployed: ${descKey}`);
+                }
+            });
+            
+            console.log('✅ All ESP translation agents deployed successfully!');
+        }
+
+        // 🔄 ENGLISH RESTORATION AGENT - Failsafe English Reset
+        function forceEnglishTranslation() {
+            console.log('🇺🇸 Deploying English restoration agents...');
+            
+            const englishTranslations = {
+                'service1-title': 'AI + Automation Integration',
+                'service1-desc': 'Beyond basic AI deployment - we create intelligent automation that connects ChatGPT, Claude, Groq, and DeepSeek with your existing systems, eliminating human intervention entirely.',
+                'service2-title': 'Google Workspace Automation',
+                'service2-desc': 'Transform Google Workspace from a tool into an intelligent ecosystem. Automated workflows, smart document processing, and zero-touch data management.',
+                'service3-title': 'QR Code Training & Automation',
+                'service3-desc': 'Smart QR systems that don\'t just provide information - they trigger automated training workflows, track progress, and adapt content based on user behavior.',
+                'service4-title': 'Self-Generating Reports',
+                'service4-desc': 'Reports that create themselves. Our AI agents continuously monitor your data, generate insights, and deliver comprehensive reports without any manual input.',
+                'service5-title': 'Complete Task Elimination',
+                'service5-desc': 'We don\'t just automate tasks - we eliminate them. Our intelligent agents handle entire workflows from start to finish, learning and improving continuously.',
+                'service6-title': 'AI Transformation Strategy',
+                'service6-desc': 'We identify every manual process in your business and create autonomous AI agents to handle them, delivering unprecedented cost savings and efficiency.'
+            };
+            
+            // Force translate all service cards back to English
+            document.querySelectorAll('.service-card').forEach((card, index) => {
+                const titleKey = `service${index + 1}-title`;
+                const descKey = `service${index + 1}-desc`;
+                
+                const titleElement = card.querySelector('h3');
+                const descElement = card.querySelector('p');
+                
+                if (titleElement && englishTranslations[titleKey]) {
+                    titleElement.textContent = englishTranslations[titleKey];
+                    console.log(`🎯 ENG Agent deployed: ${titleKey}`);
+                }
+                
+                if (descElement && englishTranslations[descKey]) {
+                    descElement.textContent = englishTranslations[descKey];
+                    console.log(`🎯 ENG Agent deployed: ${descKey}`);
+                }
+            });
+            
+            console.log('✅ All English restoration agents deployed successfully!');
         }
 
         // Initialize language toggle
