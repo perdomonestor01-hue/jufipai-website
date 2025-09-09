@@ -2039,11 +2039,8 @@
             .premium-popup-content {
                 width: 90vw !important;
                 max-width: 350px !important;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-                position: fixed !important;
-                top: 20% !important;
                 max-height: 80vh;
+                /* Remove position/top overrides - let JavaScript handle positioning */
             }
             
             .premium-popup-content::after {
@@ -3339,8 +3336,32 @@ ${formObject.name}`);
                 const isMobile = window.innerWidth <= 768;
                 
                 if (isMobile) {
-                    // Mobile: Center popup on screen
-                    popup.style.cssText = `display: block; position: fixed; left: 50%; top: 20%; transform: translateX(-50%); z-index: 1000; width: 90vw; max-width: 350px;`;
+                    // Mobile: Position popup to follow user's current view
+                    const cardRect = clickedCard.getBoundingClientRect();
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    const viewportHeight = window.innerHeight;
+                    
+                    // Check if the clicked card is currently visible in viewport
+                    const cardInView = cardRect.top >= 0 && cardRect.top < viewportHeight;
+                    
+                    let popupTop;
+                    if (cardInView) {
+                        // Card is visible: position popup just below the card
+                        popupTop = scrollTop + cardRect.bottom + 20;
+                    } else {
+                        // Card is not visible: position popup in center of current viewport
+                        popupTop = scrollTop + (viewportHeight * 0.3);
+                    }
+                    
+                    popup.style.cssText = `display: block; position: absolute; left: 50%; top: ${popupTop}px; transform: translateX(-50%); z-index: 1000; width: 90vw; max-width: 350px;`;
+                    
+                    // Smooth scroll to popup if it's positioned below viewport
+                    setTimeout(() => {
+                        const popupRect = popup.getBoundingClientRect();
+                        if (popupRect.top > viewportHeight || popupRect.bottom < 0) {
+                            popup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }, 100);
                 } else {
                     // Desktop: Position relative to clicked card
                     const cardRect = clickedCard.getBoundingClientRect();
