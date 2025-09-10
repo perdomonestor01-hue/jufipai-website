@@ -847,35 +847,36 @@ function showServicePopup(title, content, icon = 'fas fa-robot', clickedCard) {
         popupIcon.className = icon + ' popup-service-icon';
         
         // Check if mobile device
-        const isMobile = window.innerWidth <= 768;
+        const isMobile = isMobileDevice();
         
         if (isMobile) {
-            // Mobile: Position popup to follow user's current view
-            const cardRect = clickedCard.getBoundingClientRect();
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const viewportHeight = window.innerHeight;
+            // Mobile: Use fixed positioning for better reliability
+            popup.style.cssText = `
+                display: block; 
+                position: fixed; 
+                top: 5vh; 
+                left: 50%; 
+                transform: translateX(-50%); 
+                z-index: 10000; 
+                width: 90vw; 
+                max-width: 380px; 
+                max-height: 85vh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            `;
             
-            // Check if the clicked card is currently visible in viewport
-            const cardInView = cardRect.top >= 0 && cardRect.top < viewportHeight;
+            // Add mobile-friendly backdrop
+            popup.style.background = 'rgba(0, 0, 0, 0.8)';
+            popup.style.backdropFilter = 'blur(10px)';
             
-            let popupTop;
-            if (cardInView) {
-                // Card is visible: position popup just below the card
-                popupTop = scrollTop + cardRect.bottom + 20;
-            } else {
-                // Card is not visible: position popup in center of current viewport
-                popupTop = scrollTop + (viewportHeight * 0.3);
+            // Ensure popup content is properly sized
+            const popupContent = popup.querySelector('.premium-popup-content');
+            if (popupContent) {
+                popupContent.style.margin = '0';
+                popupContent.style.width = '100%';
+                popupContent.style.maxHeight = '80vh';
+                popupContent.style.overflowY = 'auto';
             }
-            
-            popup.style.cssText = `display: block; position: absolute; left: 50%; top: ${popupTop}px; transform: translateX(-50%); z-index: 1000; width: 95vw; max-width: 400px;`;
-            
-            // Smooth scroll to popup if it's positioned below viewport
-            setTimeout(() => {
-                const popupRect = popup.getBoundingClientRect();
-                if (popupRect.top > viewportHeight || popupRect.bottom < 0) {
-                    popup.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }, 100);
         } else {
             // Desktop: Position relative to clicked card
             const cardRect = clickedCard.getBoundingClientRect();
@@ -993,6 +994,21 @@ let hideSuccessPopupOnClickOutside = function(e) {
         hideSuccessPopup();
     }
 };
+
+// Mobile orientation and touch handling
+window.addEventListener('orientationchange', function() {
+    // Hide any open popups on orientation change to prevent positioning issues
+    setTimeout(function() {
+        hideServicePopup();
+        hideSuccessPopup();
+    }, 100);
+});
+
+// Improved mobile touch handling
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+           (window.innerWidth <= 768 && 'ontouchstart' in window);
+}
 
 // Simple click handlers for service cards
 document.addEventListener('DOMContentLoaded', function() {
