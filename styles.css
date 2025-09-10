@@ -793,11 +793,13 @@ body::after {
     font-weight: 600;
     letter-spacing: -0.02em;
     line-height: 1.1;
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 20%, #d97706 40%, #92400e 60%, #78350f 80%, #fbbf24 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #fbbf24 25%, #f59e0b 50%, #ffffff 75%, #e5e7eb 100%);
+    background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     position: relative;
+    animation: shimmer 3s ease-in-out infinite;
     text-shadow: 0 0 30px rgba(251, 191, 36, 0.4);
 }
 
@@ -1267,11 +1269,13 @@ body::after {
     font-weight: 600;
     letter-spacing: -0.02em;
     line-height: 1.1;
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 25%, #d97706 50%, #92400e 75%, #fbbf24 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #fbbf24 25%, #f59e0b 50%, #ffffff 75%, #e5e7eb 100%);
+    background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     position: relative;
+    animation: shimmer 3s ease-in-out infinite;
     text-shadow: 0 0 35px rgba(251, 191, 36, 0.5);
 }
 
