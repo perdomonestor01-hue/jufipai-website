@@ -4,11 +4,38 @@
     box-sizing: border-box;
 }
 
+/* Prevent horizontal scrollbars globally */
+html, body {
+    scrollbar-width: thin; /* Firefox */
+    -ms-overflow-style: auto; /* IE and Edge */
+}
+
+/* Custom vertical scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(31, 41, 55, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #f59e0b, #ea580c);
+}
+
 /* Performance Optimizations */
 html {
     font-display: swap;
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
 }
 
 /* CSS Custom Properties for Better Performance */
@@ -46,6 +73,8 @@ body {
     text-rendering: optimizeLegibility;
     contain: layout style;
     will-change: scroll-position;
+    width: 100%;
+    max-width: 100vw;
 }
 
 /* Premium Geometric Overlay Effects */
@@ -163,6 +192,8 @@ body::after {
     right: 30px;
     z-index: 100;
     pointer-events: none;
+    max-width: 60px;
+    overflow: hidden;
 }
 
 .robot {
@@ -2256,4 +2287,15 @@ body.welcome-active {
 
 .popup-content-wrapper::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, #f59e0b, #ea580c);
+}
+
+/* Ensure no elements exceed viewport width */
+.container {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.header, .footer, main {
+    max-width: 100vw;
+    overflow-x: hidden;
 }
