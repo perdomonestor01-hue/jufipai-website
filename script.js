@@ -511,16 +511,14 @@ document.getElementById('contactForm').addEventListener('submit', async function
         // Reset form
         this.reset();
         
-        // Update button to green success state
-        submitBtn.textContent = '✓ Successfully Submitted';
+        // Update button to success state
+        submitBtn.textContent = '✓ Submitted Successfully!';
         submitBtn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
-        submitBtn.style.color = 'white';
-        submitBtn.style.borderColor = '#10b981';
         
-        // Show custom success message
+        // Show spectacular customer welcome overlay instead of simple popup
         setTimeout(() => {
-            showCustomSuccessMessage();
-        }, 800);
+            showCustomerWelcome();
+        }, 1000); // Short delay to let success sound play
         
     } catch (error) {
         // Form submission fallback - still show success message to user
@@ -532,16 +530,14 @@ document.getElementById('contactForm').addEventListener('submit', async function
         // Play success sound
         if (audioEnabled) audioContext.playSuccessSound();
         
-        // Update button to green success state
-        submitBtn.textContent = '✓ Successfully Submitted';
+        // Update button to success state
+        submitBtn.textContent = '✓ Submitted Successfully!';
         submitBtn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
-        submitBtn.style.color = 'white';
-        submitBtn.style.borderColor = '#10b981';
         
-        // Show custom success message even if backend fails
+        // Show spectacular customer welcome overlay even if backend fails
         setTimeout(() => {
-            showCustomSuccessMessage();
-        }, 800);
+            showCustomerWelcome();
+        }, 1000);
     }
     
     // Reset button after delay
