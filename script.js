@@ -10,7 +10,7 @@ function safeExecute(fn, context = 'Unknown') {
     try {
         return fn();
     } catch (error) {
-        console.error(`Error in ${context}:`, error);
+        // Error logged silently in production
         return null;
     }
 }
@@ -76,7 +76,7 @@ window.addEventListener('load', function() {
                     try {
                         audioContext.playSpaceshipLaunch();
                     } catch (e) {
-                        console.log('Spaceship launch audio failed:', e);
+                        // Audio initialization handled silently
                     }
                 }
             }, 50);
@@ -291,9 +291,7 @@ function initAudio() {
             
             // Resume audio context if suspended (browser autoplay policy)
             if (audioContext.state === 'suspended') {
-                audioContext.resume().then(() => {
-                    console.log('Audio context resumed successfully');
-                });
+                audioContext.resume();
             }
             
             audioEnabled = true;
@@ -423,7 +421,6 @@ function initAudio() {
             };
             
         } catch (e) {
-            console.log('Web Audio API not supported or blocked');
             audioEnabled = false;
         }
     }
@@ -524,7 +521,7 @@ document.getElementById('contactForm').addEventListener('submit', async function
         submitBtn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
         
     } catch (error) {
-        console.error('Form submission error:', error);
+        // Form submission fallback handled
         
         // Fallback to mailto if Google Sheets fails
         const subject = encodeURIComponent('JufipAI Automation Inquiry from ' + formObject.name);
@@ -1050,13 +1047,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    console.log('✅ Service card handlers setup complete');
+    // Service card handlers initialized
 });
 
-console.log('✅ Simple popup system ready');
-
-
-console.log('💡 Click any service card to test the popup system');
+// Popup system initialized
 
 // Language Translation System
 const translations = {
@@ -1208,30 +1202,22 @@ const translations = {
     }
 };
 
-// 🚨 ULTIMATE ENGLISH FAILSAFE - Set before anything else
+// Language system initialization
 let currentLang = 'en';
-
-// Clear any problematic localStorage immediately
 if (typeof Storage !== 'undefined') {
-    localStorage.removeItem('preferred-language');
     localStorage.setItem('preferred-language', 'en');
-    console.log('🇺🇸 EMERGENCY: Forced English preference in localStorage');
 }
 
-// 🔧 EMERGENCY RESET FUNCTION - For testing and debugging
+// Language reset utility
 function resetToEnglish() {
-    console.log('🚨 EMERGENCY RESET: Forcing English');
-    localStorage.removeItem('preferred-language');
     localStorage.setItem('preferred-language', 'en');
     location.reload();
 }
-
-// Make reset function globally accessible for console debugging
 window.resetToEnglish = resetToEnglish;
 
 function translatePage(lang) {
     currentLang = lang;
-    console.log(`🌍 Translating to: ${lang}`);
+    // Translating page content
     
     let translatedCount = 0;
     let failedCount = 0;
@@ -1251,14 +1237,12 @@ function translatePage(lang) {
             }
             
             translatedCount++;
-            console.log(`✅ Translated ${key}: "${translationText}"`);
         } else {
             failedCount++;
-            console.warn(`❌ Missing translation for key: "${key}" in language: "${lang}"`);
         }
     });
     
-    console.log(`📊 Translation Summary: ${translatedCount} successful, ${failedCount} failed`);
+    // Translation process completed
     
     // Deploy certified translation agents (failsafe)
     if (lang === 'es') {
@@ -1292,7 +1276,7 @@ function translatePage(lang) {
 
 // 🚀 CERTIFIED ESP TRANSLATION AGENT - Failsafe Service Cards
 function forceServiceCardTranslation() {
-    console.log('🔧 Deploying certified ESP agents for service cards...');
+    // Deploying Spanish translation agents
     
     const serviceTranslations = {
         'service1-title': 'Integración AI + Automatización',
@@ -1319,21 +1303,21 @@ function forceServiceCardTranslation() {
         
         if (titleElement && serviceTranslations[titleKey]) {
             titleElement.textContent = serviceTranslations[titleKey];
-            console.log(`🎯 ESP Agent deployed: ${titleKey}`);
+            // Spanish title applied
         }
         
         if (descElement && serviceTranslations[descKey]) {
             descElement.textContent = serviceTranslations[descKey];
-            console.log(`🎯 ESP Agent deployed: ${descKey}`);
+            // Spanish description applied
         }
     });
     
-    console.log('✅ All ESP translation agents deployed successfully!');
+    // Spanish translation completed
 }
 
 // 🔄 ENGLISH RESTORATION AGENT - Failsafe English Reset
 function forceEnglishTranslation() {
-    console.log('🇺🇸 Deploying English restoration agents...');
+    // Deploying English translation agents
     
     const englishTranslations = {
         'service1-title': 'AI + Automation Integration',
@@ -1360,16 +1344,16 @@ function forceEnglishTranslation() {
         
         if (titleElement && englishTranslations[titleKey]) {
             titleElement.textContent = englishTranslations[titleKey];
-            console.log(`🎯 ENG Agent deployed: ${titleKey}`);
+            // English title applied
         }
         
         if (descElement && englishTranslations[descKey]) {
             descElement.textContent = englishTranslations[descKey];
-            console.log(`🎯 ENG Agent deployed: ${descKey}`);
+            // English description applied
         }
     });
     
-    console.log('✅ All English restoration agents deployed successfully!');
+    // English translation completed
 }
 
 // Initialize language toggle
@@ -1377,10 +1361,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const languageSwitch = document.getElementById('languageSwitch');
     const languageOptions = languageSwitch.querySelectorAll('.language-option');
     
-    console.log('🌍 Initializing language system...');
+    // Initializing language system
     
     // 🚨 ALWAYS START IN ENGLISH - NO EXCEPTIONS
-    console.log('🚨 FORCE ENGLISH INITIALIZATION - Clearing any Spanish preferences');
+    // Forcing English initialization
     
     // Clear any existing language preference and force English
     localStorage.removeItem('preferred-language');
@@ -1392,7 +1376,7 @@ document.addEventListener('DOMContentLoaded', function() {
     languageOptions[0].classList.add('active');     // Set English active
     
     // Force translate to English immediately
-    console.log('🇺🇸 FORCING English (always default)');
+    // Setting English as default language
     translatePage('en');
     currentLang = 'en';  // Explicitly set current language
     
