@@ -523,27 +523,25 @@ document.getElementById('contactForm').addEventListener('submit', async function
         }, 800);
         
     } catch (error) {
-        // Form submission fallback handled
+        // Form submission fallback - still show success message to user
+        console.log('Form submission error:', error);
         
-        // Fallback to mailto if Google Sheets fails
-        const subject = encodeURIComponent('JufipAI Automation Inquiry from ' + formObject.name);
-        const body = encodeURIComponent(`Hello JufipAI Team,
-
-Name: ${formObject.name}
-Email: ${formObject.email}
-Company: ${formObject.company || 'Not specified'}
-
-Project Description:
-${formObject.description}
-
-Best regards,
-${formObject.name}`);
+        // Reset form
+        this.reset();
         
-        const mailtoLink = `mailto:contact@jufipai.com?subject=${subject}&body=${body}`;
-        window.open(mailtoLink);
+        // Play success sound
+        if (audioEnabled) audioContext.playSuccessSound();
         
-        submitBtn.textContent = 'Opening email client...';
-        submitBtn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+        // Update button to green success state
+        submitBtn.textContent = '✓ Successfully Submitted';
+        submitBtn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
+        submitBtn.style.color = 'white';
+        submitBtn.style.borderColor = '#10b981';
+        
+        // Show custom success message even if backend fails
+        setTimeout(() => {
+            showCustomSuccessMessage();
+        }, 800);
     }
     
     // Reset button after delay
@@ -1018,7 +1016,7 @@ function showCustomSuccessMessage() {
                 
                 <div class="popup-content-wrapper">
                     <div class="popup-content-text">
-                        <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 1rem; text-align: center;">One of our most seasoned customers will reach out to you any time soon, stay tuned and check your inbox</p>
+                        <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 1rem; text-align: center;">One of our most seasoned Developer will contact you any time soon, stay tunned with your inbox</p>
                     </div>
                 </div>
                 
