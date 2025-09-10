@@ -3,7 +3,7 @@
  * Implements caching strategies for better Core Web Vitals
  */
 
-const CACHE_NAME = 'jufipai-v1.0.0';
+const CACHE_NAME = 'jufipai-v1.0.2';
 const OFFLINE_URL = '/';
 
 // Critical resources to cache immediately
