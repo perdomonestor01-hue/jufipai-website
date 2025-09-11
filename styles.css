@@ -807,37 +807,18 @@ body::after {
 .services h2 {
     text-align: center;
     font-size: 3rem;
-    color: white;
     margin-bottom: 4rem;
     font-weight: 600;
     letter-spacing: -0.02em;
     line-height: 1.1;
-    background: linear-gradient(45deg, #ffd700 0%, #ffffff 15%, #fbbf24 30%, #ffffff 45%, #f59e0b 60%, #ffffff 75%, #ffd700 90%, #ffffff 100%);
-    background-size: 400% 100%;
+    background: linear-gradient(135deg, #ffffff 0%, #fbbf24 25%, #f59e0b 50%, #ffffff 75%, #e5e7eb 100%);
+    background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    position: relative;
-    animation: megaShimmer 1.5s linear infinite;
-    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)) drop-shadow(0 0 40px rgba(251, 191, 36, 0.6));
-    z-index: 10;
+    animation: shimmer 3s ease-in-out infinite;
 }
 
-.services h2::before {
-    content: '';
-    position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    background: linear-gradient(135deg, #fbbf24, #1e293b, #334155, #fbbf24, #f59e0b);
-    background-size: 500% 500%;
-    animation: goldLightning 2s ease-in-out infinite;
-    z-index: -1;
-    opacity: 0.03;
-    border-radius: 12px;
-    filter: blur(12px);
-}
 
 @keyframes goldLightning {
     0%, 100% { background-position: 0% 50%; }
