@@ -815,6 +815,7 @@ body::after {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
 }
 
 
@@ -1284,6 +1285,7 @@ body::after {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
 }
 
 
