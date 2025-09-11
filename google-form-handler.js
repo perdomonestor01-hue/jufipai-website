@@ -48,24 +48,21 @@ function initGoogleFormHandler() {
             submitBtn.disabled = true;
             
             try {
-                // Method 1: Try Google Apps Script Web App (if you deploy one)
-                const scriptUrl = 'https://script.google.com/macros/s/AKfycbwJaLV8kY5h4lxQjvZnr7UJy8Gz-MZeoa8LnQqFOuWIlSwPqT9XJO7H3CaDrGxCZOzV/exec';
+                // Your deployed Google Apps Script Web App URL
+                // UPDATE THIS WITH YOUR ACTUAL WEB APP URL FROM GOOGLE APPS SCRIPT
+                const scriptUrl = 'YOUR_WEB_APP_URL_HERE'; // e.g., https://script.google.com/macros/s/AKfyc.../exec
+                
+                // Create form data matching your script's expected field names
+                const formDataToSend = new FormData();
+                formDataToSend.append('Full Name', data.name || '');
+                formDataToSend.append('Email Address', data.email || '');
+                formDataToSend.append('Company Name', data.company || '');
+                formDataToSend.append('Project Description', data.message || data.description || '');
                 
                 const response = await fetch(scriptUrl, {
                     method: 'POST',
                     mode: 'no-cors', // Important for Google Scripts
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        spreadsheet_id: SPREADSHEET_ID,
-                        timestamp: new Date().toISOString(),
-                        name: data.name || '',
-                        email: data.email || '',
-                        company: data.company || '',
-                        message: data.message || data.description || '',
-                        source: window.location.href
-                    })
+                    body: formDataToSend
                 });
                 
                 console.log('✅ Sent to Google Sheets');
