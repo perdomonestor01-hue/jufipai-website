@@ -272,16 +272,20 @@
     </div>
     
     <!-- Scripts -->
-    <!-- SIMPLE FORM SOLUTION - GUARANTEED TO WORK -->
-    <script src="./simple-form.js?v=1.0.0"></script>
+    <!-- CRITICAL: Simple form MUST load first -->
+    <script src="./simple-form.js?v=2.0.0"></script>
+    <!-- Other scripts load after -->
     <script src="./script.js?v=1.1.1" defer></script>
     
-    <!-- EMERGENCY CONTACT PAGE FORM FIX -->
+    <!-- REMOVE ALL CONFLICTING HANDLERS -->
     <script>
-    console.log('🔧 CONTACT PAGE SCRIPT LOADING...');
+    // Wait for simple-form.js to complete
+    setTimeout(function() {
+        console.log('✅ Contact page ready - simple-form.js handles everything');
+    }, 1000);
     
-    // IMMEDIATE form handler - no delays
-    function attachContactFormHandler() {
+    // DISABLED - Let simple-form.js handle everything
+    function DISABLED_attachContactFormHandler() {
             const form = document.getElementById('contactForm');
             if (!form) {
                 console.log('❌ Contact form not found on contact page');
@@ -346,14 +350,10 @@
             }
     }
     
-    // Try immediately when script loads
-    attachContactFormHandler();
-    
-    // Try when DOM is ready
-    document.addEventListener('DOMContentLoaded', attachContactFormHandler);
-    
-    // Try when page loads
-    window.addEventListener('load', attachContactFormHandler);
+    // DISABLED - All handlers disabled to prevent conflicts
+    // attachContactFormHandler();
+    // document.addEventListener('DOMContentLoaded', attachContactFormHandler);
+    // window.addEventListener('load', attachContactFormHandler);
     
     // Also add the lead retrieval function
     window.getJufipaiLeads = function() {

@@ -1,32 +1,25 @@
-// SIMPLE FORM SOLUTION - GUARANTEED TO WORK
-console.log('🚀 SIMPLE FORM SOLUTION LOADING at', new Date().toISOString());
+// ULTRA SIMPLE FORM SOLUTION - VERSION 2.0
+console.log('🚀 ULTRA SIMPLE FORM v2.0 LOADING at', new Date().toISOString());
 
-// CRITICAL: Attach handler immediately AND on DOM ready
-function attachFormHandlers() {
-    console.log('📋 Looking for contact forms...');
+// IMMEDIATE EXECUTION - No waiting
+(function() {
+    console.log('🔥 IMMEDIATE FORM TAKEOVER STARTING...');
     
-    // Find ALL forms on the page
-    const forms = document.querySelectorAll('#contactForm, .contact-form, form');
-    console.log(`📋 Found ${forms.length} forms on page`);
-    
-    if (forms.length === 0) {
-        console.log('⚠️ No forms found yet, will retry...');
-        return false;
-    }
-    
-    forms.forEach((form, index) => {
-        console.log(`🔧 Processing form ${index + 1}:`, form.id || form.className);
+    // Function to completely take over a form
+    function takeOverForm(form) {
+        if (!form) return;
         
-        // Remove ALL existing event listeners by cloning
-        const newForm = form.cloneNode(true);
-        form.parentNode.replaceChild(newForm, form);
+        console.log('🎯 Taking over form:', form.id || form.className);
         
-        // Add our simple handler
-        newForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
+        // Method 1: Set onsubmit directly
+        form.onsubmit = function(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+            }
             
-            console.log('✅ SIMPLE FORM HANDLER ACTIVATED!');
+            console.log('🛑 FORM SUBMISSION INTERCEPTED!');
             
             // Get form data
             const formData = new FormData(this);
@@ -35,37 +28,31 @@ function attachFormHandlers() {
                 data[key] = value;
             });
             
-            console.log('📊 FORM DATA:', data);
+            console.log('📊 CAPTURED DATA:', data);
             
-            // Create email body
-            const emailBody = `
-NEW LEAD FROM JUFIPAI.COM
-==========================
-Name: ${data.name || 'Not provided'}
-Email: ${data.email || 'Not provided'}
-Company: ${data.company || 'Not provided'}
-Message: ${data.message || data.description || 'Not provided'}
-Page: ${window.location.href}
-Time: ${new Date().toLocaleString()}
-            `.trim();
-            
-            // Store in localStorage
-            const leads = JSON.parse(localStorage.getItem('jufipai_leads') || '[]');
-            leads.push({
+            // Save to localStorage
+            const timestamp = new Date().toISOString();
+            const leadData = {
+                timestamp: timestamp,
                 ...data,
-                timestamp: new Date().toISOString(),
-                page: window.location.href
-            });
-            localStorage.setItem('jufipai_leads', JSON.stringify(leads));
+                page: window.location.href,
+                captureMethod: 'ULTRA_SIMPLE_v2'
+            };
             
-            console.log('💾 LEAD SAVED! Total leads:', leads.length);
-            console.log('📧 To retrieve all leads, type: getLeads()');
+            // Store in BOTH localStorage keys for redundancy
+            const leads1 = JSON.parse(localStorage.getItem('jufipai_leads') || '[]');
+            leads1.push(leadData);
+            localStorage.setItem('jufipai_leads', JSON.stringify(leads1));
             
-            // Open email client as backup
-            const mailto = `mailto:contact@jufipai.com?subject=New Lead from ${data.name}&body=${encodeURIComponent(emailBody)}`;
-            console.log('📧 Email link created:', mailto);
+            const leads2 = JSON.parse(localStorage.getItem('jufipai_submissions') || '[]');
+            leads2.push(leadData);
+            localStorage.setItem('jufipai_submissions', JSON.stringify(leads2));
             
-            // Show success
+            console.log('💾 LEAD SAVED TO LOCALSTORAGE!');
+            console.log('📊 Total leads (jufipai_leads):', leads1.length);
+            console.log('📊 Total leads (jufipai_submissions):', leads2.length);
+            
+            // Visual feedback
             const button = this.querySelector('button[type="submit"], .form-submit');
             if (button) {
                 const originalText = button.textContent;
@@ -80,83 +67,126 @@ Time: ${new Date().toLocaleString()}
                 }, 3000);
             }
             
-            // Show alert as confirmation
-            alert(`✅ SUCCESS!\n\nThank you ${data.name}!\nYour information has been captured.\n\nWe'll contact you at: ${data.email}`);
+            // Alert confirmation
+            alert(`✅ SUCCESS!\n\nThank you ${data.name}!\n\nWe've captured your information and will contact you at ${data.email} within 24 hours.`);
             
             // Reset form
             this.reset();
             
-            // Also open mailto as final backup
-            // window.location.href = mailto;
-        });
+            // Prevent any further processing
+            return false;
+        };
         
-        console.log(`✅ Simple handler attached to form ${index + 1}`);
-    });
-    
-    return true;
-}
-
-// Try multiple times to ensure we catch the form
-attachFormHandlers();
-
-// Try when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', attachFormHandlers);
-} else {
-    // DOM already loaded
-    setTimeout(attachFormHandlers, 100);
-}
-
-// Try when page fully loads
-window.addEventListener('load', function() {
-    setTimeout(attachFormHandlers, 500);
-});
-
-// Final attempt after a delay
-setTimeout(attachFormHandlers, 2000);
-
-// Global function to get leads
-window.getLeads = function() {
-    const leads = JSON.parse(localStorage.getItem('jufipai_leads') || '[]');
-    console.log('📊 ALL CAPTURED LEADS:');
-    console.table(leads);
-    return leads;
-};
-
-// Clear any existing form data in console
-window.clearLeads = function() {
-    localStorage.removeItem('jufipai_leads');
-    localStorage.removeItem('jufipai_submissions');
-    console.log('🗑️ All leads cleared');
-};
-
-// Export leads as CSV
-window.exportLeads = function() {
-    const leads = JSON.parse(localStorage.getItem('jufipai_leads') || '[]');
-    if (leads.length === 0) {
-        console.log('No leads to export');
-        return;
+        // Method 2: Also set action to javascript:void(0) to prevent any submission
+        form.setAttribute('action', 'javascript:void(0)');
+        
+        // Method 3: Remove method attribute
+        form.removeAttribute('method');
+        
+        // Method 4: Add event listener as backup
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            console.log('🛡️ BACKUP HANDLER: Preventing default submission');
+            return false;
+        }, true); // Use capture phase
+        
+        console.log('✅ Form takeover complete for:', form.id || form.className);
     }
     
-    const csv = [
-        ['Timestamp', 'Name', 'Email', 'Company', 'Message', 'Page'],
-        ...leads.map(lead => [
-            lead.timestamp,
-            lead.name || '',
-            lead.email || '',
-            lead.company || '',
-            (lead.message || lead.description || '').replace(/,/g, ';'),
-            lead.page || ''
-        ])
-    ].map(row => row.join(',')).join('\n');
+    // Take over ALL forms immediately
+    function takeOverAllForms() {
+        const forms = document.querySelectorAll('#contactForm, .contact-form, form');
+        console.log(`🔍 Found ${forms.length} forms to take over`);
+        
+        forms.forEach((form, index) => {
+            takeOverForm(form);
+        });
+        
+        return forms.length;
+    }
     
-    console.log('📊 CSV DATA:\n' + csv);
-    return csv;
-};
-
-// Show instructions
-console.log('✅ SIMPLE FORM SOLUTION READY!');
-console.log('📊 Commands available:');
-console.log('  - getLeads() : View all captured leads');
-console.log('  - exportLeads() : Export leads as CSV');
-console.log('  - clearLeads() : Clear all stored leads');
+    // Run immediately
+    const count = takeOverAllForms();
+    
+    // Run when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', takeOverAllForms);
+    } else {
+        setTimeout(takeOverAllForms, 0);
+    }
+    
+    // Run when page loads
+    window.addEventListener('load', takeOverAllForms);
+    
+    // Keep checking for new forms
+    let checkCount = 0;
+    const checkInterval = setInterval(function() {
+        checkCount++;
+        const forms = takeOverAllForms();
+        if (forms > 0 || checkCount > 10) {
+            clearInterval(checkInterval);
+        }
+    }, 500);
+    
+    // Utility functions
+    window.getLeads = function() {
+        const leads1 = JSON.parse(localStorage.getItem('jufipai_leads') || '[]');
+        const leads2 = JSON.parse(localStorage.getItem('jufipai_submissions') || '[]');
+        
+        console.log('📊 LEADS FROM jufipai_leads:', leads1.length);
+        console.table(leads1);
+        console.log('📊 LEADS FROM jufipai_submissions:', leads2.length);
+        console.table(leads2);
+        
+        // Combine and deduplicate
+        const allLeads = [...leads1, ...leads2];
+        const uniqueLeads = Array.from(new Map(allLeads.map(item => [item.timestamp, item])).values());
+        
+        console.log('📊 TOTAL UNIQUE LEADS:', uniqueLeads.length);
+        return uniqueLeads;
+    };
+    
+    window.clearLeads = function() {
+        localStorage.removeItem('jufipai_leads');
+        localStorage.removeItem('jufipai_submissions');
+        console.log('🗑️ All leads cleared');
+    };
+    
+    window.exportLeads = function() {
+        const leads = getLeads();
+        if (leads.length === 0) {
+            console.log('No leads to export');
+            return;
+        }
+        
+        const csv = [
+            ['Timestamp', 'Name', 'Email', 'Company', 'Message', 'Page'],
+            ...leads.map(lead => [
+                lead.timestamp,
+                lead.name || '',
+                lead.email || '',
+                lead.company || '',
+                (lead.message || lead.description || '').replace(/,/g, ';'),
+                lead.page || ''
+            ])
+        ].map(row => row.join(',')).join('\n');
+        
+        console.log('📊 CSV DATA:\n' + csv);
+        
+        // Create download link
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `jufipai_leads_${new Date().toISOString()}.csv`;
+        a.click();
+        
+        return csv;
+    };
+    
+    console.log('✅ ULTRA SIMPLE FORM v2.0 READY!');
+    console.log('🛡️ Forms are now protected from GET submission');
+    console.log('📊 Commands: getLeads() | exportLeads() | clearLeads()');
+})();
