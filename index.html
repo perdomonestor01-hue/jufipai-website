@@ -379,7 +379,7 @@
 
         <!-- Contact Section -->
         <section class="contact" id="contact">
-            <h2 data-translate="contact-title" class="gold-shimmer-text">Ready to Automate Everything?</h2>
+            <h2 data-translate="contact-title">Ready to Automate Everything?</h2>
             
             <!-- Contact Form -->
             <form class="contact-form" id="contactForm">
@@ -414,48 +414,6 @@
 
     <script src="./script.js?v=1.0.5" defer></script>
     
-    <!-- EMERGENCY GOLD SHIMMER - IMMEDIATE EXECUTION -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('🌟 EMERGENCY GOLD SHIMMER ACTIVATING...');
-        
-        // Find both target headers
-        const headers = [
-            document.querySelector('h2[data-translate="services-title"]'),
-            document.querySelector('h2[data-translate="contact-title"]')
-        ];
-        
-        headers.forEach(header => {
-            if (header) {
-                // Apply immediate gold shimmer with inline styles
-                header.style.cssText = `
-                    background: linear-gradient(45deg, #ffd700, #ffffff, #fbbf24, #ffffff, #ffd700, #f59e0b) !important;
-                    background-size: 400% 100% !important;
-                    -webkit-background-clip: text !important;
-                    -webkit-text-fill-color: transparent !important;
-                    background-clip: text !important;
-                    animation: shimmerGold 1s linear infinite !important;
-                    text-shadow: 0 0 20px rgba(255, 215, 0, 0.8) !important;
-                    position: relative !important;
-                    z-index: 999 !important;
-                `;
-                console.log('✨ Applied gold shimmer to:', header.textContent);
-            }
-        });
-        
-        // Add the animation keyframes
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes shimmerGold {
-                0% { background-position: -400% 0; }
-                100% { background-position: 400% 0; }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        console.log('🎯 EMERGENCY GOLD SHIMMER COMPLETE - Headers should now be GOLDEN!');
-    });
-    </script>
     <!-- Premium Professional Popup -->
     <div id="servicePopup" style="display: none;">
         <div class="premium-popup-content">
