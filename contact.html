@@ -231,7 +231,7 @@
                 </div>
                 
                 <!-- Contact Form (same as homepage) -->
-                <form class="contact-form" id="contactForm">
+                <form class="contact-form" id="contactForm" action="#" method="post">
                     <div class="form-group">
                         <label for="name" data-translate="form-name">Full Name *</label>
                         <input type="text" id="name" name="name" required>
@@ -276,18 +276,21 @@
     
     <!-- EMERGENCY CONTACT PAGE FORM FIX -->
     <script>
-    // Emergency backup form handler specifically for contact page
-    window.addEventListener('load', function() {
-        setTimeout(function() {
+    console.log('🔧 CONTACT PAGE SCRIPT LOADING...');
+    
+    // IMMEDIATE form handler - no delays
+    function attachContactFormHandler() {
             const form = document.getElementById('contactForm');
             if (!form) {
                 console.log('❌ Contact form not found on contact page');
                 return;
             }
             
-            console.log('🔧 CONTACT PAGE: Checking form handler...');
+            console.log('🔧 CONTACT PAGE: Form found!', form);
+            console.log('🔧 CONTACT PAGE: Current action:', form.action);
+            console.log('🔧 CONTACT PAGE: Current method:', form.method);
             
-            // Always add backup handler for contact page
+            // Always add backup handler for contact page (remove existing listeners first)
             if (!form.dataset.contactHandlerAttached) {
                 console.log('🚨 CONTACT PAGE: Attaching emergency form handler');
                 
@@ -339,8 +342,16 @@
                 form.dataset.contactHandlerAttached = 'true';
                 console.log('✅ CONTACT PAGE emergency handler attached successfully');
             }
-        }, 1500); // Slightly faster than main page
-    });
+    }
+    
+    // Try immediately when script loads
+    attachContactFormHandler();
+    
+    // Try when DOM is ready
+    document.addEventListener('DOMContentLoaded', attachContactFormHandler);
+    
+    // Try when page loads
+    window.addEventListener('load', attachContactFormHandler);
     
     // Also add the lead retrieval function
     window.getJufipaiLeads = function() {
