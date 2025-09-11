@@ -47,14 +47,14 @@
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     
     <!-- Preload Critical Resources for LCP -->
-    <link rel="preload" href="./styles.css?v=1.0.6" as="style">
+    <link rel="preload" href="./styles.css?v=1.0.7" as="style">
     <link rel="preload" href="./script.js?v=1.0.4" as="script">
     <link rel="preload" href="./favicon.svg?v=2.0" as="image" type="image/svg+xml">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></noscript>
-    <link rel="stylesheet" href="./styles.css?v=1.0.6">
+    <link rel="stylesheet" href="./styles.css?v=1.0.7">
     
     <!-- Service Worker Registration & Performance Scripts -->
     <script>
@@ -251,7 +251,10 @@
     <!-- Header -->
     <header class="header">
         <nav class="nav" role="navigation" aria-label="Main navigation">
-            <a href="#" class="logo" aria-label="JufipAI Home">JufipAI</a>
+            <a href="#" class="logo" aria-label="JufipAI Home">
+                <img src="./favicon.svg" alt="JufipAI Logo" class="logo-image">
+                <span class="logo-text">JufipAI</span>
+            </a>
             <ul class="nav-links" role="menubar">
                 <li role="none"><a href="#services" role="menuitem" data-en="Services" data-es="Servicios" aria-label="Navigate to Services section">Services</a></li>
                 <li role="none"><a href="#features" role="menuitem" data-en="Features" data-es="Características" aria-label="Navigate to Features section">Features</a></li>
