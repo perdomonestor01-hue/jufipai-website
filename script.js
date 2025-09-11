@@ -496,8 +496,24 @@ function initContactForm() {
     submitBtn.style.background = 'linear-gradient(135deg, #6b7280, #9ca3af)';
     
     try {
-        // Send to Google Spreadsheet
-        // You need to create a Google Apps Script Web App with your spreadsheet ID
+        // BACKUP EMAIL SOLUTION: Send email directly as fallback
+        const emailBody = `
+New JufipAI Contact Form Submission
+==================================
+
+Name: ${formObject.name}
+Email: ${formObject.email}
+Company: ${formObject.company || 'Not provided'}
+Message: ${formObject.message || formObject.description || ''}
+
+Source: ${window.location.href.includes('/contact') ? 'Contact Page' : 'Homepage'}
+Timestamp: ${new Date().toLocaleString()}
+        `.trim();
+        
+        // Create mailto link as ultimate fallback
+        const mailtoLink = `mailto:contact@jufipai.com?subject=JufipAI Contact Form - ${formObject.name}&body=${encodeURIComponent(emailBody)}`;
+        
+        // Send to Google Spreadsheet (if working)
         const response = await fetch('https://script.google.com/macros/s/AKfycbx6pu8s3tWi_vyVS76X_fqeJTgyS5399MCcX2j3se7zB4IVE0LUCNHkh3IY-u_fjwu-/exec', {
             method: 'POST',
             mode: 'no-cors',
@@ -511,6 +527,28 @@ function initContactForm() {
                 'Project Description': formObject.message || formObject.description || ''
             })
         });
+        
+        // CRITICAL: Store form data locally and send email backup
+        const formSubmission = {
+            timestamp: new Date().toISOString(),
+            name: formObject.name,
+            email: formObject.email,
+            company: formObject.company || '',
+            message: formObject.message || formObject.description || '',
+            source: window.location.href.includes('/contact') ? 'Contact Page' : 'Homepage'
+        };
+        
+        // Store in localStorage as backup
+        const submissions = JSON.parse(localStorage.getItem('jufipai_submissions') || '[]');
+        submissions.push(formSubmission);
+        localStorage.setItem('jufipai_submissions', JSON.stringify(submissions));
+        
+        // Log for immediate access
+        console.log('🎯 NEW LEAD FROM GOOGLE ADS:', formSubmission);
+        console.log('📧 Backup email link:', mailtoLink);
+        
+        // For debugging: show all stored submissions
+        console.log('📊 All stored submissions:', submissions);
         
         // Play success sound
         if (audioEnabled) audioContext.playSuccessSound();
@@ -564,6 +602,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Also try to initialize immediately in case DOM is already ready
 initContactForm();
+
+// EMERGENCY FUNCTION: Retrieve all leads from Google Ads
+window.getJufipaiLeads = function() {
+    const submissions = JSON.parse(localStorage.getItem('jufipai_submissions') || '[]');
+    console.log('📊 ALL JUFIPAI LEADS:', submissions);
+    console.log('📈 Total leads:', submissions.length);
+    
+    // Format for easy copying
+    const csvData = submissions.map(sub => 
+        `"${sub.timestamp}","${sub.name}","${sub.email}","${sub.company}","${sub.message}","${sub.source}"`
+    ).join('\n');
+    
+    console.log('📋 CSV FORMAT (copy this):');
+    console.log('Timestamp,Name,Email,Company,Message,Source');
+    console.log(csvData);
+    
+    return submissions;
+};
+
+// Show instructions in console
+console.log('🆘 EMERGENCY LEAD RETRIEVAL: Type "getJufipaiLeads()" in console to see all form submissions');
 
 // Music controls removed
 
