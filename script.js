@@ -473,6 +473,10 @@ document.addEventListener('mousemove', (e) => {
 
 // Contact form handling with Google Spreadsheet integration
 function initContactForm() {
+    // DISABLED - Using google-form-handler.js instead
+    console.log('Form handler disabled - using google-form-handler.js');
+    return;
+    
     const contactForm = document.getElementById('contactForm');
     if (!contactForm) {
         console.log('Contact form not found on this page');
