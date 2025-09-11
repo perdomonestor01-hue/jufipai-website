@@ -632,19 +632,15 @@ body::after {
     font-size: 5rem;
     font-weight: 800;
     margin-bottom: 2rem;
-    background: linear-gradient(135deg, #ffffff 0%, #fbbf24 25%, #f59e0b 50%, #ffffff 75%, #e5e7eb 100%);
-    background-size: 200% 200%;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 25%, #d97706 50%, #92400e 75%, #78350f 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: shimmer 3s ease-in-out infinite;
-    letter-spacing: -0.04em;
-    line-height: 0.9;
-    text-shadow: 0 0 60px rgba(255, 255, 255, 0.2);
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
     font-family: 'Inter', sans-serif;
     position: relative;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
 }
 
 
@@ -1671,7 +1667,6 @@ body.welcome-active {
         radial-gradient(circle at 80% 70%, rgba(14, 165, 233, 0.3) 0%, transparent 50%),
         radial-gradient(circle at 50% 50%, rgba(147, 197, 253, 0.2) 0%, transparent 70%),
         radial-gradient(circle at 35% 80%, rgba(30, 64, 175, 0.2) 0%, transparent 60%);
-    animation: customerBackgroundPulse 6s ease-in-out infinite;
     margin: 0 !important;
     padding: 0 !important;
 }
@@ -1765,7 +1760,6 @@ body.welcome-active {
         radial-gradient(circle at 80% 70%, rgba(14, 165, 233, 0.3) 0%, transparent 50%),
         radial-gradient(circle at 50% 50%, rgba(147, 197, 253, 0.2) 0%, transparent 70%),
         radial-gradient(circle at 35% 80%, rgba(30, 64, 175, 0.2) 0%, transparent 60%);
-    animation: backgroundPulse 6s ease-in-out infinite;
     margin: 0 !important;
     padding: 0 !important;
 }
