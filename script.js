@@ -472,7 +472,14 @@ document.addEventListener('mousemove', (e) => {
 });
 
 // Contact form handling with Google Spreadsheet integration
-document.getElementById('contactForm').addEventListener('submit', async function(e) {
+function initContactForm() {
+    const contactForm = document.getElementById('contactForm');
+    if (!contactForm) {
+        console.log('Contact form not found on this page');
+        return;
+    }
+    
+    contactForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     initAudio();
     if (audioEnabled) audioContext.playClickSound();
@@ -501,7 +508,7 @@ document.getElementById('contactForm').addEventListener('submit', async function
                 'Full Name': formObject.name,
                 'Email Address': formObject.email,
                 'Company Name': formObject.company || '',
-                'Project Description': formObject.description
+                'Project Description': formObject.message || formObject.description || ''
             })
         });
         
@@ -547,7 +554,16 @@ document.getElementById('contactForm').addEventListener('submit', async function
         submitBtn.style.transform = '';
         submitBtn.disabled = false;
     }, 4000);
+    });
+}
+
+// Initialize contact form when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    initContactForm();
 });
+
+// Also try to initialize immediately in case DOM is already ready
+initContactForm();
 
 // Music controls removed
 
