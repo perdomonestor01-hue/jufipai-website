@@ -504,7 +504,7 @@ New JufipAI Contact Form Submission
 Name: ${formObject.name}
 Email: ${formObject.email}
 Company: ${formObject.company || 'Not provided'}
-Message: ${formObject.message || formObject.description || ''}
+Message: ${formObject.description || formObject.message || ''}
 
 Source: ${window.location.href.includes('/contact') ? 'Contact Page' : 'Homepage'}
 Timestamp: ${new Date().toLocaleString()}
@@ -524,7 +524,7 @@ Timestamp: ${new Date().toLocaleString()}
                 'Full Name': formObject.name,
                 'Email Address': formObject.email,
                 'Company Name': formObject.company || '',
-                'Project Description': formObject.message || formObject.description || ''
+                'Project Description': formObject.description || formObject.message || ''
             })
         });
         
@@ -534,7 +534,7 @@ Timestamp: ${new Date().toLocaleString()}
             name: formObject.name,
             email: formObject.email,
             company: formObject.company || '',
-            message: formObject.message || formObject.description || '',
+            message: formObject.description || formObject.message || '',
             source: window.location.href.includes('/contact') ? 'Contact Page' : 'Homepage'
         };
         

@@ -51,7 +51,7 @@
     
     <!-- Preload Critical Resources for LCP -->
     <link rel="preload" href="./styles.css?v=1.0.7" as="style">
-    <link rel="preload" href="./script.js?v=1.1.0" as="script">
+    <link rel="preload" href="./script.js?v=1.1.1" as="script">
     <link rel="preload" href="./favicon.svg?v=2.0" as="image" type="image/svg+xml">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
@@ -415,7 +415,68 @@
         </main>
     </div>
 
-    <script src="./script.js?v=1.1.0" defer></script>
+    <script src="./script.js?v=1.1.1" defer></script>
+    
+    <!-- EMERGENCY FORM FIX - INLINE BACKUP -->
+    <script>
+    // Emergency backup form handler if main script fails
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            const form = document.getElementById('contactForm');
+            if (!form) {
+                console.log('❌ Contact form not found');
+                return;
+            }
+            
+            // Check if form already has event listener
+            if (!form.dataset.handlerAttached) {
+                console.log('🚨 EMERGENCY: Attaching backup form handler');
+                
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    console.log('🚨 EMERGENCY FORM HANDLER ACTIVATED');
+                    
+                    const formData = new FormData(this);
+                    const formObject = Object.fromEntries(formData);
+                    
+                    const leadData = {
+                        timestamp: new Date().toISOString(),
+                        name: formObject.name,
+                        email: formObject.email,
+                        company: formObject.company || '',
+                        message: formObject.description || formObject.message || '',
+                        source: 'EMERGENCY HANDLER - MAIN PAGE'
+                    };
+                    
+                    // Store in localStorage
+                    const submissions = JSON.parse(localStorage.getItem('jufipai_submissions') || '[]');
+                    submissions.push(leadData);
+                    localStorage.setItem('jufipai_submissions', JSON.stringify(submissions));
+                    
+                    console.log('🎯 EMERGENCY LEAD CAPTURED:', leadData);
+                    console.log('📊 Total leads:', submissions.length);
+                    
+                    // Show success to user
+                    const submitBtn = this.querySelector('.form-submit');
+                    submitBtn.textContent = '✓ Submitted Successfully!';
+                    submitBtn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
+                    
+                    // Reset form
+                    this.reset();
+                    
+                    // Reset button after delay
+                    setTimeout(() => {
+                        submitBtn.textContent = 'Get FREE Diagnosis & Blueprint';
+                        submitBtn.style.background = '';
+                    }, 3000);
+                });
+                
+                form.dataset.handlerAttached = 'true';
+                console.log('✅ EMERGENCY handler attached successfully');
+            }
+        }, 2000);
+    });
+    </script>
     
     <!-- Premium Professional Popup -->
     <div id="servicePopup" style="display: none;">

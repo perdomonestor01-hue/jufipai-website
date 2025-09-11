@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JufipAI Form Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #0f172a; color: white; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; }
+        input, textarea { width: 300px; padding: 10px; }
+        button { padding: 15px 30px; background: #fbbf24; color: black; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🧪 JufipAI Form Test</h1>
+    <p>This is a test form to check if the submission works.</p>
+    
+    <form id="contactForm">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="Test User" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="test@example.com" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="company">Company:</label>
+            <input type="text" id="company" name="company" value="Test Company">
+        </div>
+        
+        <div class="form-group">
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" required>This is a test form submission from Google Ads campaign.</textarea>
+        </div>
+        
+        <button type="submit" class="form-submit">TEST SUBMIT</button>
+    </form>
+    
+    <div id="results" style="margin-top: 30px; padding: 20px; background: #1e293b; border-radius: 10px;">
+        <h3>🔍 Debug Results:</h3>
+        <div id="debug-output">Waiting for form submission...</div>
+    </div>
+    
+    <script>
+        // Simple test form handler
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const debugOutput = document.getElementById('debug-output');
+            debugOutput.innerHTML = '<p>✅ Form submitted! Checking...</p>';
+            
+            const formData = new FormData(this);
+            const formObject = Object.fromEntries(formData);
+            
+            console.log('🧪 TEST FORM DATA:', formObject);
+            
+            // Test localStorage
+            const testSubmission = {
+                timestamp: new Date().toISOString(),
+                ...formObject,
+                source: 'TEST PAGE'
+            };
+            
+            try {
+                const submissions = JSON.parse(localStorage.getItem('jufipai_submissions') || '[]');
+                submissions.push(testSubmission);
+                localStorage.setItem('jufipai_submissions', JSON.stringify(submissions));
+                
+                debugOutput.innerHTML = `
+                    <p>✅ Form submission WORKS!</p>
+                    <p><strong>Data captured:</strong></p>
+                    <pre>${JSON.stringify(testSubmission, null, 2)}</pre>
+                    <p><strong>Total submissions in storage:</strong> ${submissions.length}</p>
+                    <p><strong>🎯 ALL LEADS:</strong></p>
+                    <pre>${JSON.stringify(submissions, null, 2)}</pre>
+                `;
+                
+                console.log('🎯 TEST SUCCESSFUL - FORM WORKS!');
+                console.log('📊 All submissions:', submissions);
+                
+            } catch (error) {
+                debugOutput.innerHTML = `<p>❌ ERROR: ${error.message}</p>`;
+                console.error('❌ TEST FAILED:', error);
+            }
+        });
+        
+        // Add emergency lead retrieval function
+        window.getJufipaiLeads = function() {
+            const submissions = JSON.parse(localStorage.getItem('jufipai_submissions') || '[]');
+            console.log('📊 ALL JUFIPAI LEADS:', submissions);
+            return submissions;
+        };
+        
+        console.log('🧪 TEST PAGE LOADED - Submit form to test lead capture');
+        console.log('🆘 Type "getJufipaiLeads()" to see all captured leads');
+    </script>
+</body>
+</html>
