@@ -272,6 +272,86 @@
     </div>
     
     <!-- Scripts -->
-    <script src="./script.js?v=1.1.0" defer></script>
+    <script src="./script.js?v=1.1.1" defer></script>
+    
+    <!-- EMERGENCY CONTACT PAGE FORM FIX -->
+    <script>
+    // Emergency backup form handler specifically for contact page
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            const form = document.getElementById('contactForm');
+            if (!form) {
+                console.log('❌ Contact form not found on contact page');
+                return;
+            }
+            
+            console.log('🔧 CONTACT PAGE: Checking form handler...');
+            
+            // Always add backup handler for contact page
+            if (!form.dataset.contactHandlerAttached) {
+                console.log('🚨 CONTACT PAGE: Attaching emergency form handler');
+                
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    console.log('🚨 CONTACT PAGE EMERGENCY HANDLER ACTIVATED');
+                    
+                    const formData = new FormData(this);
+                    const formObject = Object.fromEntries(formData);
+                    
+                    console.log('📋 CONTACT PAGE form data:', formObject);
+                    
+                    const leadData = {
+                        timestamp: new Date().toISOString(),
+                        name: formObject.name,
+                        email: formObject.email,
+                        company: formObject.company || '',
+                        message: formObject.message || formObject.description || '',
+                        source: 'EMERGENCY HANDLER - CONTACT PAGE'
+                    };
+                    
+                    // Store in localStorage
+                    const submissions = JSON.parse(localStorage.getItem('jufipai_submissions') || '[]');
+                    submissions.push(leadData);
+                    localStorage.setItem('jufipai_submissions', JSON.stringify(submissions));
+                    
+                    console.log('🎯 CONTACT PAGE LEAD CAPTURED:', leadData);
+                    console.log('📊 Total leads in storage:', submissions.length);
+                    
+                    // Show success to user
+                    const submitBtn = this.querySelector('.form-submit span') || this.querySelector('.form-submit');
+                    if (submitBtn) {
+                        submitBtn.textContent = '✓ Submitted Successfully!';
+                        submitBtn.parentElement.style.background = 'linear-gradient(135deg, #059669, #10b981)';
+                    }
+                    
+                    // Reset form
+                    this.reset();
+                    
+                    // Reset button after delay
+                    setTimeout(() => {
+                        if (submitBtn) {
+                            submitBtn.textContent = 'Get FREE Diagnosis & Blueprint';
+                            submitBtn.parentElement.style.background = '';
+                        }
+                    }, 3000);
+                });
+                
+                form.dataset.contactHandlerAttached = 'true';
+                console.log('✅ CONTACT PAGE emergency handler attached successfully');
+            }
+        }, 1500); // Slightly faster than main page
+    });
+    
+    // Also add the lead retrieval function
+    window.getJufipaiLeads = function() {
+        const submissions = JSON.parse(localStorage.getItem('jufipai_submissions') || '[]');
+        console.log('📊 ALL JUFIPAI LEADS (from contact page):', submissions);
+        console.log('📈 Total leads:', submissions.length);
+        return submissions;
+    };
+    
+    console.log('🔗 CONTACT PAGE loaded - Emergency form protection active');
+    console.log('🆘 Type "getJufipaiLeads()" in console to see all leads');
+    </script>
 </body>
 </html>
