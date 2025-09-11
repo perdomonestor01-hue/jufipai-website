@@ -49,8 +49,7 @@ function initGoogleFormHandler() {
             
             try {
                 // Your deployed Google Apps Script Web App URL
-                // UPDATE THIS WITH YOUR ACTUAL WEB APP URL FROM GOOGLE APPS SCRIPT
-                const scriptUrl = 'YOUR_WEB_APP_URL_HERE'; // e.g., https://script.google.com/macros/s/AKfyc.../exec
+                const scriptUrl = 'https://script.google.com/macros/s/AKfycbx6pu8s3tWi_vyVS76X_fqeJTgyS5399MCcX2j3se7zB4IVE0LUCNHkh3IY-u_fjwu-/exec';
                 
                 // Create form data matching your script's expected field names
                 const formDataToSend = new FormData();

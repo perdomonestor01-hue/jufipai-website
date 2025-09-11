@@ -99,8 +99,8 @@
     <div id="result" class="result"></div>
     
     <script>
-        // IMPORTANT: Replace this with YOUR Google Apps Script Web App URL
-        const SCRIPT_URL = 'YOUR_WEB_APP_URL_HERE'; // Get this from Deploy > Manage Deployments in Google Apps Script
+        // Your Google Apps Script Web App URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx6pu8s3tWi_vyVS76X_fqeJTgyS5399MCcX2j3se7zB4IVE0LUCNHkh3IY-u_fjwu-/exec';
         
         document.getElementById('testForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -170,11 +170,6 @@
                 submitBtn.disabled = false;
             }
         });
-        
-        // Check if URL is configured
-        if (SCRIPT_URL === 'YOUR_WEB_APP_URL_HERE') {
-            alert('⚠️ Please update the SCRIPT_URL variable with your Google Apps Script Web App URL!\n\nGet it from: Deploy > Manage Deployments in your Google Apps Script project.');
-        }
     </script>
 </body>
 </html>
