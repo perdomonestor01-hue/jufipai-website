@@ -51,11 +51,14 @@
                     "@type": "ImageObject",
                     "url": "https://jufipai.com/favicon.svg"
                 },
-                "description": "Professional AI automation and integration services for business process optimization",
+                "description": "Professional AI automation and integration services. Transform your business with intelligent automation that connects multiple AI models with your existing systems.",
+                "sameAs": [
+                    "https://www.linkedin.com/company/jufipai"
+                ],
                 "contactPoint": {
                     "@type": "ContactPoint",
-                    "email": "contact@jufipai.com",
-                    "contactType": "Customer Service"
+                    "contactType": "customer service",
+                    "email": "contact@jufipai.com"
                 }
             },
             {
@@ -63,110 +66,148 @@
                 "@id": "https://jufipai.com/#website",
                 "url": "https://jufipai.com",
                 "name": "JufipAI - AI Solutions & Automation",
-                "description": "Transform your business with professional AI automation services. Free diagnosis and risk-free implementation.",
+                "description": "Transform your business with JufipAI's professional AI automation services. Free diagnosis, risk-free implementation, and complete process optimization.",
                 "publisher": {
                     "@id": "https://jufipai.com/#organization"
-                }
+                },
+                "inLanguage": ["en-US", "es-ES"]
+            },
+            {
+                "@type": "WebPage",
+                "@id": "https://jufipai.com/#webpage",
+                "url": "https://jufipai.com",
+                "name": "JufipAI - AI Solutions & Automation",
+                "isPartOf": {
+                    "@id": "https://jufipai.com/#website"
+                },
+                "about": {
+                    "@id": "https://jufipai.com/#organization"
+                },
+                "description": "Get a free AI automation diagnosis and complete blueprint. Professional AI integration services that connect ChatGPT, Claude, Groq, and DeepSeek with your existing systems."
             },
             {
                 "@type": "Service",
-                "name": "AI Automation Services",
+                "name": "AI Automation Integration",
                 "provider": {
                     "@id": "https://jufipai.com/#organization"
                 },
-                "description": "Complete AI automation and integration services including Google Workspace automation, process optimization, and business transformation",
-                "serviceType": "AI Consulting and Automation"
+                "description": "Intelligent automation that connects ChatGPT, Claude, Groq, and DeepSeek with existing systems, eliminating human intervention entirely.",
+                "serviceType": "AI Integration Services",
+                "areaServed": "Worldwide",
+                "offers": {
+                    "@type": "Offer",
+                    "name": "Free AI Automation Diagnosis",
+                    "description": "Comprehensive analysis of workflows with complete automation blueprint at zero cost",
+                    "price": "0",
+                    "priceCurrency": "USD"
+                }
             }
         ]
     }
     </script>
-    
-    <!-- Progressive Web App -->
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#fbbf24">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <!-- Performance Critical CSS -->
-    <style>
-        /* Critical above-the-fold styles */
-        body { margin: 0; font-family: 'Inter', sans-serif; background: #0a0a0a; color: white; }
-        .header { position: fixed; top: 0; width: 100%; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(20px); z-index: 1000; }
-        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-    </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loading">
-        <div class="loader"></div>
-    </div>
-
-    <!-- Welcome Overlay -->
-    <div class="welcome-overlay" id="welcomeOverlay">
+    <!-- SPECTACULAR VISUAL WELCOME OVERLAY -->
+    <div class="welcome-overlay" id="welcomeOverlay" role="dialog" aria-labelledby="welcome-title" aria-modal="true">
+        <!-- Animated Background Glow -->
+        <div class="welcome-background-glow"></div>
+        
+        <!-- Floating Particles -->
         <div class="welcome-particles" id="welcomeParticles"></div>
-        <div class="welcome-content">
-            <h1 class="welcome-title" data-translate="welcome-title">Welcome to JufipAI</h1>
-            <p class="welcome-subtitle" data-translate="welcome-subtitle">Where AI + automation makes working a good place to be!</p>
+        
+        <!-- Working Robots -->
+        <div class="welcome-robots">
+            <div class="robot-worker robot-1" aria-hidden="true">
+                <i class="fas fa-robot" alt="AI Robot Working"></i>
+            </div>
+            <div class="robot-worker robot-2" aria-hidden="true">
+                <i class="fas fa-cogs" alt="Processing Automation"></i>
+            </div>
+            <div class="robot-worker robot-3" aria-hidden="true">
+                <i class="fas fa-microchip" alt="Smart Technology"></i>
+            </div>
+            <div class="robot-worker robot-4">
+                <i class="fas fa-brain"></i>
+            </div>
+        </div>
+        
+        <!-- Glowing Circuit Lines -->
+        <div class="welcome-circuits">
+            <div class="circuit-line circuit-1"></div>
+            <div class="circuit-line circuit-2"></div>
+            <div class="circuit-line circuit-3"></div>
+        </div>
+        
+        <!-- Main Welcome Content -->
+        <div class="welcome-message">
+            <div class="welcome-title" data-translate="welcome-title">Welcome to JufipAI</div>
+            <div class="welcome-subtitle" data-translate="welcome-subtitle">Where AI + automation makes working a good place to be!</div>
         </div>
     </div>
 
-    <!-- Customer Welcome Overlay -->
-    <div class="customer-welcome-overlay" id="customerWelcomeOverlay">
-        <div class="customer-welcome-content">
-            <h1 class="customer-welcome-title" data-translate="customer-welcome-title">Thanks for contacting JufipAI</h1>
-            <p class="customer-welcome-subtitle" data-translate="customer-welcome-subtitle">Your automation journey begins now</p>
-            <p class="customer-welcome-details" data-translate="customer-welcome-details">One of our specialized team members is already contacting you shortly.<br><strong>Get ready to flip how you work forever!</strong></p>
+    <!-- Customer Welcome Overlay (appears after form submission) -->
+    <div class="customer-welcome-overlay" id="customerWelcomeOverlay" style="display: none;">
+        <!-- Animated Background Glow -->
+        <div class="customer-welcome-background-glow"></div>
+        
+        <!-- Main Customer Welcome Content -->
+        <div class="customer-welcome-message">
+            <div class="customer-welcome-title" data-translate="customer-welcome-title">Thanks for contacting JufipAI</div>
+            <div class="customer-welcome-subtitle" data-translate="customer-welcome-subtitle">Your automation journey begins now</div>
+            <div class="customer-welcome-details" data-translate="customer-welcome-details">
+                One of our specialized team members is already contacting you shortly.<br>
+                <strong>Get ready to flip how you work forever!</strong>
+            </div>
         </div>
     </div>
 
-    <!-- Background Particles -->
+    <!-- Loading Screen -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Animated Background Particles -->
     <div class="particles" id="particles"></div>
+
+    <!-- Floating AI Agents -->
+    <div class="ai-agent" style="top: 15%; left: 5%; animation-delay: 0s;">
+        <i class="fas fa-robot"></i>
+    </div>
+    <div class="ai-agent" style="top: 25%; right: 8%; animation-delay: 2s;">
+        <i class="fas fa-brain"></i>
+    </div>
+    <div class="ai-agent" style="top: 60%; left: 3%; animation-delay: 4s;">
+        <i class="fas fa-cog"></i>
+    </div>
+    <div class="ai-agent" style="top: 75%; right: 5%; animation-delay: 6s;">
+        <i class="fas fa-magic-wand-sparkles"></i>
+    </div>
 
     <!-- Header -->
     <header class="header">
-        <div class="header-container">
-            <a href="#" class="logo">JufipAI</a>
-            
-            <!-- Navigation -->
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="#services" data-en="Services" data-es="Servicios" data-translate="services">Services</a></li>
-                    <li><a href="#features" data-en="Features" data-es="Características" data-translate="features">Features</a></li>
-                    <li><a href="#contact" data-en="Contact" data-es="Contacto" data-translate="contact">Contact</a></li>
-                </ul>
-            </nav>
-
-            <!-- Language Toggle -->
-            <div class="language-toggle" id="languageSwitch">
-                <button class="language-option active" data-lang="en">EN</button>
-                <button class="language-option" data-lang="es">ES</button>
+        <nav class="nav" role="navigation" aria-label="Main navigation">
+            <a href="#" class="logo" aria-label="JufipAI Home">JufipAI</a>
+            <ul class="nav-links" role="menubar">
+                <li role="none"><a href="#services" role="menuitem" data-en="Services" data-es="Servicios" aria-label="Navigate to Services section">Services</a></li>
+                <li role="none"><a href="#features" role="menuitem" data-en="Features" data-es="Características" aria-label="Navigate to Features section">Features</a></li>
+                <li role="none"><a href="#contact" role="menuitem" data-en="Contact" data-es="Contacto" aria-label="Navigate to Contact section">Contact</a></li>
+            </ul>
+            <div class="language-toggle" role="group" aria-label="Language selection">
+                <div class="language-switch" id="languageSwitch" role="tablist" aria-label="Choose language">
+                    <div class="language-slider" aria-hidden="true"></div>
+                    <div class="language-option active" data-lang="en" role="tab" tabindex="0" aria-selected="true" aria-label="English">ENG</div>
+                    <div class="language-option" data-lang="es" role="tab" tabindex="-1" aria-selected="false" aria-label="Español">ESP</div>
+                </div>
             </div>
-
-            <!-- Mobile Toggle -->
-            <div class="mobile-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
+        </nav>
     </header>
 
     <!-- Main Content -->
-    <main>
+    <div class="container">
         <!-- Hero Section -->
-        <section class="hero">
-            <div class="container">
-                <!-- Hero Messages with Enhanced Styling -->
-                <div class="hero-message">
-                    <strong class="highlight">Free AI automation analysis</strong> — We examine your workflows and create a <strong class="highlight">complete implementation blueprint</strong> at zero cost.
-                </div>
-                <div class="hero-message">
-                    No sales calls. No lengthy consultations. <strong class="highlight">Just pure value delivered directly to you.</strong>
-                </div>
-            </div>
-            
+        <main>
+        <section class="hero fade-in" role="banner" aria-labelledby="hero-heading">
             <h1 id="hero-heading" data-translate="hero-title">Free AI Automation Diagnosis</h1>
-            <p class="subtitle" data-translate="hero-subtitle">We analyze your workflow and deliver a complete automation blueprint—at zero cost. No consultations, no meetings. Pure value.</p>
             
             <a href="#contact" class="cta-button" id="ctaButton" data-translate="hero-cta">Get FREE Diagnosis & Draft</a>
         </section>
@@ -285,62 +326,90 @@
                 </div>
                 <div class="form-group">
                     <label for="description" data-translate="form-description">Project Description *</label>
-                    <textarea id="description" name="description" data-translate-placeholder="form-description" placeholder="Describe your automation needs..." required></textarea>
+                    <textarea id="description" name="description" data-translate-placeholder="form-description" placeholder="Project Description" required></textarea>
                 </div>
                 <button type="submit" class="form-submit" data-translate="form-submit">Get FREE Diagnosis & Draft</button>
             </form>
+
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-globe"></i>
+                    <span>www.jufipai.com</span>
+                </div>
+            </div>
         </section>
-    </main>
+        </main>
+    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <p data-translate="copyright">Copyright © 2014-2025, JufipAI.com or its affiliates. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <!-- Service Popup -->
-    <div id="servicePopup" class="service-popup">
+    <script src="./script.js"></script>
+    <!-- Premium Professional Popup -->
+    <div id="servicePopup" style="display: none;">
         <div class="premium-popup-content">
+            <!-- Popup Header with Gradient Border -->
             <div class="popup-header">
                 <div class="popup-icon-container">
-                    <i id="popupIcon" class="popup-service-icon"></i>
+                    <i id="popupIcon" class="fas fa-robot popup-service-icon"></i>
                 </div>
                 <h2 id="popupTitle" class="popup-title"></h2>
-                <button class="popup-close-btn" id="popupClose">
+                <button id="popupClose" class="popup-close-btn">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             
+            <!-- Popup Content with Enhanced Typography -->
             <div class="popup-content-wrapper">
                 <div id="popupContent" class="popup-content-text"></div>
             </div>
             
+            <!-- Premium CTA Section -->
             <div class="popup-cta-section">
                 <div class="popup-value-prop">
-                    <i class="fas fa-rocket"></i>
-                    <span>Get your free automation analysis today</span>
+                    <i class="fas fa-gift"></i>
+                    <span>100% Free Consultation & Implementation Plan</span>
                 </div>
+                <a href="#contact" class="popup-cta-button" onclick="hideServicePopup();">
+                    <span>Get This Solution Free</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="./script.js"></script>
-    
-    <!-- Service Worker Registration -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('./sw.js')
-                .then(function(registration) {
-                    console.log('SW registered: ', registration);
-                })
-                .catch(function(registrationError) {
-                    console.log('SW registration failed: ', registrationError);
-                });
-            });
-        }
-    </script>
+    <!-- Robot Animation -->
+    <div class="robot-container">
+        <div class="robot">
+            <div class="robot-head">
+                <div class="robot-antenna"></div>
+                <div class="robot-eyes">
+                    <div class="robot-eye"></div>
+                    <div class="robot-eye"></div>
+                </div>
+            </div>
+            <div class="robot-body">
+                <div class="robot-chest"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0a0e1a 100%);
+        color: #94a3b8;
+        text-align: center;
+        padding: 2rem 1rem;
+        border-top: 1px solid rgba(59, 130, 246, 0.1);
+        margin-top: 4rem;
+    ">
+        <div style="
+            font-size: 0.9rem;
+            opacity: 0.8;
+            max-width: 1200px;
+            margin: 0 auto;
+        ">
+            <p style="margin: 0;" data-translate="copyright">
+                Copyright © 2014-2025, JufipAI.com or its affiliates. All rights reserved.
+            </p>
+        </div>
+    </footer>
 </body>
 </html>
