@@ -601,11 +601,11 @@ Timestamp: ${new Date().toLocaleString()}
 
 // Initialize contact form when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    initContactForm();
+    // DISABLED - initContactForm();
 });
 
 // Also try to initialize immediately in case DOM is already ready
-initContactForm();
+// DISABLED - initContactForm();
 
 // EMERGENCY FUNCTION: Retrieve all leads from Google Ads
 window.getJufipaiLeads = function() {
