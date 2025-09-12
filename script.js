@@ -21,6 +21,19 @@ window.addEventListener('load', function() {
     const welcomeOverlay = document.getElementById('welcomeOverlay');
     let welcomeTimeout;
     
+    // Skip welcome on mobile devices to prevent purple screen
+    const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+        // Immediately hide overlay on mobile
+        if (welcomeOverlay) {
+            welcomeOverlay.style.display = 'none';
+        }
+        // Skip the entire welcome system
+        document.getElementById('loading').style.display = 'none';
+        return;
+    }
+    
     // Add welcome-active class to body for complete coverage
     document.body.classList.add('welcome-active');
     document.documentElement.style.overflow = 'hidden';
@@ -68,18 +81,7 @@ window.addEventListener('load', function() {
     
     function hideWelcomeMessage() {
         if (welcomeOverlay && !welcomeOverlay.classList.contains('fade-out')) {
-            // Play futuristic spaceship launch sound
-            initAudio();
-            // Small delay to ensure audio context is ready
-            setTimeout(() => {
-                if (audioEnabled && audioContext && audioContext.playSpaceshipLaunch) {
-                    try {
-                        audioContext.playSpaceshipLaunch();
-                    } catch (e) {
-                        // Audio initialization handled silently
-                    }
-                }
-            }, 50);
+            // Skip audio to prevent blocking
             
             // Immediately restore scrolling
             document.body.classList.remove('welcome-active');
@@ -91,13 +93,13 @@ window.addEventListener('load', function() {
             welcomeOverlay.classList.add('fade-out');
             setTimeout(() => {
                 welcomeOverlay.style.display = 'none';
-            }, 1500);
+            }, 800); // Faster fade out
             clearTimeout(welcomeTimeout);
         }
     }
     
-    // Auto-hide after 5 seconds
-    welcomeTimeout = setTimeout(hideWelcomeMessage, 5000);
+    // Auto-hide after 2 seconds (faster for mobile)
+    welcomeTimeout = setTimeout(hideWelcomeMessage, 2000);
     
     // Hide on click anywhere with spectacular effect
     if (welcomeOverlay) {
