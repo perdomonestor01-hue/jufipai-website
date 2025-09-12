@@ -1,285 +1,287 @@
-// Language translations
+// Translation system with enhanced error handling
 const translations = {
-    en: {
-        'page-title': 'JufipAI - Free AI Automation Diagnosis',
-        'nav-home': 'Home',
-        'nav-services': 'Services', 
+    'en': {
+        // Navigation
+        'nav-services': 'Services',
         'nav-contact': 'Contact',
+        
+        // Hero Section
         'hero-title': 'Free AI Automation Diagnosis',
         'hero-cta': 'Get FREE Diagnosis & Draft',
+        
+        // Services Section
         'services-title': 'Our AI-Powered Services',
         'service1-title': 'Workflow Analysis',
         'service1-description': 'Deep dive into your current processes to identify automation opportunities and efficiency gaps.',
         'service2-title': 'AI Implementation',
-        'service2-description': 'Custom AI solutions tailored to your specific business needs and workflow requirements.',
-        'service3-title': 'Process Optimization',
-        'service3-description': 'Streamline operations with intelligent automation that saves time and reduces errors.',
+        'service2-description': 'Custom AI solutions designed specifically for your business needs and existing infrastructure.',
+        'service3-title': 'Process Optimization', 
+        'service3-description': 'Streamline operations through intelligent automation and data-driven decision making.',
         'service4-title': 'Training & Support',
         'service4-description': 'Comprehensive training programs to ensure your team maximizes AI automation benefits.',
+        
+        // Contact Section
         'contact-title': 'Ready to Automate Everything?',
-        'contact-info-title': 'Get Your Free Analysis',
-        'contact-info-description': 'Fill out the form and receive a comprehensive automation blueprint within 24 hours. No meetings, no sales calls - just actionable insights.',
-        'benefit1': 'Detailed workflow analysis',
-        'benefit2': 'Custom automation roadmap',
-        'benefit3': 'Implementation timeline',
-        'benefit4': 'ROI projections',
         'form-name': 'Full Name',
         'form-email': 'Email Address',
-        'form-company': 'Company',
-        'form-workflow': 'Describe Your Current Workflow',
+        'form-company': 'Company Name',
+        'form-role': 'Your Role',
+        'form-industry': 'Industry',
+        'form-industry-select': 'Select Industry',
+        'industry-technology': 'Technology',
+        'industry-healthcare': 'Healthcare', 
+        'industry-finance': 'Finance',
+        'industry-retail': 'Retail',
+        'industry-manufacturing': 'Manufacturing',
+        'industry-education': 'Education',
+        'industry-other': 'Other',
+        'form-workflow': 'Current Workflow Challenge',
         'form-goals': 'Automation Goals',
-        'form-submit': 'Get My Free Analysis',
-        'footer-description': 'Transforming businesses through intelligent automation solutions.',
-        'footer-services-title': 'Services',
-        'footer-analysis': 'Workflow Analysis',
-        'footer-implementation': 'AI Implementation',
-        'footer-optimization': 'Process Optimization',
-        'footer-training': 'Training & Support',
-        'footer-contact-title': 'Contact',
-        'footer-contact-info': 'Ready to automate? Get your free analysis today.',
-        'footer-cta': 'Start Now',
-        'footer-rights': 'All rights reserved.',
-        'customer-welcome-title': 'Thank You!',
-        'customer-welcome-message': 'Your request has been received. We\'ll send you a comprehensive automation analysis within 24 hours.',
-        'customer-close': 'Continue'
+        'form-submit': 'Get FREE Diagnosis & Draft',
+        
+        // Customer Welcome Overlay
+        'customer-welcome-title': 'Thanks for contacting JufipAI',
+        'customer-welcome-subtitle': "We'll get back to you soon",
+        'customer-welcome-details': 'Your AI automation diagnosis will be delivered within 24-48 hours directly to your inbox.'
     },
-    es: {
-        'page-title': 'JufipAI - Diagnóstico Gratuito de Automatización IA',
-        'nav-home': 'Inicio',
+    'es': {
+        // Navigation
         'nav-services': 'Servicios',
         'nav-contact': 'Contacto',
+        
+        // Hero Section
         'hero-title': 'Diagnóstico Gratuito de Automatización IA',
-        'hero-cta': 'Obtener Diagnóstico GRATIS',
-        'services-title': 'Nuestros Servicios Potenciados por IA',
-        'service1-title': 'Análisis de Flujo de Trabajo',
+        'hero-cta': 'Obtener Diagnóstico GRATUITO',
+        
+        // Services Section
+        'services-title': 'Nuestros Servicios con IA',
+        'service1-title': 'Análisis de Flujos de Trabajo',
         'service1-description': 'Análisis profundo de sus procesos actuales para identificar oportunidades de automatización y brechas de eficiencia.',
         'service2-title': 'Implementación de IA',
-        'service2-description': 'Soluciones de IA personalizadas adaptadas a las necesidades específicas de su negocio y requisitos de flujo de trabajo.',
+        'service2-description': 'Soluciones de IA personalizadas diseñadas específicamente para sus necesidades comerciales e infraestructura existente.',
         'service3-title': 'Optimización de Procesos',
-        'service3-description': 'Optimice las operaciones con automatización inteligente que ahorra tiempo y reduce errores.',
-        'service4-title': 'Capacitación y Soporte',
-        'service4-description': 'Programas de capacitación integral para asegurar que su equipo maximice los beneficios de la automatización IA.',
+        'service3-description': 'Agilice las operaciones a través de automatización inteligente y toma de decisiones basada en datos.',
+        'service4-title': 'Entrenamiento y Soporte',
+        'service4-description': 'Programas de entrenamiento integrales para asegurar que su equipo maximice los beneficios de automatización IA.',
+        
+        // Contact Section
         'contact-title': '¿Listo para Automatizar Todo?',
-        'contact-info-title': 'Obtenga Su Análisis Gratuito',
-        'contact-info-description': 'Complete el formulario y reciba un plan integral de automatización en 24 horas. Sin reuniones, sin llamadas de ventas - solo información práctica.',
-        'benefit1': 'Análisis detallado del flujo de trabajo',
-        'benefit2': 'Hoja de ruta de automatización personalizada',
-        'benefit3': 'Cronograma de implementación',
-        'benefit4': 'Proyecciones de ROI',
         'form-name': 'Nombre Completo',
         'form-email': 'Dirección de Email',
-        'form-company': 'Empresa',
-        'form-workflow': 'Describa Su Flujo de Trabajo Actual',
+        'form-company': 'Nombre de la Empresa',
+        'form-role': 'Su Rol',
+        'form-industry': 'Industria',
+        'form-industry-select': 'Seleccionar Industria',
+        'industry-technology': 'Tecnología',
+        'industry-healthcare': 'Salud',
+        'industry-finance': 'Finanzas',
+        'industry-retail': 'Retail',
+        'industry-manufacturing': 'Manufactura',
+        'industry-education': 'Educación',
+        'industry-other': 'Otro',
+        'form-workflow': 'Desafío de Flujo de Trabajo Actual',
         'form-goals': 'Objetivos de Automatización',
-        'form-submit': 'Obtener Mi Análisis Gratuito',
-        'footer-description': 'Transformando negocios a través de soluciones de automatización inteligente.',
-        'footer-services-title': 'Servicios',
-        'footer-analysis': 'Análisis de Flujo de Trabajo',
-        'footer-implementation': 'Implementación de IA',
-        'footer-optimization': 'Optimización de Procesos',
-        'footer-training': 'Capacitación y Soporte',
-        'footer-contact-title': 'Contacto',
-        'footer-contact-info': '¿Listo para automatizar? Obtenga su análisis gratuito hoy.',
-        'footer-cta': 'Comenzar Ahora',
-        'footer-rights': 'Todos los derechos reservados.',
-        'customer-welcome-title': '¡Gracias!',
-        'customer-welcome-message': 'Su solicitud ha sido recibida. Le enviaremos un análisis integral de automatización en 24 horas.',
-        'customer-close': 'Continuar'
+        'form-submit': 'Obtener Diagnóstico GRATUITO',
+        
+        // Customer Welcome Overlay
+        'customer-welcome-title': 'Gracias por contactar JufipAI',
+        'customer-welcome-subtitle': 'Te responderemos pronto',
+        'customer-welcome-details': 'Tu diagnóstico de automatización IA será entregado dentro de 24-48 horas directamente a tu bandeja de entrada.'
     }
 };
 
-// Current language state
-let currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
+let currentLanguage = 'en';
 
-// Utility functions
-function updateLanguageDisplay() {
-    const langDisplay = document.getElementById('currentLang');
-    if (langDisplay) {
-        langDisplay.textContent = currentLanguage.toUpperCase();
+// Enhanced form validation
+const formValidation = {
+    name: {
+        required: true,
+        minLength: 2,
+        pattern: /^[a-zA-ZÀ-ÿ\u0100-\u017F\s'-]+$/,
+        message: {
+            en: 'Please enter a valid full name (at least 2 characters)',
+            es: 'Por favor ingrese un nombre completo válido (al menos 2 caracteres)'
+        }
+    },
+    email: {
+        required: true,
+        pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        message: {
+            en: 'Please enter a valid email address',
+            es: 'Por favor ingrese una dirección de email válida'
+        }
+    },
+    company: {
+        required: false,
+        minLength: 2,
+        message: {
+            en: 'Company name must be at least 2 characters',
+            es: 'El nombre de la empresa debe tener al menos 2 caracteres'
+        }
+    },
+    role: {
+        required: false,
+        minLength: 2,
+        message: {
+            en: 'Role must be at least 2 characters',
+            es: 'El rol debe tener al menos 2 caracteres'
+        }
+    },
+    workflow: {
+        required: true,
+        minLength: 10,
+        message: {
+            en: 'Please describe your workflow challenge in detail (at least 10 characters)',
+            es: 'Por favor describa su desafío de flujo de trabajo en detalle (al menos 10 caracteres)'
+        }
+    },
+    goals: {
+        required: false,
+        minLength: 5,
+        message: {
+            en: 'Goals should be at least 5 characters',
+            es: 'Los objetivos deben tener al menos 5 caracteres'
+        }
     }
+};
+
+// Form submission with enhanced analytics
+function submitForm(formData) {
+    // Enhanced form submission logic
+    const submitData = {
+        ...formData,
+        language: currentLanguage,
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        referrer: document.referrer,
+        source: 'jufipai-website'
+    };
+    
+    // Analytics tracking
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'form_submit', {
+            'event_category': 'engagement',
+            'event_label': 'contact_form',
+            'language': currentLanguage
+        });
+    }
+    
+    return fetch('https://formspree.io/f/xgveegjg', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(submitData)
+    });
 }
 
-function translatePage() {
+// Language switching with enhanced UX
+function switchLanguage(lang) {
+    if (!translations[lang]) {
+        console.warn(`Language '${lang}' not available, falling back to English`);
+        lang = 'en';
+    }
+    
+    currentLanguage = lang;
+    localStorage.setItem('preferredLanguage', lang);
+    
+    // Update all translatable elements
     const elements = document.querySelectorAll('[data-translate]');
     elements.forEach(element => {
         const key = element.getAttribute('data-translate');
-        if (translations[currentLanguage] && translations[currentLanguage][key]) {
-            if (element.tagName === 'INPUT' && element.type === 'submit') {
-                element.value = translations[currentLanguage][key];
-            } else if (element.tagName === 'INPUT' && element.placeholder !== undefined) {
-                // Handle placeholder text for inputs
-                if (key === 'form-workflow') {
-                    element.placeholder = currentLanguage === 'en' ? 
-                        'Tell us about your current processes, pain points, and what you\'d like to automate...' :
-                        'Cuéntanos sobre tus procesos actuales, puntos de dolor y qué te gustaría automatizar...';
-                } else if (key === 'form-goals') {
-                    element.placeholder = currentLanguage === 'en' ?
-                        'What specific outcomes are you hoping to achieve?' :
-                        '¿Qué resultados específicos esperas lograr?';
-                }
+        if (translations[lang] && translations[lang][key]) {
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                element.placeholder = translations[lang][key];
             } else {
-                element.textContent = translations[currentLanguage][key];
+                element.textContent = translations[lang][key];
             }
         }
     });
     
-    // Update page title
-    document.title = translations[currentLanguage]['page-title'];
-}
-
-// Navigation functionality
-function initializeNavigation() {
-    const navToggle = document.getElementById('navToggle');
-    const navMenu = document.getElementById('navMenu');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    if (navToggle && navMenu) {
-        navToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-            navToggle.classList.toggle('active');
-        });
-    }
-    
-    // Close menu when clicking on a link
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            navMenu.classList.remove('active');
-            navToggle.classList.remove('active');
-        });
-    });
-    
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-            navMenu.classList.remove('active');
-            navToggle.classList.remove('active');
+    // Update placeholder attributes
+    const placeholderElements = document.querySelectorAll('[data-translate-placeholder]');
+    placeholderElements.forEach(element => {
+        const key = element.getAttribute('data-translate-placeholder');
+        if (translations[lang] && translations[lang][key]) {
+            element.placeholder = translations[lang][key];
         }
     });
-}
-
-// Smooth scrolling for navigation links
-function initializeSmoothScrolling() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                const headerOffset = 80;
-                const elementPosition = target.offsetTop;
-                const offsetPosition = elementPosition - headerOffset;
-                
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
-            }
+    
+    // Update language switch UI
+    const languageOptions = document.querySelectorAll('.language-option');
+    languageOptions.forEach(option => {
+        option.classList.remove('active');
+        option.setAttribute('aria-selected', 'false');
+        option.setAttribute('tabindex', '-1');
+        if (option.getAttribute('data-lang') === lang) {
+            option.classList.add('active');
+            option.setAttribute('aria-selected', 'true');
+            option.setAttribute('tabindex', '0');
+        }
+    });
+    
+    // Update document language
+    document.documentElement.lang = lang;
+    
+    // Update slider position
+    const slider = document.querySelector('.language-slider');
+    const activeOption = document.querySelector('.language-option.active');
+    if (slider && activeOption) {
+        const optionRect = activeOption.getBoundingClientRect();
+        const containerRect = activeOption.parentElement.getBoundingClientRect();
+        slider.style.transform = `translateX(${optionRect.left - containerRect.left}px)`;
+    }
+    
+    // Analytics tracking
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'language_change', {
+            'event_category': 'engagement',
+            'event_label': lang
         });
-    });
+    }
 }
 
-// Form handling
-function initializeContactForm() {
-    const form = document.getElementById('contactForm');
-    const formStatus = document.getElementById('formStatus');
+// Enhanced form validation function
+function validateField(fieldName, value) {
+    const rules = formValidation[fieldName];
+    if (!rules) return { valid: true };
     
-    if (!form || !formStatus) return;
+    // Required field check
+    if (rules.required && !value.trim()) {
+        return {
+            valid: false,
+            message: rules.message[currentLanguage] || rules.message.en
+        };
+    }
     
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        // Clear previous status
-        formStatus.className = 'form-status';
-        formStatus.textContent = '';
-        
-        // Validate form
-        if (!validateForm()) {
-            return;
-        }
-        
-        // Show loading state
-        const submitBtn = form.querySelector('.submit-btn');
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = currentLanguage === 'en' ? 'Sending...' : 'Enviando...';
-        submitBtn.disabled = true;
-        
-        try {
-            const formData = new FormData(form);
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-            
-            if (response.ok) {
-                // Show success message
-                formStatus.className = 'form-status success';
-                formStatus.textContent = currentLanguage === 'en' ? 
-                    'Thank you! We\'ll send your automation analysis within 24 hours.' :
-                    '¡Gracias! Te enviaremos tu análisis de automatización en 24 horas.';
-                
-                // Show customer welcome overlay
-                showCustomerWelcome();
-                
-                // Reset form
-                form.reset();
-                clearErrors();
-            } else {
-                throw new Error('Form submission failed');
-            }
-        } catch (error) {
-            console.error('Form submission error:', error);
-            formStatus.className = 'form-status error';
-            formStatus.textContent = currentLanguage === 'en' ? 
-                'Sorry, there was an error sending your message. Please try again.' :
-                'Lo siento, hubo un error al enviar tu mensaje. Por favor intenta de nuevo.';
-        } finally {
-            // Reset button
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-        }
-    });
+    // Skip other validations if field is empty and not required
+    if (!value.trim() && !rules.required) {
+        return { valid: true };
+    }
+    
+    // Minimum length check
+    if (rules.minLength && value.trim().length < rules.minLength) {
+        return {
+            valid: false,
+            message: rules.message[currentLanguage] || rules.message.en
+        };
+    }
+    
+    // Pattern check
+    if (rules.pattern && !rules.pattern.test(value)) {
+        return {
+            valid: false,
+            message: rules.message[currentLanguage] || rules.message.en
+        };
+    }
+    
+    return { valid: true };
 }
 
-// Form validation
-function validateForm() {
-    const form = document.getElementById('contactForm');
-    const name = form.querySelector('#name');
-    const email = form.querySelector('#email');
-    const workflow = form.querySelector('#workflow');
-    
-    let isValid = true;
-    
-    // Clear previous errors
-    clearErrors();
-    
-    // Validate name
-    if (!name.value.trim()) {
-        showError('name', currentLanguage === 'en' ? 'Name is required' : 'El nombre es requerido');
-        isValid = false;
-    }
-    
-    // Validate email
-    if (!email.value.trim()) {
-        showError('email', currentLanguage === 'en' ? 'Email is required' : 'El email es requerido');
-        isValid = false;
-    } else if (!isValidEmail(email.value)) {
-        showError('email', currentLanguage === 'en' ? 'Please enter a valid email' : 'Por favor ingresa un email válido');
-        isValid = false;
-    }
-    
-    // Validate workflow description
-    if (!workflow.value.trim()) {
-        showError('workflow', currentLanguage === 'en' ? 'Workflow description is required' : 'La descripción del flujo de trabajo es requerida');
-        isValid = false;
-    }
-    
-    return isValid;
-}
-
+// Show validation error
 function showError(fieldName, message) {
-    const errorElement = document.getElementById(fieldName + '-error');
+    const errorElement = document.getElementById(`${fieldName}-error`);
     const inputElement = document.getElementById(fieldName);
     
     if (errorElement) {
@@ -289,99 +291,40 @@ function showError(fieldName, message) {
     
     if (inputElement) {
         inputElement.classList.add('error');
+        inputElement.setAttribute('aria-invalid', 'true');
     }
 }
 
-function clearErrors() {
-    const errorElements = document.querySelectorAll('.error-message');
-    const inputElements = document.querySelectorAll('.form-group input, .form-group textarea');
+// Clear validation error
+function clearError(fieldName) {
+    const errorElement = document.getElementById(`${fieldName}-error`);
+    const inputElement = document.getElementById(fieldName);
     
-    errorElements.forEach(element => {
-        element.textContent = '';
-        element.style.display = 'none';
-    });
-    
-    inputElements.forEach(element => {
-        element.classList.remove('error');
-    });
-}
-
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-}
-
-// Customer welcome overlay
-function showCustomerWelcome() {
-    const overlay = document.getElementById('customerWelcomeOverlay');
-    const closeBtn = document.getElementById('customerCloseBtn');
-    
-    if (!overlay) return;
-    
-    overlay.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-    
-    // Close button handler
-    if (closeBtn) {
-        closeBtn.onclick = hideCustomerWelcome;
+    if (errorElement) {
+        errorElement.textContent = '';
+        errorElement.style.display = 'none';
     }
     
-    // Close on overlay click (outside content)
-    overlay.onclick = function(e) {
-        if (e.target === overlay) {
-            hideCustomerWelcome();
+    if (inputElement) {
+        inputElement.classList.remove('error');
+        inputElement.setAttribute('aria-invalid', 'false');
+    }
+}
+
+// Show form status message
+function showFormStatus(message, type = 'success') {
+    const statusElement = document.getElementById('formStatus');
+    if (statusElement) {
+        statusElement.textContent = message;
+        statusElement.className = `form-status ${type}`;
+        statusElement.style.display = 'block';
+        
+        // Auto-hide after 5 seconds for success messages
+        if (type === 'success') {
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 5000);
         }
-    };
-    
-    // Close on escape key
-    document.addEventListener('keydown', function escapeHandler(e) {
-        if (e.key === 'Escape') {
-            hideCustomerWelcome();
-            document.removeEventListener('keydown', escapeHandler);
-        }
-    });
-}
-
-function hideCustomerWelcome() {
-    const overlay = document.getElementById('customerWelcomeOverlay');
-    if (overlay) {
-        overlay.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-}
-
-// Scroll animations
-function initializeScrollAnimations() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, observerOptions);
-    
-    // Observe all fade-in elements
-    document.querySelectorAll('.fade-in').forEach(el => {
-        observer.observe(el);
-    });
-}
-
-// Language toggle functionality
-function initializeLanguageToggle() {
-    const langToggle = document.getElementById('langToggle');
-    
-    if (langToggle) {
-        langToggle.addEventListener('click', () => {
-            currentLanguage = currentLanguage === 'en' ? 'es' : 'en';
-            localStorage.setItem('preferredLanguage', currentLanguage);
-            updateLanguageDisplay();
-            translatePage();
-        });
     }
 }
 
@@ -390,8 +333,34 @@ function handleRedirectNotification() {
     const redirectPath = sessionStorage.getItem('redirectPath');
     if (redirectPath) {
         sessionStorage.removeItem('redirectPath');
-        // Could show a notification here if needed
-        console.log(`Redirected from: ${redirectPath}`);
+        // Handle the redirect path
+        if (redirectPath.toLowerCase() === '/contact' || redirectPath.toLowerCase() === '/contact/') {
+            // Scroll to contact form after page loads
+            setTimeout(() => {
+                const contactSection = document.getElementById('contact');
+                if (contactSection) {
+                    contactSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 100);
+        }
+    }
+    
+    // Also handle direct hash navigation
+    const currentPath = window.location.pathname.toLowerCase();
+    if (currentPath === '/services' || currentPath === '/services/') {
+        setTimeout(() => {
+            const servicesSection = document.getElementById('services');
+            if (servicesSection) {
+                servicesSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 100);
+    } else if (currentPath === '/features' || currentPath === '/features/') {
+        setTimeout(() => {
+            const featuresSection = document.getElementById('features');
+            if (featuresSection) {
+                featuresSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 100);
     }
 }
 
@@ -400,69 +369,340 @@ function initializeNavbarScroll() {
     const navbar = document.querySelector('.navbar');
     if (!navbar) return;
     
+    // Welcome overlay system completely removed to prevent purple screen issues
+    
+    
+    // Handle loading screen after welcome message
+    setTimeout(() => {
+        const loading = document.getElementById('loading');
+        if (loading) {
+            loading.style.opacity = '0';
+            setTimeout(() => {
+                loading.style.display = 'none';
+                document.body.classList.add('loaded');
+            }, 1000);
+        } else {
+            document.body.classList.add('loaded');
+        }
+    }, 500);
+    
     let lastScroll = 0;
+    let ticking = false;
     
     window.addEventListener('scroll', () => {
-        const currentScroll = window.pageYOffset;
-        
-        if (currentScroll <= 0) {
-            navbar.classList.remove('scroll-up', 'scroll-down');
-        } else if (currentScroll > lastScroll && !navbar.classList.contains('scroll-down')) {
-            navbar.classList.remove('scroll-up');
-            navbar.classList.add('scroll-down');
-        } else if (currentScroll < lastScroll && navbar.classList.contains('scroll-down')) {
-            navbar.classList.remove('scroll-down');
-            navbar.classList.add('scroll-up');
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const currentScroll = window.pageYOffset;
+                
+                // Navbar background opacity based on scroll
+                if (currentScroll > 100) {
+                    navbar.style.background = 'var(--surface-glass-hover)';
+                    navbar.style.borderBottomColor = 'rgba(251, 191, 36, 0.2)';
+                } else {
+                    navbar.style.background = 'var(--surface-glass)';
+                    navbar.style.borderBottomColor = 'rgba(251, 191, 36, 0.1)';
+                }
+                
+                // Handle customer welcome overlay visibility on scroll
+                const customerWelcomeOverlay = document.getElementById('customerWelcomeOverlay');
+                const customerWelcomeTimeout = window.customerWelcomeTimeout;
+                
+                if (customerWelcomeOverlay && customerWelcomeOverlay.style.display !== 'none') {
+                    if (currentScroll > 50) {
+                        // User is scrolling, hide customer welcome overlay
+                        document.body.style.overflow = '';
+                        document.body.style.height = '';
+                        document.documentElement.style.overflow = '';
+                        document.documentElement.style.height = '';
+                        
+                        customerWelcomeOverlay.classList.add('fade-out');
+                        setTimeout(() => {
+                            customerWelcomeOverlay.style.display = 'none';
+                        }, 1500);
+                        clearTimeout(customerWelcomeTimeout);
+                    }
+                }
+                
+                lastScroll = currentScroll;
+            });
+            ticking = false;
         }
-        
-        lastScroll = currentScroll;
+        ticking = true;
     });
 }
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle any redirects first
+    console.log('JufipAI website loaded successfully');
+    
+    // Initialize redirect notifications
     handleRedirectNotification();
     
-    // Initialize language
-    updateLanguageDisplay();
-    translatePage();
+    // Load saved language preference
+    const savedLanguage = localStorage.getItem('preferredLanguage') || 'en';
+    switchLanguage(savedLanguage);
     
-    // Initialize all functionality
-    initializeNavigation();
-    initializeSmoothScrolling();
-    initializeContactForm();
-    initializeScrollAnimations();
-    initializeLanguageToggle();
+    // Initialize navbar scroll effects
     initializeNavbarScroll();
     
-    // Add loading complete class
-    document.body.classList.add('loaded');
-    
-    console.log('JufipAI website initialized successfully');
-});
-
-// Add resize handler for responsive adjustments
-window.addEventListener('resize', function() {
-    // Close mobile menu on resize
-    const navMenu = document.getElementById('navMenu');
+    // Mobile navigation toggle
     const navToggle = document.getElementById('navToggle');
+    const navMenu = document.querySelector('.nav-menu');
     
-    if (navMenu && navToggle) {
-        navMenu.classList.remove('active');
-        navToggle.classList.remove('active');
+    if (navToggle && navMenu) {
+        navToggle.addEventListener('click', function() {
+            const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+            navToggle.setAttribute('aria-expanded', !isExpanded);
+            navToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+    }
+    
+    // Language switching
+    const languageOptions = document.querySelectorAll('.language-option');
+    languageOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            const lang = this.getAttribute('data-lang');
+            switchLanguage(lang);
+        });
+        
+        // Keyboard navigation for language options
+        option.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const lang = this.getAttribute('data-lang');
+                switchLanguage(lang);
+            }
+        });
+    });
+    
+    // Form handling with enhanced validation
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        // Real-time validation on input
+        const formFields = contactForm.querySelectorAll('input, textarea, select');
+        formFields.forEach(field => {
+            field.addEventListener('blur', function() {
+                const fieldName = this.name || this.id;
+                const value = this.value;
+                const validation = validateField(fieldName, value);
+                
+                if (!validation.valid) {
+                    showError(fieldName, validation.message);
+                } else {
+                    clearError(fieldName);
+                }
+            });
+            
+            field.addEventListener('input', function() {
+                const fieldName = this.name || this.id;
+                clearError(fieldName);
+            });
+        });
+        
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Clear previous status
+            const statusElement = document.getElementById('formStatus');
+            if (statusElement) {
+                statusElement.style.display = 'none';
+            }
+            
+            // Validate all fields
+            let isFormValid = true;
+            const formData = new FormData(this);
+            const dataObject = {};
+            
+            for (let [key, value] of formData.entries()) {
+                dataObject[key] = value;
+                const validation = validateField(key, value);
+                if (!validation.valid) {
+                    showError(key, validation.message);
+                    isFormValid = false;
+                }
+            }
+            
+            if (!isFormValid) {
+                showFormStatus(
+                    currentLanguage === 'es' 
+                        ? 'Por favor corrija los errores en el formulario' 
+                        : 'Please fix the errors in the form',
+                    'error'
+                );
+                return;
+            }
+            
+            // Show loading state
+            const submitButton = this.querySelector('.submit-btn');
+            const originalText = submitButton.innerHTML;
+            submitButton.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${currentLanguage === 'es' ? 'Enviando...' : 'Sending...'}`;
+            submitButton.disabled = true;
+            
+            // Submit form
+            submitForm(dataObject)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Success!
+                    showFormStatus(
+                        currentLanguage === 'es'
+                            ? '¡Gracias! Su diagnóstico será enviado dentro de 24-48 horas.'
+                            : 'Thank you! Your diagnosis will be sent within 24-48 hours.',
+                        'success'
+                    );
+                    
+                    // Reset form
+                    this.reset();
+                    
+                    // Show customer welcome overlay
+                    const customerOverlay = document.getElementById('customerWelcomeOverlay');
+                    if (customerOverlay) {
+                        customerOverlay.style.display = 'flex';
+                        
+                        // Auto-hide after 8 seconds
+                        window.customerWelcomeTimeout = setTimeout(() => {
+                            customerOverlay.classList.add('fade-out');
+                            setTimeout(() => {
+                                customerOverlay.style.display = 'none';
+                            }, 1500);
+                        }, 8000);
+                        
+                        // Hide on click/touch
+                        customerOverlay.addEventListener('click', function() {
+                            this.classList.add('fade-out');
+                            setTimeout(() => {
+                                this.style.display = 'none';
+                            }, 1500);
+                            clearTimeout(window.customerWelcomeTimeout);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Form submission error:', error);
+                    showFormStatus(
+                        currentLanguage === 'es'
+                            ? 'Error al enviar el formulario. Por favor intente nuevamente.'
+                            : 'Error submitting form. Please try again.',
+                        'error'
+                    );
+                })
+                .finally(() => {
+                    // Restore button state
+                    submitButton.innerHTML = originalText;
+                    submitButton.disabled = false;
+                });
+        });
+    }
+    
+    // Smooth scrolling for navigation links
+    const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                
+                // Close mobile menu if open
+                if (navMenu && navMenu.classList.contains('active')) {
+                    navToggle.setAttribute('aria-expanded', 'false');
+                    navToggle.classList.remove('active');
+                    navMenu.classList.remove('active');
+                }
+            }
+        });
+    });
+    
+    // CTA button smooth scroll
+    const ctaButton = document.getElementById('ctaButton');
+    if (ctaButton) {
+        ctaButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            const contactSection = document.getElementById('contact');
+            if (contactSection) {
+                contactSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    }
+    
+    // Intersection Observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+    
+    // Observe all fade-in elements
+    const fadeElements = document.querySelectorAll('.fade-in');
+    fadeElements.forEach(el => observer.observe(el));
+    
+    // Analytics and performance tracking
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'page_view', {
+            'page_title': document.title,
+            'page_location': window.location.href,
+            'language': currentLanguage
+        });
+    }
+    
+    // Performance monitoring
+    if ('performance' in window && 'navigation' in performance) {
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const navTiming = performance.getEntriesByType('navigation')[0];
+                const loadTime = navTiming.loadEventEnd - navTiming.loadEventStart;
+                
+                if (typeof gtag !== 'undefined' && loadTime > 0) {
+                    gtag('event', 'timing_complete', {
+                        'name': 'page_load',
+                        'value': Math.round(loadTime)
+                    });
+                }
+            }, 0);
+        });
     }
 });
 
-// Performance optimization: Preload critical resources
-function preloadCriticalResources() {
-    // Preload hero image if exists
-    const heroImage = document.querySelector('.hero img');
-    if (heroImage && heroImage.dataset.src) {
-        const img = new Image();
-        img.src = heroImage.dataset.src;
+// Error handling and fallbacks
+window.addEventListener('error', function(e) {
+    console.error('JavaScript error:', e.error);
+    
+    // Analytics error tracking
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'exception', {
+            'description': e.error ? e.error.toString() : 'Unknown error',
+            'fatal': false
+        });
     }
-}
+});
 
-// Call preload function
-preloadCriticalResources();
+// Service Worker registration for offline functionality
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+                console.log('ServiceWorker registration successful');
+            })
+            .catch(function(err) {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+    });
+}

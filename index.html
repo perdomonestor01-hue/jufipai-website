@@ -3,42 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-translate="page-title">JufipAI - Free AI Automation Diagnosis</title>
-    <meta name="description" content="Get a comprehensive AI automation analysis for your business workflows. Free blueprint and implementation strategy - no sales calls required.">
-    <meta name="keywords" content="AI automation, workflow optimization, business automation, AI consulting, process automation">
+    <title>JufipAI - AI Automation Specialists | Free Diagnosis & Blueprint</title>
+    <meta name="description" content="Get a FREE AI automation analysis and implementation blueprint. No consultations, no meetings - just pure value delivered directly to you.">
+    <meta name="keywords" content="AI automation, workflow automation, business processes, artificial intelligence, free diagnosis, automation blueprint">
     
-    <!-- Open Graph / Facebook -->
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="JufipAI - Free AI Automation Diagnosis & Blueprint">
+    <meta property="og:description" content="We examine your workflows and create a complete AI automation implementation blueprint at zero cost. No sales calls, just pure value.">
+    <meta property="og:image" content="https://jufipai.com/jufipai-og-image.jpg">
+    <meta property="og:url" content="https://jufipai.com">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://jufipai.com/">
-    <meta property="og:title" content="JufipAI - Free AI Automation Diagnosis">
-    <meta property="og:description" content="Get a comprehensive AI automation analysis for your business workflows. Free blueprint and implementation strategy - no sales calls required.">
-    <meta property="og:image" content="https://jufipai.com/assets/og-image.png">
     
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://jufipai.com/">
-    <meta property="twitter:title" content="JufipAI - Free AI Automation Diagnosis">
-    <meta property="twitter:description" content="Get a comprehensive AI automation analysis for your business workflows. Free blueprint and implementation strategy - no sales calls required.">
-    <meta property="twitter:image" content="https://jufipai.com/assets/og-image.png">
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="JufipAI - Free AI Automation Diagnosis">
+    <meta name="twitter:description" content="Get a FREE AI automation analysis and implementation blueprint. No consultations needed.">
+    <meta name="twitter:image" content="https://jufipai.com/jufipai-og-image.jpg">
     
-    <!-- Favicons -->
+    <!-- Additional SEO Meta Tags -->
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="JufipAI">
+    <meta name="theme-color" content="#fbbf24">
+    
+    <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
     
-    <!-- Preconnect to external domains -->
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Main Stylesheet -->
-    <link rel="stylesheet" href="styles.css">
     
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -47,8 +46,8 @@
         "@type": "Organization",
         "name": "JufipAI",
         "url": "https://jufipai.com",
-        "logo": "https://jufipai.com/assets/logo.png",
-        "description": "AI automation consulting and implementation services",
+        "description": "AI automation specialists providing free workflow analysis and implementation blueprints",
+        "sameAs": ["https://linkedin.com/company/jufipai"],
         "contactPoint": {
             "@type": "ContactPoint",
             "contactType": "customer service",
@@ -58,78 +57,97 @@
     </script>
 </head>
 <body>
-    <!-- Floating Stars Background -->
-    <div class="stars-container">
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
+
+    <!-- Customer Welcome Overlay (appears after form submission) -->
+    <div class="customer-welcome-overlay" id="customerWelcomeOverlay" style="display: none;">
+        <!-- Animated Background Glow -->
+        <div class="customer-welcome-background-glow"></div>
+        
+        <!-- Main Customer Welcome Content -->
+        <div class="customer-welcome-message">
+            <div class="customer-welcome-title" data-translate="customer-welcome-title">Thanks for contacting JufipAI</div>
+            <div class="customer-welcome-subtitle" data-translate="customer-welcome-subtitle">We'll get back to you soon</div>
+            <div class="customer-welcome-details" data-translate="customer-welcome-details">
+                Your AI automation diagnosis will be delivered within 24-48 hours directly to your inbox.
+            </div>
+        </div>
     </div>
 
-    <!-- Floating Bots Background -->
-    <div class="floating-bots">
-        <div class="bot bot-1"><i class="fas fa-robot"></i></div>
-        <div class="bot bot-2"><i class="fas fa-cog"></i></div>
-        <div class="bot bot-3"><i class="fas fa-microchip"></i></div>
-        <div class="bot bot-4"><i class="fas fa-brain"></i></div>
-        <div class="bot bot-5"><i class="fas fa-network-wired"></i></div>
+    <!-- Floating AI Agents -->
+    <div class="ai-agent" style="top: 15%; right: 10%; animation-delay: 0s;">
+        <i class="fas fa-robot"></i>
+    </div>
+    <div class="ai-agent" style="top: 60%; left: 5%; animation-delay: 4s;">
+        <i class="fas fa-brain"></i>
+    </div>
+    <div class="ai-agent" style="top: 25%; left: 15%; animation-delay: 8s;">
+        <i class="fas fa-cog"></i>
+    </div>
+    <div class="ai-agent" style="top: 75%; right: 20%; animation-delay: 6s;">
+        <i class="fas fa-microchip"></i>
+    </div>
+    <div class="ai-agent" style="top: 40%; right: 8%; animation-delay: 2s;">
+        <i class="fas fa-network-wired"></i>
     </div>
 
-    <!-- Language Selector -->
-    <div class="language-selector">
-        <button id="langToggle" class="lang-btn" aria-label="Toggle language">
-            <i class="fas fa-globe"></i>
-            <span id="currentLang">EN</span>
-        </button>
+    <!-- Background Particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
     </div>
 
     <!-- Navigation -->
-    <nav class="navbar" role="navigation" aria-label="Main navigation">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <img src="assets/logo.png" alt="JufipAI Logo" width="40" height="40">
-                <span class="logo-text">JufipAI</span>
+    <header>
+        <nav class="navbar" role="navigation" aria-label="Main navigation">
+            <div class="nav-container">
+                <a href="#" class="nav-logo" aria-label="JufipAI home">
+                    <img src="jufipai-logo.png" alt="JufipAI Logo" width="48" height="48">
+                    <span class="logo-text">JufipAI</span>
+                </a>
+                
+                <ul class="nav-menu" role="menubar">
+                    <li><a href="#services" class="nav-link" role="menuitem" data-translate="nav-services">Services</a></li>
+                    <li><a href="#contact" class="nav-link" role="menuitem" data-translate="nav-contact">Contact</a></li>
+                </ul>
+                
+                <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
-            <div class="nav-menu" id="navMenu">
-                <a href="#home" class="nav-link" data-translate="nav-home">Home</a>
-                <a href="#services" class="nav-link" data-translate="nav-services">Services</a>
-                <a href="#contact" class="nav-link" data-translate="nav-contact">Contact</a>
+            
+            <!-- Language Selector with improved accessibility -->
+            <div class="language-selector" aria-label="Language selection">
+                <div class="language-switch" id="languageSwitch" role="tablist" aria-label="Choose language">
+                    <div class="language-slider" aria-hidden="true"></div>
+                    <div class="language-option active" data-lang="en" role="tab" tabindex="0" aria-selected="true" aria-label="English">ENG</div>
+                    <div class="language-option" data-lang="es" role="tab" tabindex="-1" aria-selected="false" aria-label="Español">ESP</div>
+                </div>
             </div>
-            <div class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
     <!-- Main Content -->
     <main>
         <!-- Hero Section -->
         <section class="hero fade-in" role="banner" aria-labelledby="hero-heading">
             <h1 id="hero-heading" data-translate="hero-title">Free AI Automation Diagnosis</h1>
+            
             <a href="#contact" class="cta-button" id="ctaButton" data-translate="hero-cta">Get FREE Diagnosis & Draft</a>
         </section>
 
         <!-- Services Section -->
-        <section id="services" class="services fade-in" role="region" aria-labelledby="services-heading">
-            <h2 id="services-heading" class="section-header-golden" data-translate="services-title">Our AI-Powered Services</h2>
+        <section class="services" id="services">
+            <h2 class="section-header-golden" data-translate="services-title">Our AI-Powered Services</h2>
             <div class="services-grid">
                 <div class="service-card">
                     <div class="service-icon">
@@ -138,20 +156,23 @@
                     <h3 data-translate="service1-title">Workflow Analysis</h3>
                     <p data-translate="service1-description">Deep dive into your current processes to identify automation opportunities and efficiency gaps.</p>
                 </div>
+                
                 <div class="service-card">
                     <div class="service-icon">
                         <i class="fas fa-robot" aria-hidden="true"></i>
                     </div>
                     <h3 data-translate="service2-title">AI Implementation</h3>
-                    <p data-translate="service2-description">Custom AI solutions tailored to your specific business needs and workflow requirements.</p>
+                    <p data-translate="service2-description">Custom AI solutions designed specifically for your business needs and existing infrastructure.</p>
                 </div>
+                
                 <div class="service-card">
                     <div class="service-icon">
                         <i class="fas fa-cogs" aria-hidden="true"></i>
                     </div>
                     <h3 data-translate="service3-title">Process Optimization</h3>
-                    <p data-translate="service3-description">Streamline operations with intelligent automation that saves time and reduces errors.</p>
+                    <p data-translate="service3-description">Streamline operations through intelligent automation and data-driven decision making.</p>
                 </div>
+                
                 <div class="service-card">
                     <div class="service-icon">
                         <i class="fas fa-graduation-cap" aria-hidden="true"></i>
@@ -163,31 +184,62 @@
         </section>
 
         <!-- Contact Section -->
-        <section id="contact" class="contact fade-in" role="region" aria-labelledby="contact-heading">
-            <h2 id="contact-heading" class="section-header-golden" data-translate="contact-title">Ready to Automate Everything?</h2>
-            <div class="contact-container">
-                <div class="contact-info">
-                    <h3 data-translate="contact-info-title">Get Your Free Analysis</h3>
-                    <p data-translate="contact-info-description">Fill out the form and receive a comprehensive automation blueprint within 24 hours. No meetings, no sales calls - just actionable insights.</p>
-                    
-                    <div class="contact-benefits">
-                        <div class="benefit-item">
-                            <i class="fas fa-check-circle" aria-hidden="true"></i>
-                            <span data-translate="benefit1">Detailed workflow analysis</span>
-                        </div>
-                        <div class="benefit-item">
-                            <i class="fas fa-check-circle" aria-hidden="true"></i>
-                            <span data-translate="benefit2">Custom automation roadmap</span>
-                        </div>
-                        <div class="benefit-item">
-                            <i class="fas fa-check-circle" aria-hidden="true"></i>
-                            <span data-translate="benefit3">Implementation timeline</span>
-                        </div>
-                        <div class="benefit-item">
-                            <i class="fas fa-check-circle" aria-hidden="true"></i>
-                            <span data-translate="benefit4">ROI projections</span>
-                        </div>
-                    </div>
+        <section class="contact" id="contact">
+            <h2 class="section-header-golden" data-translate="contact-title">Ready to Automate Everything?</h2>
+            
+            <!-- Contact Form -->
+            <form class="contact-form" id="contactForm">
+                <div class="form-group">
+                    <label for="name" data-translate="form-name">Full Name *</label>
+                    <input type="text" id="name" name="name" data-translate-placeholder="form-name" placeholder="Full Name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" data-translate="form-email">Email Address *</label>
+                    <input type="email" id="email" name="email" data-translate-placeholder="form-email" placeholder="your@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="company" data-translate="form-company">Company Name</label>
+                    <input type="text" id="company" name="company" data-translate-placeholder="form-company" placeholder="Company Name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="role" data-translate="form-role">Your Role</label>
+                    <input type="text" id="role" name="role" data-translate-placeholder="form-role" placeholder="e.g., CEO, Operations Manager">
+                </div>
+                
+                <div class="form-group">
+                    <label for="industry" data-translate="form-industry">Industry</label>
+                    <select id="industry" name="industry">
+                        <option value="" data-translate="form-industry-select">Select Industry</option>
+                        <option value="technology" data-translate="industry-technology">Technology</option>
+                        <option value="healthcare" data-translate="industry-healthcare">Healthcare</option>
+                        <option value="finance" data-translate="industry-finance">Finance</option>
+                        <option value="retail" data-translate="industry-retail">Retail</option>
+                        <option value="manufacturing" data-translate="industry-manufacturing">Manufacturing</option>
+                        <option value="education" data-translate="industry-education">Education</option>
+                        <option value="other" data-translate="industry-other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="workflow" data-translate="form-workflow">Current Workflow Challenge *</label>
+                    <textarea id="workflow" name="workflow" rows="4" data-translate-placeholder="form-workflow" placeholder="Describe your biggest workflow challenge or manual process that takes too much time..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="goals" data-translate="form-goals">Automation Goals</label>
+                    <textarea id="goals" name="goals" rows="3" data-translate-placeholder="form-goals" placeholder="What would you like to achieve with AI automation?"></textarea>
+                </div>
+                
+                <button type="submit" class="form-submit" data-translate="form-submit">Get FREE Diagnosis & Draft</button>
+            </form>
+
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-globe"></i>
+                    <span>www.jufipai.com</span>
                 </div>
                 
                 <form class="contact-form" id="contactForm" action="https://formspree.io/f/xgveegjg" method="POST">
@@ -198,7 +250,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="email" data-translate="form-email">Email Address</label>
+                        <label for="email" data-translate="form-email">Email</label>
                         <input type="email" id="email" name="email" required aria-describedby="email-error">
                         <span class="error-message" id="email-error"></span>
                     </div>
@@ -210,72 +262,49 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="workflow" data-translate="form-workflow">Describe Your Current Workflow</label>
-                        <textarea id="workflow" name="workflow" rows="4" required placeholder="Tell us about your current processes, pain points, and what you'd like to automate..." aria-describedby="workflow-error"></textarea>
+                        <label for="role" data-translate="form-role">Role</label>
+                        <input type="text" id="role" name="role" aria-describedby="role-error">
+                        <span class="error-message" id="role-error"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="industry" data-translate="form-industry">Industry</label>
+                        <select id="industry" name="industry" aria-describedby="industry-error">
+                            <option value="">Select Industry</option>
+                            <option value="technology">Technology</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="finance">Finance</option>
+                            <option value="retail">Retail</option>
+                            <option value="manufacturing">Manufacturing</option>
+                            <option value="education">Education</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <span class="error-message" id="industry-error"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workflow" data-translate="form-workflow">Workflow Challenge</label>
+                        <textarea id="workflow" name="workflow" rows="4" required aria-describedby="workflow-error"></textarea>
                         <span class="error-message" id="workflow-error"></span>
                     </div>
                     
                     <div class="form-group">
-                        <label for="goals" data-translate="form-goals">Automation Goals</label>
-                        <textarea id="goals" name="goals" rows="3" placeholder="What specific outcomes are you hoping to achieve?" aria-describedby="goals-error"></textarea>
+                        <label for="goals" data-translate="form-goals">Goals</label>
+                        <textarea id="goals" name="goals" rows="3" aria-describedby="goals-error"></textarea>
                         <span class="error-message" id="goals-error"></span>
                     </div>
                     
-                    <button type="submit" class="submit-btn" data-translate="form-submit">
-                        <i class="fas fa-paper-plane" aria-hidden="true"></i>
-                        Get My Free Analysis
-                    </button>
+                    <!-- Status Messages -->
+                    <div id="formStatus" class="form-status" role="alert" aria-live="polite"></div>
                     
-                    <div class="form-status" id="formStatus" role="status" aria-live="polite"></div>
+                    <button type="submit" class="submit-btn" data-translate="form-submit">
+                        <span data-translate="form-submit">Get FREE Diagnosis & Draft</span>
+                        <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                    </button>
                 </form>
             </div>
         </section>
     </main>
-
-    <!-- Footer -->
-    <footer class="footer" role="contentinfo">
-        <div class="footer-content">
-            <div class="footer-section">
-                <div class="footer-logo">
-                    <img src="assets/logo.png" alt="JufipAI Logo" width="32" height="32">
-                    <span>JufipAI</span>
-                </div>
-                <p data-translate="footer-description">Transforming businesses through intelligent automation solutions.</p>
-            </div>
-            
-            <div class="footer-section">
-                <h4 data-translate="footer-services-title">Services</h4>
-                <ul>
-                    <li><a href="#services" data-translate="footer-analysis">Workflow Analysis</a></li>
-                    <li><a href="#services" data-translate="footer-implementation">AI Implementation</a></li>
-                    <li><a href="#services" data-translate="footer-optimization">Process Optimization</a></li>
-                    <li><a href="#services" data-translate="footer-training">Training & Support</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h4 data-translate="footer-contact-title">Contact</h4>
-                <p data-translate="footer-contact-info">Ready to automate? Get your free analysis today.</p>
-                <a href="#contact" class="footer-cta" data-translate="footer-cta">Start Now</a>
-            </div>
-        </div>
-        
-        <div class="footer-bottom">
-            <p>&copy; 2024 JufipAI. <span data-translate="footer-rights">All rights reserved.</span></p>
-        </div>
-    </footer>
-
-    <!-- Customer Welcome Overlay (shown after form submission) -->
-    <div id="customerWelcomeOverlay" class="customer-overlay" style="display: none;">
-        <div class="customer-content">
-            <div class="customer-icon">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <h2 data-translate="customer-welcome-title">Thank You!</h2>
-            <p data-translate="customer-welcome-message">Your request has been received. We'll send you a comprehensive automation analysis within 24 hours.</p>
-            <button class="customer-close-btn" id="customerCloseBtn" data-translate="customer-close">Continue</button>
-        </div>
-    </div>
 
     <!-- Scripts -->
     <script src="script.js"></script>
