@@ -36,8 +36,6 @@
     <link rel="icon" type="image/x-icon" href="/favicon.svg?v=2.1">
     <link rel="shortcut icon" href="/favicon.svg?v=2.1">
     
-    <!-- GOOGLE SHEETS FORM HANDLER -->
-    <script src="./direct-google-sheets.js?v=1.0.0"></script>
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="./manifest.json">
@@ -387,27 +385,6 @@
         <section class="contact" id="contact">
             <h2 data-translate="contact-title">Ready to Automate Everything?</h2>
             
-            <!-- Contact Form - Submits to Google Sheets -->
-            <form class="contact-form" id="contactForm" action="#" method="post">
-                <div class="form-group">
-                    <label for="name" data-translate="form-name">Full Name *</label>
-                    <input type="text" id="name" name="name" data-translate-placeholder="form-name" placeholder="Full Name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email" data-translate="form-email">Email Address *</label>
-                    <input type="email" id="email" name="email" data-translate-placeholder="form-email" placeholder="Email Address" required>
-                </div>
-                <div class="form-group">
-                    <label for="company" data-translate="form-company">Company Name</label>
-                    <input type="text" id="company" name="company" data-translate-placeholder="form-company" placeholder="Company Name">
-                </div>
-                <div class="form-group">
-                    <label for="description" data-translate="form-description">Project Description *</label>
-                    <textarea id="description" name="description" data-translate-placeholder="form-description" placeholder="Project Description" required></textarea>
-                </div>
-                <button type="submit" class="form-submit" data-translate="form-submit">Get FREE Diagnosis & Draft</button>
-            </form>
-
             <div class="contact-info">
                 <div class="contact-item">
                     <i class="fas fa-globe"></i>
@@ -418,68 +395,6 @@
         </main>
     </div>
 
-    <!-- Main form handler is direct-google-sheets.js loaded in head -->
-    
-    <!-- EMERGENCY FORM FIX - INLINE BACKUP -->
-    <script>
-    // Emergency backup form handler if main script fails
-    window.addEventListener('load', function() {
-        setTimeout(function() {
-            const form = document.getElementById('contactForm');
-            if (!form) {
-                console.log('❌ Contact form not found');
-                return;
-            }
-            
-            // Check if form already has event listener
-            if (!form.dataset.handlerAttached) {
-                console.log('🚨 EMERGENCY: Attaching backup form handler');
-                
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    console.log('🚨 EMERGENCY FORM HANDLER ACTIVATED');
-                    
-                    const formData = new FormData(this);
-                    const formObject = Object.fromEntries(formData);
-                    
-                    const leadData = {
-                        timestamp: new Date().toISOString(),
-                        name: formObject.name,
-                        email: formObject.email,
-                        company: formObject.company || '',
-                        message: formObject.description || formObject.message || '',
-                        source: 'EMERGENCY HANDLER - MAIN PAGE'
-                    };
-                    
-                    // Store in localStorage
-                    const submissions = JSON.parse(localStorage.getItem('jufipai_submissions') || '[]');
-                    submissions.push(leadData);
-                    localStorage.setItem('jufipai_submissions', JSON.stringify(submissions));
-                    
-                    console.log('🎯 EMERGENCY LEAD CAPTURED:', leadData);
-                    console.log('📊 Total leads:', submissions.length);
-                    
-                    // Show success to user
-                    const submitBtn = this.querySelector('.form-submit');
-                    submitBtn.textContent = '✓ Submitted Successfully!';
-                    submitBtn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
-                    
-                    // Reset form
-                    this.reset();
-                    
-                    // Reset button after delay
-                    setTimeout(() => {
-                        submitBtn.textContent = 'Get FREE Diagnosis & Blueprint';
-                        submitBtn.style.background = '';
-                    }, 3000);
-                });
-                
-                form.dataset.handlerAttached = 'true';
-                console.log('✅ EMERGENCY handler attached successfully');
-            }
-        }, 2000);
-    });
-    </script>
     
     <!-- Premium Professional Popup -->
     <div id="servicePopup" style="display: none;">
