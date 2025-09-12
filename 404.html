@@ -4,17 +4,17 @@
     <meta charset="utf-8">
     <title>JufipAI - Redirecting...</title>
     <script>
-        // Store the attempted path for the router to handle
-        sessionStorage.setItem('redirectPath', location.pathname);
+        // Handle specific redirects for known pages
+        const pathname = location.pathname.toLowerCase();
         
-        // Get the path segments
-        const pathSegments = location.pathname.split('/').filter(segment => segment);
-        
-        // Redirect to the root with the path as a hash
-        // This preserves the intended destination for client-side routing
-        location.replace(
-            location.origin + '/#/' + pathSegments.join('/')
-        );
+        if (pathname === '/contact' || pathname === '/contact/') {
+            // Redirect /contact to the main page contact form
+            location.replace(location.origin + '/#contact');
+        } else {
+            // For other 404s, store the attempted path and redirect to home
+            sessionStorage.setItem('redirectPath', location.pathname);
+            location.replace(location.origin + '/');
+        }
     </script>
 </head>
 <body>
