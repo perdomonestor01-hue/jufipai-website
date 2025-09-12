@@ -15,8 +15,100 @@ function safeExecute(fn, context = 'Unknown') {
     }
 }
 
+// URL Routing System for Single Page Application
+function handleRouting() {
+    // Check if we were redirected from 404.html
+    const redirectPath = sessionStorage.getItem('redirectPath');
+    if (redirectPath) {
+        sessionStorage.removeItem('redirectPath');
+        // Handle the redirect path
+        if (redirectPath.toLowerCase() === '/contact' || redirectPath.toLowerCase() === '/contact/') {
+            // Scroll to contact form after page loads
+            setTimeout(() => {
+                const contactSection = document.getElementById('contact');
+                if (contactSection) {
+                    contactSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 100);
+        }
+    }
+    
+    // Handle hash-based routing (from 404.html redirect)
+    const hash = window.location.hash.slice(1); // Remove the # symbol
+    if (hash) {
+        const path = hash.toLowerCase();
+        if (path === '/contact' || path === 'contact') {
+            // Clear the hash to clean up the URL
+            history.replaceState(null, null, '/contact');
+            // Scroll to contact form
+            setTimeout(() => {
+                const contactSection = document.getElementById('contact');
+                if (contactSection) {
+                    contactSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 100);
+        } else if (path === '/services' || path === 'services') {
+            history.replaceState(null, null, '/services');
+            setTimeout(() => {
+                const servicesSection = document.getElementById('services');
+                if (servicesSection) {
+                    servicesSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 100);
+        } else if (path === '/features' || path === 'features') {
+            history.replaceState(null, null, '/features');
+            setTimeout(() => {
+                const featuresSection = document.getElementById('features');
+                if (featuresSection) {
+                    featuresSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 100);
+        }
+    }
+    
+    // Handle direct navigation to /contact, /services, /features
+    const currentPath = window.location.pathname.toLowerCase();
+    if (currentPath === '/contact' || currentPath === '/contact/') {
+        setTimeout(() => {
+            const contactSection = document.getElementById('contact');
+            if (contactSection) {
+                // Hide welcome overlay immediately for direct navigation
+                const welcomeOverlay = document.getElementById('welcomeOverlay');
+                if (welcomeOverlay && !welcomeOverlay.classList.contains('fade-out')) {
+                    welcomeOverlay.classList.add('fade-out');
+                    document.body.classList.remove('welcome-active');
+                    document.documentElement.style.overflow = '';
+                    document.documentElement.style.height = '';
+                    setTimeout(() => {
+                        welcomeOverlay.style.display = 'none';
+                    }, 500);
+                }
+                // Scroll to contact
+                contactSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 100);
+    } else if (currentPath === '/services' || currentPath === '/services/') {
+        setTimeout(() => {
+            const servicesSection = document.getElementById('services');
+            if (servicesSection) {
+                servicesSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 100);
+    } else if (currentPath === '/features' || currentPath === '/features/') {
+        setTimeout(() => {
+            const featuresSection = document.getElementById('features');
+            if (featuresSection) {
+                featuresSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 100);
+    }
+}
+
 // Loading Animation
 window.addEventListener('load', function() {
+    // Handle routing first
+    handleRouting();
+    
     // SPECTACULAR WELCOME MESSAGE SYSTEM
     const welcomeOverlay = document.getElementById('welcomeOverlay');
     let welcomeTimeout;
