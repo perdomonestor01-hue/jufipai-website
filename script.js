@@ -1,6 +1,6 @@
 /**
  * JufipAI Website JavaScript
- * Improved with error handling and performance optimization
+ * Restored from Sep 10th backup - Working 6 PM version
  */
 
 'use strict';
@@ -20,7 +20,6 @@ window.addEventListener('load', function() {
     // SPECTACULAR WELCOME MESSAGE SYSTEM
     const welcomeOverlay = document.getElementById('welcomeOverlay');
     let welcomeTimeout;
-    let isWelcomeHidden = false; // Track welcome state to prevent conflicts
     
     // Add welcome-active class to body for complete coverage
     document.body.classList.add('welcome-active');
@@ -68,11 +67,7 @@ window.addEventListener('load', function() {
     createWelcomeParticles();
     
     function hideWelcomeMessage() {
-        if (welcomeOverlay && !isWelcomeHidden) {
-            isWelcomeHidden = true; // Prevent multiple calls
-            
-            console.log('Hiding welcome message...');
-            
+        if (welcomeOverlay && !welcomeOverlay.classList.contains('fade-out')) {
             // Play futuristic spaceship launch sound
             initAudio();
             // Small delay to ensure audio context is ready
@@ -86,91 +81,25 @@ window.addEventListener('load', function() {
                 }
             }, 50);
             
-            // Immediately restore scrolling - CRITICAL FIX
+            // Restore scrolling
             document.body.classList.remove('welcome-active');
             document.documentElement.style.overflow = '';
             document.documentElement.style.height = '';
-            document.body.style.overflow = '';
-            document.body.style.height = '';
             
-            // Add fade-out class and hide overlay
             welcomeOverlay.classList.add('fade-out');
-            
-            // Force hide the overlay after animation with fallback
             setTimeout(() => {
-                if (welcomeOverlay) {
-                    welcomeOverlay.style.display = 'none';
-                    welcomeOverlay.style.visibility = 'hidden';
-                    welcomeOverlay.style.opacity = '0';
-                    console.log('Welcome overlay hidden successfully');
-                }
+                welcomeOverlay.style.display = 'none';
             }, 1500);
-            
-            // Clear timeout if it exists
-            if (welcomeTimeout) {
-                clearTimeout(welcomeTimeout);
-                welcomeTimeout = null;
-            }
+            clearTimeout(welcomeTimeout);
         }
     }
     
-    // Multiple trigger mechanisms to ensure welcome overlay hides
     if (welcomeOverlay) {
-        // Auto-hide after 3 seconds (reduced from 5 for faster experience)
-        welcomeTimeout = setTimeout(() => {
-            console.log('Auto-hide timeout triggered');
-            hideWelcomeMessage();
-        }, 3000);
+        // Auto-hide after 5 seconds
+        welcomeTimeout = setTimeout(hideWelcomeMessage, 5000);
         
         // Hide on click anywhere with spectacular effect
-        welcomeOverlay.addEventListener('click', () => {
-            console.log('Welcome overlay clicked');
-            hideWelcomeMessage();
-        });
-        
-        // Hide on any keypress (escape key, space, enter, etc.)
-        document.addEventListener('keydown', function(e) {
-            if (!isWelcomeHidden && (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter')) {
-                console.log('Key pressed to hide welcome:', e.key);
-                hideWelcomeMessage();
-            }
-        });
-        
-        // Hide on scroll attempt
-        let scrollAttempts = 0;
-        window.addEventListener('scroll', function() {
-            if (!isWelcomeHidden) {
-                scrollAttempts++;
-                if (scrollAttempts >= 2) {
-                    console.log('Scroll attempt detected - hiding welcome');
-                    hideWelcomeMessage();
-                }
-            }
-        });
-        
-        // EMERGENCY FALLBACK - Force hide after 8 seconds no matter what
-        setTimeout(() => {
-            if (!isWelcomeHidden) {
-                console.log('EMERGENCY FALLBACK: Force hiding welcome overlay');
-                hideWelcomeMessage();
-            }
-        }, 8000);
-        
-        // Mobile-specific touch handlers
-        welcomeOverlay.addEventListener('touchstart', (e) => {
-            console.log('Touch detected on welcome overlay');
-            hideWelcomeMessage();
-        });
-        
-        // Handle mobile viewport changes
-        window.addEventListener('orientationchange', () => {
-            if (!isWelcomeHidden) {
-                setTimeout(() => {
-                    console.log('Orientation change - hiding welcome');
-                    hideWelcomeMessage();
-                }, 500);
-            }
-        });
+        welcomeOverlay.addEventListener('click', hideWelcomeMessage);
     }
     
     // Handle loading screen after welcome message
@@ -208,12 +137,10 @@ function showCustomerWelcome() {
                     audioContext.playSuccessSound();
                 }
                 
-                // Immediately restore scrolling
+                // Restore scrolling
                 document.body.classList.remove('welcome-active');
                 document.documentElement.style.overflow = '';
                 document.documentElement.style.height = '';
-                document.body.style.overflow = '';
-                document.body.style.height = '';
                 
                 customerWelcomeOverlay.classList.add('fade-out');
                 setTimeout(() => {
@@ -246,7 +173,6 @@ function createParticles() {
         particlesContainer.appendChild(particle);
     }
 }
-
 
 // Smooth scrolling for navigation
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -626,12 +552,6 @@ ${formObject.name}`);
         submitBtn.disabled = false;
     }, 4000);
 });
-
-// Music controls removed
-
-// Music toggle removed - functionality disabled
-
-// Music toggle hover removed - functionality disabled
 
 // Features CTA Corner functionality
 const featuresCTA = document.getElementById('featuresCTA');
@@ -1125,7 +1045,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 console.log('✅ Simple popup system ready');
-
 
 console.log('💡 Click any service card to test the popup system');
 
