@@ -15,7 +15,7 @@
     <!-- <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE_HERE"> -->
     
     <!-- Content Security Policy for Enhanced Security -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://script.google.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' https://script.google.com; img-src 'self' data: https:; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://script.google.com; frame-ancestors 'none'; upgrade-insecure-requests;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self'; img-src 'self' data: https:; media-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; upgrade-insecure-requests;">
     
     <!-- Open Graph Meta Tags for Social Media -->
     <meta property="og:title" content="JufipAI - AI Solutions & Automation">
@@ -97,12 +97,9 @@
             document.querySelectorAll('img[data-src]').forEach(img => imageObserver.observe(img));
         }
         
-        // Preload critical next-page resources on user interaction
+        // Preload critical resources on user interaction
         document.addEventListener('mousedown', () => {
-            const link = document.createElement('link');
-            link.rel = 'prefetch';
-            link.href = '/contact';
-            document.head.appendChild(link);
+            // Removed contact prefetch as contact form no longer exists
         }, { once: true });
     </script>
     
@@ -214,21 +211,6 @@
         </div>
     </div>
 
-    <!-- Customer Welcome Overlay (appears after form submission) -->
-    <div class="customer-welcome-overlay" id="customerWelcomeOverlay" style="display: none;">
-        <!-- Animated Background Glow -->
-        <div class="customer-welcome-background-glow"></div>
-        
-        <!-- Main Customer Welcome Content -->
-        <div class="customer-welcome-message">
-            <div class="customer-welcome-title" data-translate="customer-welcome-title">Thanks for contacting JufipAI</div>
-            <div class="customer-welcome-subtitle" data-translate="customer-welcome-subtitle">Your automation journey begins now</div>
-            <div class="customer-welcome-details" data-translate="customer-welcome-details">
-                One of our specialized team members is already contacting you shortly.<br>
-                <strong>Get ready to flip how you work forever!</strong>
-            </div>
-        </div>
-    </div>
 
     <!-- Loading Screen -->
     <div class="loading" id="loading">
@@ -262,7 +244,7 @@
             <ul class="nav-links" role="menubar">
                 <li role="none"><a href="#services" role="menuitem" data-en="Services" data-es="Servicios" aria-label="Navigate to Services section">Services</a></li>
                 <li role="none"><a href="#features" role="menuitem" data-en="Features" data-es="Características" aria-label="Navigate to Features section">Features</a></li>
-                <li role="none"><a href="#contact" role="menuitem" data-en="Contact" data-es="Contacto" aria-label="Navigate to Contact section">Contact</a></li>
+                <li role="none"><a href="mailto:contact@jufipai.com" role="menuitem" data-en="Contact" data-es="Contacto" aria-label="Contact via email">Contact</a></li>
             </ul>
             <div class="language-toggle" role="group" aria-label="Language selection">
                 <div class="language-switch" id="languageSwitch" role="tablist" aria-label="Choose language">
@@ -284,7 +266,7 @@
                 We analyze your workflow and deliver a complete automation blueprint—at zero cost. No consultations, no meetings. Pure value.
             </p>
             
-            <a href="#contact" class="cta-button" id="ctaButton" data-translate="hero-cta">Get FREE Diagnosis & Draft</a>
+            <div class="cta-button" id="ctaButton" data-translate="hero-cta">Get FREE Diagnosis & Draft</div>
         </section>
 
         <!-- Services Section -->
@@ -421,7 +403,7 @@
                     <i class="fas fa-gift"></i>
                     <span>100% Free Consultation & Implementation Plan</span>
                 </div>
-                <a href="#contact" class="popup-cta-button" onclick="hideServicePopup();">
+                <a href="mailto:contact@jufipai.com" class="popup-cta-button" onclick="hideServicePopup();">
                     <span>Get This Solution Free</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>

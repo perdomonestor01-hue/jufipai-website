@@ -76,18 +76,3 @@ self.addEventListener('fetch', event => {
     );
 });
 
-// Background sync for form submissions (future enhancement)
-self.addEventListener('sync', event => {
-    if (event.tag === 'contact-form') {
-        event.waitUntil(
-            // Handle offline form submissions
-            handleOfflineFormSubmission()
-        );
-    }
-});
-
-// Handle offline form submissions
-async function handleOfflineFormSubmission() {
-    // Implementation for future enhancement
-    return Promise.resolve();
-}

@@ -114,51 +114,6 @@ window.addEventListener('load', function() {
     }, 1000);
 });
 
-// Customer Welcome Overlay Functions
-function showCustomerWelcome() {
-    const customerWelcomeOverlay = document.getElementById('customerWelcomeOverlay');
-    let customerWelcomeTimeout;
-    
-    if (customerWelcomeOverlay) {
-        // Add welcome-active class to body for complete coverage
-        document.body.classList.add('welcome-active');
-        document.documentElement.style.overflow = 'hidden';
-        document.documentElement.style.height = '100vh';
-        
-        // Show overlay
-        customerWelcomeOverlay.style.display = 'flex';
-        customerWelcomeOverlay.classList.remove('fade-out');
-        
-        function hideCustomerWelcome() {
-            if (customerWelcomeOverlay && !customerWelcomeOverlay.classList.contains('fade-out')) {
-                // Play success sound
-                initAudio();
-                if (audioEnabled && audioContext && audioContext.playSuccessSound) {
-                    audioContext.playSuccessSound();
-                }
-                
-                // Immediately restore scrolling
-                document.body.classList.remove('welcome-active');
-                document.documentElement.style.overflow = '';
-                document.documentElement.style.height = '';
-                document.body.style.overflow = '';
-                document.body.style.height = '';
-                
-                customerWelcomeOverlay.classList.add('fade-out');
-                setTimeout(() => {
-                    customerWelcomeOverlay.style.display = 'none';
-                }, 1500);
-                clearTimeout(customerWelcomeTimeout);
-            }
-        }
-        
-        // Auto-hide after 6 seconds (slightly longer than main welcome)
-        customerWelcomeTimeout = setTimeout(hideCustomerWelcome, 6000);
-        
-        // Hide on click anywhere with spectacular effect
-        customerWelcomeOverlay.addEventListener('click', hideCustomerWelcome);
-    }
-}
 
 // Create floating particles
 function createParticles() {
@@ -269,13 +224,6 @@ document.querySelectorAll('.cta-button').forEach(button => {
     });
 });
 
-// Form input focus sounds
-document.querySelectorAll('input, textarea').forEach(input => {
-    input.addEventListener('focus', function() {
-        initAudio();
-        if (audioEnabled) audioContext.playHoverSound();
-    });
-});
 
 // Initialize particles when page loads
 createParticles();
@@ -471,162 +419,8 @@ document.addEventListener('mousemove', (e) => {
     });
 });
 
-// Contact form handling with Google Spreadsheet integration
-function initContactForm() {
-    // DISABLED - Using google-form-handler.js instead
-    console.log('Form handler disabled - using google-form-handler.js');
-    return;
-    
-    const contactForm = document.getElementById('contactForm');
-    if (!contactForm) {
-        console.log('Contact form not found on this page');
-        return;
-    }
-    
-    contactForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    initAudio();
-    if (audioEnabled) audioContext.playClickSound();
 
-    const formData = new FormData(this);
-    const formObject = Object.fromEntries(formData);
-    
-    const submitBtn = this.querySelector('.form-submit');
-    const originalText = submitBtn.textContent;
-    
-    // Show loading state
-    submitBtn.textContent = 'Submitting...';
-    submitBtn.disabled = true;
-    submitBtn.style.background = 'linear-gradient(135deg, #6b7280, #9ca3af)';
-    
-    try {
-        // BACKUP EMAIL SOLUTION: Send email directly as fallback
-        const emailBody = `
-New JufipAI Contact Form Submission
-==================================
 
-Name: ${formObject.name}
-Email: ${formObject.email}
-Company: ${formObject.company || 'Not provided'}
-Message: ${formObject.description || formObject.message || ''}
-
-Source: ${window.location.href.includes('/contact') ? 'Contact Page' : 'Homepage'}
-Timestamp: ${new Date().toLocaleString()}
-        `.trim();
-        
-        // Create mailto link as ultimate fallback
-        const mailtoLink = `mailto:contact@jufipai.com?subject=JufipAI Contact Form - ${formObject.name}&body=${encodeURIComponent(emailBody)}`;
-        
-        // Send to Google Spreadsheet (if working)
-        const response = await fetch('https://script.google.com/macros/s/AKfycbx6pu8s3tWi_vyVS76X_fqeJTgyS5399MCcX2j3se7zB4IVE0LUCNHkh3IY-u_fjwu-/exec', {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                'Full Name': formObject.name,
-                'Email Address': formObject.email,
-                'Company Name': formObject.company || '',
-                'Project Description': formObject.description || formObject.message || ''
-            })
-        });
-        
-        // CRITICAL: Store form data locally and send email backup
-        const formSubmission = {
-            timestamp: new Date().toISOString(),
-            name: formObject.name,
-            email: formObject.email,
-            company: formObject.company || '',
-            message: formObject.description || formObject.message || '',
-            source: window.location.href.includes('/contact') ? 'Contact Page' : 'Homepage'
-        };
-        
-        // Store in localStorage as backup
-        const submissions = JSON.parse(localStorage.getItem('jufipai_submissions') || '[]');
-        submissions.push(formSubmission);
-        localStorage.setItem('jufipai_submissions', JSON.stringify(submissions));
-        
-        // Log for immediate access
-        console.log('🎯 NEW LEAD FROM GOOGLE ADS:', formSubmission);
-        console.log('📧 Backup email link:', mailtoLink);
-        
-        // For debugging: show all stored submissions
-        console.log('📊 All stored submissions:', submissions);
-        
-        // Play success sound
-        if (audioEnabled) audioContext.playSuccessSound();
-        
-        // Reset form
-        this.reset();
-        
-        // Update button to success state
-        submitBtn.textContent = '✓ Submitted Successfully!';
-        submitBtn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
-        
-        // Show spectacular customer welcome overlay instead of simple popup
-        setTimeout(() => {
-            showCustomerWelcome();
-        }, 1000); // Short delay to let success sound play
-        
-    } catch (error) {
-        // Form submission fallback - still show success message to user
-        console.log('Form submission error:', error);
-        
-        // Reset form
-        this.reset();
-        
-        // Play success sound
-        if (audioEnabled) audioContext.playSuccessSound();
-        
-        // Update button to success state
-        submitBtn.textContent = '✓ Submitted Successfully!';
-        submitBtn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
-        
-        // Show spectacular customer welcome overlay even if backend fails
-        setTimeout(() => {
-            showCustomerWelcome();
-        }, 1000);
-    }
-    
-    // Reset button after delay
-    setTimeout(() => {
-        submitBtn.textContent = originalText;
-        submitBtn.style.background = '';
-        submitBtn.style.transform = '';
-        submitBtn.disabled = false;
-    }, 4000);
-    });
-}
-
-// Initialize contact form when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-    // DISABLED - initContactForm();
-});
-
-// Also try to initialize immediately in case DOM is already ready
-// DISABLED - initContactForm();
-
-// EMERGENCY FUNCTION: Retrieve all leads from Google Ads
-window.getJufipaiLeads = function() {
-    const submissions = JSON.parse(localStorage.getItem('jufipai_submissions') || '[]');
-    console.log('📊 ALL JUFIPAI LEADS:', submissions);
-    console.log('📈 Total leads:', submissions.length);
-    
-    // Format for easy copying
-    const csvData = submissions.map(sub => 
-        `"${sub.timestamp}","${sub.name}","${sub.email}","${sub.company}","${sub.message}","${sub.source}"`
-    ).join('\n');
-    
-    console.log('📋 CSV FORMAT (copy this):');
-    console.log('Timestamp,Name,Email,Company,Message,Source');
-    console.log(csvData);
-    
-    return submissions;
-};
-
-// Show instructions in console
-console.log('🆘 EMERGENCY LEAD RETRIEVAL: Type "getJufipaiLeads()" in console to see all form submissions');
 
 // Music controls removed
 
@@ -653,13 +447,7 @@ featuresCTA.addEventListener('click', function() {
             behavior: 'smooth'
         });
         
-        // Focus on the first form field after scrolling
-        setTimeout(() => {
-            const firstInput = contactSection.querySelector('input[type="text"]');
-            if (firstInput) {
-                firstInput.focus();
-            }
-        }, 800);
+        // Scroll to contact section completed
     }
 });
 
@@ -1164,13 +952,7 @@ const translations = {
         'customer-welcome-subtitle': 'Your automation journey begins now',
         'customer-welcome-details': 'One of our specialized team members is already contacting you shortly.<br><strong>Get ready to flip how you work forever!</strong>',
         
-        // Contact Form
-        'contact-title': 'Ready to Automate Everything?',
-        'form-name': 'Full Name',
-        'form-email': 'Email Address',
-        'form-company': 'Company Name',
-        'form-description': 'Project Description',
-        'form-submit': 'Get FREE Diagnosis & Draft',
+        // Contact Form - REMOVED
         
         // Footer
         'copyright': 'Copyright © 2014-2025, JufipAI.com or its affiliates. All rights reserved.',
@@ -1237,13 +1019,7 @@ const translations = {
         'customer-welcome-subtitle': 'Tu viaje de automatización comienza ahora',
         'customer-welcome-details': 'Uno de nuestros miembros especializados ya te está contactando pronto.<br><strong>¡Prepárate para cambiar tu forma de trabajar para siempre!</strong>',
         
-        // Contact Form
-        'contact-title': '¿Listo para Automatizar Todo?',
-        'form-name': 'Nombre Completo',
-        'form-email': 'Dirección de Email',
-        'form-company': 'Nombre de la Empresa',
-        'form-description': 'Descripción del Proyecto',
-        'form-submit': 'Obtener Diagnóstico GRATIS',
+        // Contact Form - REMOVED
         
         // Footer
         'copyright': 'Copyright © 2014-2025, JufipAI.com o sus afiliados. Todos los derechos reservados.',
