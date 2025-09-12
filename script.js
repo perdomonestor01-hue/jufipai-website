@@ -430,6 +430,20 @@ document.addEventListener('mousemove', (e) => {
 
 // Music toggle hover removed - functionality disabled
 
+// Main CTA Button functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const ctaButton = document.getElementById('ctaButton');
+    if (ctaButton) {
+        ctaButton.addEventListener('click', function() {
+            initAudio();
+            if (audioEnabled) audioContext.playClickSound();
+            
+            // Redirect to contact email with pre-filled subject and body
+            window.location.href = 'mailto:contact@jufipai.com?subject=Free%20AI%20Automation%20Diagnosis%20Request&body=Hi%20JufipAI%20team%2C%0D%0A%0D%0AI%20would%20like%20to%20request%20a%20free%20AI%20automation%20diagnosis%20for%20my%20business.%0D%0A%0D%0APlease%20contact%20me%20to%20discuss%20further.%0D%0A%0D%0AThank%20you!';
+        });
+    }
+});
+
 // Features CTA Corner functionality
 const featuresCTA = document.getElementById('featuresCTA');
 
