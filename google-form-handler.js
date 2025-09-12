@@ -269,13 +269,25 @@ function showSuccessModal(name, email) {
 const GOOGLE_FORM_ACTION = `https://docs.google.com/forms/d/e/${SPREADSHEET_ID}/formResponse`;
 
 function initGoogleFormHandler() {
-    const forms = document.querySelectorAll('#contactForm, .contact-form');
+    console.log('🔍 Looking for forms to initialize...');
+    const forms = document.querySelectorAll('#contactForm, .contact-form, form[id="contactForm"]');
+    console.log('📊 Found ' + forms.length + ' forms to initialize');
     
-    forms.forEach(form => {
-        console.log('📊 Setting up Google Sheets handler for:', form.id || form.className);
+    forms.forEach((form, index) => {
+        // Skip if already initialized
+        if (form.dataset.googleHandlerAttached === 'true') {
+            console.log('✅ Form already has handler, skipping:', form.id);
+            return;
+        }
+        
+        console.log(`📊 Setting up Google Sheets handler for form ${index + 1}:`, form.id || form.className);
+        
+        // Mark as initialized BEFORE cloning
+        form.dataset.googleHandlerAttached = 'true';
         
         // Remove any existing handlers
         const newForm = form.cloneNode(true);
+        newForm.dataset.googleHandlerAttached = 'true';
         form.parentNode.replaceChild(newForm, form);
         
         // Add our handler
@@ -365,15 +377,31 @@ function initGoogleFormHandler() {
     });
 }
 
-// Initialize when DOM is ready
+// Initialize multiple times to ensure we catch the form
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initGoogleFormHandler);
 } else {
+    // DOM is already loaded, initialize now
     initGoogleFormHandler();
 }
 
-// Also initialize on load
-window.addEventListener('load', initGoogleFormHandler);
+// Also initialize on window load
+window.addEventListener('load', function() {
+    console.log('🔄 Window loaded - reinitializing forms...');
+    initGoogleFormHandler();
+});
+
+// Try again after a short delay (for dynamically loaded forms)
+setTimeout(function() {
+    console.log('⏰ Delayed initialization check...');
+    initGoogleFormHandler();
+}, 1000);
+
+// And one more time after 2 seconds to be absolutely sure
+setTimeout(function() {
+    console.log('⏰ Final initialization check...');
+    initGoogleFormHandler();
+}, 2000);
 
 // Silent backup retrieval (only for admin use)
 window.getFormBackups = function() {
