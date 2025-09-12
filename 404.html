@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JufipAI - Redirecting...</title>
+    <script>
+        // Store the attempted path for the router to handle
+        sessionStorage.setItem('redirectPath', location.pathname);
+        
+        // Get the path segments
+        const pathSegments = location.pathname.split('/').filter(segment => segment);
+        
+        // Redirect to the root with the path as a hash
+        // This preserves the intended destination for client-side routing
+        location.replace(
+            location.origin + '/#/' + pathSegments.join('/')
+        );
+    </script>
+</head>
+<body>
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Inter', sans-serif; background: #0a0a0a; color: #e5e7eb;">
+        <div style="text-align: center;">
+            <h1 style="color: #fbbf24;">Redirecting to JufipAI...</h1>
+            <p>If you are not redirected automatically, <a href="/" style="color: #3b82f6;">click here</a>.</p>
+        </div>
+    </div>
+</body>
+</html>
