@@ -109,7 +109,21 @@ window.addEventListener('load', function() {
     // Handle routing first
     handleRouting();
     
-    // SPECTACULAR WELCOME MESSAGE SYSTEM
+    // DISABLE WELCOME OVERLAY - It's causing purple screen stuck issues
+    // Simply hide it immediately without showing
+    const welcomeOverlay = document.getElementById('welcomeOverlay');
+    if (welcomeOverlay) {
+        welcomeOverlay.style.display = 'none';
+        welcomeOverlay.classList.add('fade-out');
+    }
+    
+    // Remove any body locks that might have been set
+    document.body.classList.remove('welcome-active');
+    document.documentElement.style.overflow = '';
+    document.documentElement.style.height = '';
+    
+    // Skip the welcome overlay system entirely
+    /*
     const welcomeOverlay = document.getElementById('welcomeOverlay');
     let welcomeTimeout;
     
@@ -185,7 +199,10 @@ window.addEventListener('load', function() {
             clearTimeout(welcomeTimeout);
         }
     }
+    */
     
+    // Commented out to prevent stuck purple screen
+    /*
     if (welcomeOverlay) {
         // Auto-hide after 5 seconds
         welcomeTimeout = setTimeout(hideWelcomeMessage, 5000);
@@ -193,6 +210,7 @@ window.addEventListener('load', function() {
         // Hide on click anywhere with spectacular effect
         welcomeOverlay.addEventListener('click', hideWelcomeMessage);
     }
+    */
     
     // Handle loading screen after welcome message
     setTimeout(() => {
