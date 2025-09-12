@@ -10,7 +10,7 @@ function safeExecute(fn, context = 'Unknown') {
     try {
         return fn();
     } catch (error) {
-        // Error logged silently in production
+        console.error(`Error in ${context}:`, error);
         return null;
     }
 }
@@ -20,19 +20,6 @@ window.addEventListener('load', function() {
     // SPECTACULAR WELCOME MESSAGE SYSTEM
     const welcomeOverlay = document.getElementById('welcomeOverlay');
     let welcomeTimeout;
-    
-    // Skip welcome on mobile devices to prevent purple screen
-    const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-        // Immediately hide overlay on mobile
-        if (welcomeOverlay) {
-            welcomeOverlay.style.display = 'none';
-        }
-        // Skip the entire welcome system
-        document.getElementById('loading').style.display = 'none';
-        return;
-    }
     
     // Add welcome-active class to body for complete coverage
     document.body.classList.add('welcome-active');
@@ -81,7 +68,18 @@ window.addEventListener('load', function() {
     
     function hideWelcomeMessage() {
         if (welcomeOverlay && !welcomeOverlay.classList.contains('fade-out')) {
-            // Skip audio to prevent blocking
+            // Play futuristic spaceship launch sound
+            initAudio();
+            // Small delay to ensure audio context is ready
+            setTimeout(() => {
+                if (audioEnabled && audioContext && audioContext.playSpaceshipLaunch) {
+                    try {
+                        audioContext.playSpaceshipLaunch();
+                    } catch (e) {
+                        console.log('Spaceship launch audio failed:', e);
+                    }
+                }
+            }, 50);
             
             // Immediately restore scrolling
             document.body.classList.remove('welcome-active');
@@ -93,13 +91,13 @@ window.addEventListener('load', function() {
             welcomeOverlay.classList.add('fade-out');
             setTimeout(() => {
                 welcomeOverlay.style.display = 'none';
-            }, 800); // Faster fade out
+            }, 1500);
             clearTimeout(welcomeTimeout);
         }
     }
     
-    // Auto-hide after 2 seconds (faster for mobile)
-    welcomeTimeout = setTimeout(hideWelcomeMessage, 2000);
+    // Auto-hide after 5 seconds
+    welcomeTimeout = setTimeout(hideWelcomeMessage, 5000);
     
     // Hide on click anywhere with spectacular effect
     if (welcomeOverlay) {
@@ -116,6 +114,51 @@ window.addEventListener('load', function() {
     }, 1000);
 });
 
+// Customer Welcome Overlay Functions
+function showCustomerWelcome() {
+    const customerWelcomeOverlay = document.getElementById('customerWelcomeOverlay');
+    let customerWelcomeTimeout;
+    
+    if (customerWelcomeOverlay) {
+        // Add welcome-active class to body for complete coverage
+        document.body.classList.add('welcome-active');
+        document.documentElement.style.overflow = 'hidden';
+        document.documentElement.style.height = '100vh';
+        
+        // Show overlay
+        customerWelcomeOverlay.style.display = 'flex';
+        customerWelcomeOverlay.classList.remove('fade-out');
+        
+        function hideCustomerWelcome() {
+            if (customerWelcomeOverlay && !customerWelcomeOverlay.classList.contains('fade-out')) {
+                // Play success sound
+                initAudio();
+                if (audioEnabled && audioContext && audioContext.playSuccessSound) {
+                    audioContext.playSuccessSound();
+                }
+                
+                // Immediately restore scrolling
+                document.body.classList.remove('welcome-active');
+                document.documentElement.style.overflow = '';
+                document.documentElement.style.height = '';
+                document.body.style.overflow = '';
+                document.body.style.height = '';
+                
+                customerWelcomeOverlay.classList.add('fade-out');
+                setTimeout(() => {
+                    customerWelcomeOverlay.style.display = 'none';
+                }, 1500);
+                clearTimeout(customerWelcomeTimeout);
+            }
+        }
+        
+        // Auto-hide after 6 seconds (slightly longer than main welcome)
+        customerWelcomeTimeout = setTimeout(hideCustomerWelcome, 6000);
+        
+        // Hide on click anywhere with spectacular effect
+        customerWelcomeOverlay.addEventListener('click', hideCustomerWelcome);
+    }
+}
 
 // Create floating particles
 function createParticles() {
@@ -226,6 +269,13 @@ document.querySelectorAll('.cta-button').forEach(button => {
     });
 });
 
+// Form input focus sounds
+document.querySelectorAll('input, textarea').forEach(input => {
+    input.addEventListener('focus', function() {
+        initAudio();
+        if (audioEnabled) audioContext.playHoverSound();
+    });
+});
 
 // Initialize particles when page loads
 createParticles();
@@ -241,7 +291,9 @@ function initAudio() {
             
             // Resume audio context if suspended (browser autoplay policy)
             if (audioContext.state === 'suspended') {
-                audioContext.resume();
+                audioContext.resume().then(() => {
+                    console.log('Audio context resumed successfully');
+                });
             }
             
             audioEnabled = true;
@@ -371,6 +423,7 @@ function initAudio() {
             };
             
         } catch (e) {
+            console.log('Web Audio API not supported or blocked');
             audioEnabled = false;
         }
     }
@@ -421,28 +474,93 @@ document.addEventListener('mousemove', (e) => {
     });
 });
 
+// Contact form handling with Google Spreadsheet integration
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    initAudio();
+    if (audioEnabled) audioContext.playClickSound();
 
+    const formData = new FormData(this);
+    const formObject = Object.fromEntries(formData);
+    
+    const submitBtn = this.querySelector('.form-submit');
+    const originalText = submitBtn.textContent;
+    
+    // Show loading state
+    submitBtn.textContent = 'Submitting...';
+    submitBtn.disabled = true;
+    submitBtn.style.background = 'linear-gradient(135deg, #6b7280, #9ca3af)';
+    
+    try {
+        // Send to Google Spreadsheet
+        // You need to create a Google Apps Script Web App with your spreadsheet ID
+        const response = await fetch('https://script.google.com/macros/s/AKfycbx6pu8s3tWi_vyVS76X_fqeJTgyS5399MCcX2j3se7zB4IVE0LUCNHkh3IY-u_fjwu-/exec', {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'Full Name': formObject.name,
+                'Email Address': formObject.email,
+                'Company Name': formObject.company || '',
+                'Project Description': formObject.description
+            })
+        });
+        
+        // Play success sound
+        if (audioEnabled) audioContext.playSuccessSound();
+        
+        // Show spectacular customer welcome overlay instead of simple popup
+        setTimeout(() => {
+            showCustomerWelcome();
+        }, 1000); // Short delay to let success sound play
+        
+        // Reset form
+        this.reset();
+        
+        // Update button to success state
+        submitBtn.textContent = '✓ Submitted Successfully!';
+        submitBtn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
+        
+    } catch (error) {
+        console.error('Form submission error:', error);
+        
+        // Fallback to mailto if Google Sheets fails
+        const subject = encodeURIComponent('JufipAI Automation Inquiry from ' + formObject.name);
+        const body = encodeURIComponent(`Hello JufipAI Team,
 
+Name: ${formObject.name}
+Email: ${formObject.email}
+Company: ${formObject.company || 'Not specified'}
+
+Project Description:
+${formObject.description}
+
+Best regards,
+${formObject.name}`);
+        
+        const mailtoLink = `mailto:contact@jufipai.com?subject=${subject}&body=${body}`;
+        window.open(mailtoLink);
+        
+        submitBtn.textContent = 'Opening email client...';
+        submitBtn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+    }
+    
+    // Reset button after delay
+    setTimeout(() => {
+        submitBtn.textContent = originalText;
+        submitBtn.style.background = '';
+        submitBtn.style.transform = '';
+        submitBtn.disabled = false;
+    }, 4000);
+});
 
 // Music controls removed
 
 // Music toggle removed - functionality disabled
 
 // Music toggle hover removed - functionality disabled
-
-// Main CTA Button functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const ctaButton = document.getElementById('ctaButton');
-    if (ctaButton) {
-        ctaButton.addEventListener('click', function() {
-            initAudio();
-            if (audioEnabled) audioContext.playClickSound();
-            
-            // Redirect to contact email with pre-filled subject and body
-            window.location.href = 'mailto:contact@jufipai.com?subject=Free%20AI%20Automation%20Diagnosis%20Request&body=Hi%20JufipAI%20team%2C%0D%0A%0D%0AI%20would%20like%20to%20request%20a%20free%20AI%20automation%20diagnosis%20for%20my%20business.%0D%0A%0D%0APlease%20contact%20me%20to%20discuss%20further.%0D%0A%0D%0AThank%20you!';
-        });
-    }
-});
 
 // Features CTA Corner functionality
 const featuresCTA = document.getElementById('featuresCTA');
@@ -463,7 +581,13 @@ featuresCTA.addEventListener('click', function() {
             behavior: 'smooth'
         });
         
-        // Scroll to contact section completed
+        // Focus on the first form field after scrolling
+        setTimeout(() => {
+            const firstInput = contactSection.querySelector('input[type="text"]');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        }, 800);
     }
 });
 
@@ -726,36 +850,35 @@ function showServicePopup(title, content, icon = 'fas fa-robot', clickedCard) {
         popupIcon.className = icon + ' popup-service-icon';
         
         // Check if mobile device
-        const isMobile = isMobileDevice();
+        const isMobile = window.innerWidth <= 768;
         
         if (isMobile) {
-            // Mobile: Use fixed positioning for better reliability
-            popup.style.cssText = `
-                display: block; 
-                position: fixed; 
-                top: 5vh; 
-                left: 50%; 
-                transform: translateX(-50%); 
-                z-index: 10000; 
-                width: 90vw; 
-                max-width: 380px; 
-                max-height: 85vh;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-            `;
+            // Mobile: Position popup to follow user's current view
+            const cardRect = clickedCard.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const viewportHeight = window.innerHeight;
             
-            // Add mobile-friendly backdrop
-            popup.style.background = 'rgba(0, 0, 0, 0.8)';
-            popup.style.backdropFilter = 'blur(10px)';
+            // Check if the clicked card is currently visible in viewport
+            const cardInView = cardRect.top >= 0 && cardRect.top < viewportHeight;
             
-            // Ensure popup content is properly sized
-            const popupContent = popup.querySelector('.premium-popup-content');
-            if (popupContent) {
-                popupContent.style.margin = '0';
-                popupContent.style.width = '100%';
-                popupContent.style.maxHeight = '80vh';
-                popupContent.style.overflowY = 'auto';
+            let popupTop;
+            if (cardInView) {
+                // Card is visible: position popup just below the card
+                popupTop = scrollTop + cardRect.bottom + 20;
+            } else {
+                // Card is not visible: position popup in center of current viewport
+                popupTop = scrollTop + (viewportHeight * 0.3);
             }
+            
+            popup.style.cssText = `display: block; position: absolute; left: 50%; top: ${popupTop}px; transform: translateX(-50%); z-index: 1000; width: 95vw; max-width: 400px;`;
+            
+            // Smooth scroll to popup if it's positioned below viewport
+            setTimeout(() => {
+                const popupRect = popup.getBoundingClientRect();
+                if (popupRect.top > viewportHeight || popupRect.bottom < 0) {
+                    popup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100);
         } else {
             // Desktop: Position relative to clicked card
             const cardRect = clickedCard.getBoundingClientRect();
@@ -874,22 +997,6 @@ let hideSuccessPopupOnClickOutside = function(e) {
     }
 };
 
-
-// Mobile orientation and touch handling
-window.addEventListener('orientationchange', function() {
-    // Hide any open popups on orientation change to prevent positioning issues
-    setTimeout(function() {
-        hideServicePopup();
-        hideSuccessPopup();
-    }, 100);
-});
-
-// Improved mobile touch handling
-function isMobileDevice() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-           (window.innerWidth <= 768 && 'ontouchstart' in window);
-}
-
 // Simple click handlers for service cards
 document.addEventListener('DOMContentLoaded', function() {
     const serviceCards = document.querySelectorAll('.service-card');
@@ -943,10 +1050,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Service card handlers initialized
+    console.log('✅ Service card handlers setup complete');
 });
 
-// Popup system initialized
+console.log('✅ Simple popup system ready');
+
+
+console.log('💡 Click any service card to test the popup system');
 
 // Language Translation System
 const translations = {
@@ -968,7 +1078,13 @@ const translations = {
         'customer-welcome-subtitle': 'Your automation journey begins now',
         'customer-welcome-details': 'One of our specialized team members is already contacting you shortly.<br><strong>Get ready to flip how you work forever!</strong>',
         
-        // Contact Form - REMOVED
+        // Contact Form
+        'contact-title': 'Ready to Automate Everything?',
+        'form-name': 'Full Name',
+        'form-email': 'Email Address',
+        'form-company': 'Company Name',
+        'form-description': 'Project Description',
+        'form-submit': 'Get FREE Diagnosis & Draft',
         
         // Footer
         'copyright': 'Copyright © 2014-2025, JufipAI.com or its affiliates. All rights reserved.',
@@ -1035,7 +1151,13 @@ const translations = {
         'customer-welcome-subtitle': 'Tu viaje de automatización comienza ahora',
         'customer-welcome-details': 'Uno de nuestros miembros especializados ya te está contactando pronto.<br><strong>¡Prepárate para cambiar tu forma de trabajar para siempre!</strong>',
         
-        // Contact Form - REMOVED
+        // Contact Form
+        'contact-title': '¿Listo para Automatizar Todo?',
+        'form-name': 'Nombre Completo',
+        'form-email': 'Dirección de Email',
+        'form-company': 'Nombre de la Empresa',
+        'form-description': 'Descripción del Proyecto',
+        'form-submit': 'Obtener Diagnóstico GRATIS',
         
         // Footer
         'copyright': 'Copyright © 2014-2025, JufipAI.com o sus afiliados. Todos los derechos reservados.',
@@ -1086,22 +1208,30 @@ const translations = {
     }
 };
 
-// Language system initialization
+// 🚨 ULTIMATE ENGLISH FAILSAFE - Set before anything else
 let currentLang = 'en';
+
+// Clear any problematic localStorage immediately
 if (typeof Storage !== 'undefined') {
+    localStorage.removeItem('preferred-language');
     localStorage.setItem('preferred-language', 'en');
+    console.log('🇺🇸 EMERGENCY: Forced English preference in localStorage');
 }
 
-// Language reset utility
+// 🔧 EMERGENCY RESET FUNCTION - For testing and debugging
 function resetToEnglish() {
+    console.log('🚨 EMERGENCY RESET: Forcing English');
+    localStorage.removeItem('preferred-language');
     localStorage.setItem('preferred-language', 'en');
     location.reload();
 }
+
+// Make reset function globally accessible for console debugging
 window.resetToEnglish = resetToEnglish;
 
 function translatePage(lang) {
     currentLang = lang;
-    // Translating page content
+    console.log(`🌍 Translating to: ${lang}`);
     
     let translatedCount = 0;
     let failedCount = 0;
@@ -1121,12 +1251,14 @@ function translatePage(lang) {
             }
             
             translatedCount++;
+            console.log(`✅ Translated ${key}: "${translationText}"`);
         } else {
             failedCount++;
+            console.warn(`❌ Missing translation for key: "${key}" in language: "${lang}"`);
         }
     });
     
-    // Translation process completed
+    console.log(`📊 Translation Summary: ${translatedCount} successful, ${failedCount} failed`);
     
     // Deploy certified translation agents (failsafe)
     if (lang === 'es') {
@@ -1160,7 +1292,7 @@ function translatePage(lang) {
 
 // 🚀 CERTIFIED ESP TRANSLATION AGENT - Failsafe Service Cards
 function forceServiceCardTranslation() {
-    // Deploying Spanish translation agents
+    console.log('🔧 Deploying certified ESP agents for service cards...');
     
     const serviceTranslations = {
         'service1-title': 'Integración AI + Automatización',
@@ -1187,21 +1319,21 @@ function forceServiceCardTranslation() {
         
         if (titleElement && serviceTranslations[titleKey]) {
             titleElement.textContent = serviceTranslations[titleKey];
-            // Spanish title applied
+            console.log(`🎯 ESP Agent deployed: ${titleKey}`);
         }
         
         if (descElement && serviceTranslations[descKey]) {
             descElement.textContent = serviceTranslations[descKey];
-            // Spanish description applied
+            console.log(`🎯 ESP Agent deployed: ${descKey}`);
         }
     });
     
-    // Spanish translation completed
+    console.log('✅ All ESP translation agents deployed successfully!');
 }
 
 // 🔄 ENGLISH RESTORATION AGENT - Failsafe English Reset
 function forceEnglishTranslation() {
-    // Deploying English translation agents
+    console.log('🇺🇸 Deploying English restoration agents...');
     
     const englishTranslations = {
         'service1-title': 'AI + Automation Integration',
@@ -1228,16 +1360,16 @@ function forceEnglishTranslation() {
         
         if (titleElement && englishTranslations[titleKey]) {
             titleElement.textContent = englishTranslations[titleKey];
-            // English title applied
+            console.log(`🎯 ENG Agent deployed: ${titleKey}`);
         }
         
         if (descElement && englishTranslations[descKey]) {
             descElement.textContent = englishTranslations[descKey];
-            // English description applied
+            console.log(`🎯 ENG Agent deployed: ${descKey}`);
         }
     });
     
-    // English translation completed
+    console.log('✅ All English restoration agents deployed successfully!');
 }
 
 // Initialize language toggle
@@ -1245,10 +1377,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const languageSwitch = document.getElementById('languageSwitch');
     const languageOptions = languageSwitch.querySelectorAll('.language-option');
     
-    // Initializing language system
+    console.log('🌍 Initializing language system...');
     
     // 🚨 ALWAYS START IN ENGLISH - NO EXCEPTIONS
-    // Forcing English initialization
+    console.log('🚨 FORCE ENGLISH INITIALIZATION - Clearing any Spanish preferences');
     
     // Clear any existing language preference and force English
     localStorage.removeItem('preferred-language');
@@ -1260,7 +1392,7 @@ document.addEventListener('DOMContentLoaded', function() {
     languageOptions[0].classList.add('active');     // Set English active
     
     // Force translate to English immediately
-    // Setting English as default language
+    console.log('🇺🇸 FORCING English (always default)');
     translatePage('en');
     currentLang = 'en';  // Explicitly set current language
     
@@ -1287,4 +1419,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-
