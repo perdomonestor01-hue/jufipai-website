@@ -5,6 +5,64 @@
 
 'use strict';
 
+// URL Routing System for Contact Form
+function handleContactRouting() {
+    const currentPath = window.location.pathname;
+    const currentHash = window.location.hash;
+
+    // Handle /contact path - redirect to /#contact
+    if (currentPath === '/contact') {
+        console.log('🔗 Detected /contact route, redirecting to /#contact');
+        window.history.replaceState({}, '', '/#contact');
+        scrollToContact();
+        return;
+    }
+
+    // Handle #contact hash on page load
+    if (currentHash === '#contact') {
+        console.log('🔗 Detected #contact hash, scrolling to contact');
+        setTimeout(scrollToContact, 500); // Wait for page to load
+        return;
+    }
+
+    // Handle any contact-related query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('contact') === 'true' || urlParams.get('section') === 'contact') {
+        console.log('🔗 Detected contact query parameters, redirecting to /#contact');
+        window.history.replaceState({}, '', '/#contact');
+        setTimeout(scrollToContact, 500);
+        return;
+    }
+}
+
+// Scroll to contact section with proper offset
+function scrollToContact() {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+        const headerHeight = document.querySelector('.header')?.offsetHeight || 80;
+        const targetPosition = contactSection.offsetTop - headerHeight - 20;
+
+        window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+        });
+
+        // Focus on first form input after scrolling
+        setTimeout(() => {
+            const firstInput = contactSection.querySelector('input[type="text"]');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        }, 800);
+    }
+}
+
+// Handle browser back/forward navigation
+window.addEventListener('popstate', handleContactRouting);
+
+// Handle initial page load routing
+document.addEventListener('DOMContentLoaded', handleContactRouting);
+
 // Error handling wrapper
 function safeExecute(fn, context = 'Unknown') {
     try {
