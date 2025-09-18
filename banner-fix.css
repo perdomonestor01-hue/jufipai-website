@@ -1,0 +1,96 @@
+/* BANNER DRIFT FIX - Override existing sticky banner styles */
+
+/* Reset the problematic transform property that causes drift */
+.sticky-cta {
+    position: fixed !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    /* Fixed positioning - remove problematic margin-left and will-change */
+    transform: translateX(-50%) !important;
+    /* Remove margin-left that causes drift */
+    margin-left: 0 !important;
+    /* Remove will-change that can cause rendering issues */
+    will-change: auto !important;
+    z-index: 1000 !important;
+    
+    /* Stable transitions only for intended interactions */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease !important;
+}
+
+/* Improved hover effect that maintains position */
+.sticky-cta:hover {
+    /* Subtle hover effect that keeps banner stationary */
+    transform: translateX(-50%) translateY(-3px) !important;
+    box-shadow: 0 15px 50px rgba(59, 130, 246, 0.5) !important;
+    /* Add subtle glow effect */
+    filter: brightness(1.1) !important;
+}
+
+/* Enhanced user interaction animation */
+.sticky-cta:active {
+    transform: translateX(-50%) scale(0.98) !important;
+    transition: transform 0.1s ease !important;
+}
+
+/* Hidden state fix */
+.sticky-cta.hidden {
+    transform: translateX(-50%) translateY(120px) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Add pulse animation for user attention */
+@keyframes bannerPulse {
+    0%, 100% {
+        transform: translateX(-50%) scale(1);
+    }
+    50% {
+        transform: translateX(-50%) scale(1.02);
+    }
+}
+
+/* Subtle glow animation for interactive state */
+@keyframes bannerGlow {
+    0% {
+        box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);
+    }
+    100% {
+        box-shadow: 0 15px 50px rgba(59, 130, 246, 0.5), 0 0 20px rgba(251, 191, 36, 0.3);
+    }
+}
+
+/* Class to trigger pulse animation */
+.sticky-cta.user-attention {
+    animation: bannerPulse 1s ease-in-out 3 !important;
+}
+
+/* Enhanced button hover effect */
+.sticky-cta-button:hover {
+    transform: scale(1.05) !important;
+    background: rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Mobile fixes */
+@media (max-width: 768px) {
+    .sticky-cta {
+        left: 10px !important;
+        right: 10px !important;
+        transform: none !important;
+        margin-left: 0 !important;
+        will-change: auto !important;
+    }
+
+    .sticky-cta:hover {
+        transform: translateY(-2px) !important;
+    }
+
+    .sticky-cta.hidden {
+        transform: translateY(120px) !important;
+    }
+}
+
+/* Remove any problematic animations or transforms that could cause drift */
+.sticky-cta * {
+    will-change: auto !important;
+}
