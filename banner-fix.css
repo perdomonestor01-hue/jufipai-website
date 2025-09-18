@@ -1,96 +1,274 @@
-/* BANNER DRIFT FIX - Override existing sticky banner styles */
+/* AGGRESSIVE BANNER DRIFT FIX - COMPLETE OVERRIDE */
+/* This completely replaces the problematic sticky banner positioning */
 
-/* Reset the problematic transform property that causes drift */
+/* NUCLEAR OPTION: Complete override of all banner properties */
 .sticky-cta {
+    /* Force stable positioning */
     position: fixed !important;
     bottom: 20px !important;
     left: 50% !important;
-    /* Fixed positioning - remove problematic margin-left and will-change */
-    transform: translateX(-50%) !important;
-    /* Remove margin-left that causes drift */
-    margin-left: 0 !important;
-    /* Remove will-change that can cause rendering issues */
-    will-change: auto !important;
-    z-index: 1000 !important;
     
-    /* Stable transitions only for intended interactions */
-    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease !important;
+    /* REMOVE ALL DRIFT-CAUSING PROPERTIES */
+    transform: translateX(-50%) !important;
+    margin: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    will-change: auto !important;
+    
+    /* Force stable dimensions and positioning */
+    z-index: 1000 !important;
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
+    border-radius: 50px !important;
+    padding: 12px 20px !important;
+    box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3) !important;
+    backdrop-filter: blur(20px) !important;
+    max-width: 90vw !important;
+    
+    /* Remove ALL problematic transitions and animations */
+    animation: none !important;
+    transition: transform 0.2s ease !important;
+    
+    /* Force display and layout properties */
+    display: block !important;
+    box-sizing: border-box !important;
+    
+    /* Override any JavaScript-applied styles */
+    right: auto !important;
+    top: auto !important;
 }
 
-/* Improved hover effect that maintains position */
+/* Stable hover effect that ONLY affects visual properties */
 .sticky-cta:hover {
-    /* Subtle hover effect that keeps banner stationary */
     transform: translateX(-50%) translateY(-3px) !important;
     box-shadow: 0 15px 50px rgba(59, 130, 246, 0.5) !important;
-    /* Add subtle glow effect */
     filter: brightness(1.1) !important;
+    
+    /* Ensure no position drift on hover */
+    left: 50% !important;
+    margin: 0 !important;
+    will-change: auto !important;
 }
 
-/* Enhanced user interaction animation */
-.sticky-cta:active {
-    transform: translateX(-50%) scale(0.98) !important;
-    transition: transform 0.1s ease !important;
-}
-
-/* Hidden state fix */
+/* Hidden state with absolutely no position changes */
 .sticky-cta.hidden {
     transform: translateX(-50%) translateY(120px) !important;
     opacity: 0 !important;
     pointer-events: none !important;
+    
+    /* Keep position stable even when hidden */
+    left: 50% !important;
+    margin: 0 !important;
 }
 
-/* Add pulse animation for user attention */
-@keyframes bannerPulse {
-    0%, 100% {
-        transform: translateX(-50%) scale(1);
-    }
-    50% {
-        transform: translateX(-50%) scale(1.02);
-    }
+/* Active state that doesn't affect positioning */
+.sticky-cta:active {
+    transform: translateX(-50%) scale(0.95) !important;
+    transition: transform 0.1s ease !important;
+    
+    /* Lock position during active state */
+    left: 50% !important;
+    margin: 0 !important;
 }
 
-/* Subtle glow animation for interactive state */
-@keyframes bannerGlow {
-    0% {
-        box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);
-    }
-    100% {
-        box-shadow: 0 15px 50px rgba(59, 130, 246, 0.5), 0 0 20px rgba(251, 191, 36, 0.3);
-    }
+/* Override ALL child positioning */
+.sticky-cta * {
+    will-change: auto !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
 }
 
-/* Class to trigger pulse animation */
-.sticky-cta.user-attention {
-    animation: bannerPulse 1s ease-in-out 3 !important;
+.sticky-cta-content {
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+    position: relative !important;
+    margin: 0 !important;
 }
 
-/* Enhanced button hover effect */
+.sticky-cta-text {
+    display: flex !important;
+    flex-direction: column !important;
+    color: white !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+}
+
+.sticky-cta-text i {
+    color: #fbbf24 !important;
+    font-size: 1.2rem !important;
+    margin-bottom: 2px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    animation: pulse 2s infinite !important;
+}
+
+.sticky-main-text {
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+    margin: 0 !important;
+}
+
+.sticky-sub-text {
+    font-size: 0.75rem !important;
+    opacity: 0.9 !important;
+    font-weight: 400 !important;
+    margin-top: 2px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.sticky-cta-button {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: white !important;
+    text-decoration: none !important;
+    padding: 8px 16px !important;
+    border-radius: 25px !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    transition: all 0.3s ease !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px) !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+}
+
 .sticky-cta-button:hover {
-    transform: scale(1.05) !important;
     background: rgba(255, 255, 255, 0.25) !important;
+    transform: scale(1.05) !important;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
 }
 
-/* Mobile fixes */
+.sticky-cta-close {
+    position: absolute !important;
+    top: -8px !important;
+    right: -8px !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50% !important;
+    width: 24px !important;
+    height: 24px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    font-size: 0.7rem !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(10px) !important;
+    margin: 0 !important;
+}
+
+.sticky-cta-close:hover {
+    background: rgba(239, 68, 68, 0.8) !important;
+    transform: scale(1.1) !important;
+}
+
+/* Mobile responsive fixes */
 @media (max-width: 768px) {
     .sticky-cta {
         left: 10px !important;
         right: 10px !important;
         transform: none !important;
-        margin-left: 0 !important;
+        max-width: none !important;
+        padding: 10px 16px !important;
+        border-radius: 40px !important;
+        margin: 0 !important;
         will-change: auto !important;
     }
 
     .sticky-cta:hover {
         transform: translateY(-2px) !important;
+        left: 10px !important;
+        right: 10px !important;
     }
 
     .sticky-cta.hidden {
         transform: translateY(120px) !important;
+        left: 10px !important;
+        right: 10px !important;
+    }
+
+    .sticky-cta-content {
+        gap: 12px !important;
+    }
+
+    .sticky-main-text {
+        font-size: 0.85rem !important;
+    }
+
+    .sticky-sub-text {
+        font-size: 0.7rem !important;
+    }
+
+    .sticky-cta-button {
+        padding: 6px 12px !important;
+        font-size: 0.8rem !important;
+        gap: 6px !important;
     }
 }
 
-/* Remove any problematic animations or transforms that could cause drift */
-.sticky-cta * {
-    will-change: auto !important;
+/* Animation overrides */
+@keyframes slideUpBounce {
+    0% {
+        transform: translateX(-50%) translateY(120px);
+        opacity: 0;
+    }
+    60% {
+        transform: translateX(-50%) translateY(-10px);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    @keyframes slideUpBounce {
+        0% {
+            transform: translateY(120px);
+            opacity: 0;
+        }
+        60% {
+            transform: translateY(-10px);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+}
+
+/* Force stable animation */
+.sticky-cta {
+    animation: slideUpBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+}
+
+/* Reset any problematic CSS custom properties */
+.sticky-cta {
+    --transform: translateX(-50%) !important;
+}
+
+/* Webkit and browser-specific fixes */
+.sticky-cta {
+    -webkit-transform: translateX(-50%) !important;
+    -moz-transform: translateX(-50%) !important;
+    -ms-transform: translateX(-50%) !important;
+    -o-transform: translateX(-50%) !important;
+}
+
+/* Final nuclear option - force recalculation on load */
+@supports (transform: translateX(-50%)) {
+    .sticky-cta {
+        transform: translateX(-50%) !important;
+        left: 50% !important;
+        margin-left: 0 !important;
+        will-change: auto !important;
+    }
 }
