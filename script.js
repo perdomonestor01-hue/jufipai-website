@@ -1476,25 +1476,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (audioEnabled) audioContext.playClickSound();
         });
     });
-<<<<<<< HEAD
-
-    // Add translations for articles section
-    translations.en = {
-        ...translations.en,
-        'articles-title': 'AI Innovation Hub',
-        'articles-subtitle': 'Discover the latest insights, case studies, and breakthroughs in AI automation'
-    };
-
-    translations.es = {
-        ...translations.es,
-        'articles-title': 'Centro de Innovación AI',
-        'articles-subtitle': 'Descubre las últimas perspectivas, casos de estudio y avances en automatización AI'
-    };
 });
-
-/* ============================================
-   ARTICLES SECTION - INTERACTIVE FUNCTIONALITY
-   ============================================ */
 
 // Article Data Store
 const articlesData = {
@@ -2010,89 +1992,205 @@ function removeHoverParticles(container) {
     });
 }
 
-function initializeArticleModal() {
+// ========================================
+// ADVANCED MODAL SYSTEM WITH ENHANCED FEATURES
+// ========================================
+
+function initializeAdvancedArticleModal() {
     const modal = document.getElementById('articleModal');
     const closeBtn = document.getElementById('modalClose');
     const backdrop = modal.querySelector('.modal-backdrop');
 
-    // Close modal handlers
-    closeBtn.addEventListener('click', closeArticleModal);
-    backdrop.addEventListener('click', closeArticleModal);
+    // Enhanced close modal handlers with smooth animations
+    closeBtn.addEventListener('click', () => {
+        trackArticleInteraction('close', currentArticleModal);
+        closeAdvancedArticleModal();
+    });
 
-    // ESC key handler
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && currentArticleModal) {
-            closeArticleModal();
+    backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) {
+            trackArticleInteraction('backdrop_close', currentArticleModal);
+            closeAdvancedArticleModal();
         }
     });
 
-    // Initialize share buttons
-    initializeShareButtons();
+    // Enhanced ESC key handler with focus management
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && currentArticleModal) {
+            e.preventDefault();
+            trackArticleInteraction('escape_close', currentArticleModal);
+            closeAdvancedArticleModal();
+        }
+    });
 
-    // Initialize reading progress
-    initializeReadingProgress();
+    // Initialize advanced share buttons with tracking
+    initializeAdvancedShareButtons();
+
+    // Initialize enhanced reading progress with velocity tracking
+    initializeAdvancedReadingProgress();
+
+    // Initialize bookmark functionality
+    initializeModalBookmarks();
+
+    // Add keyboard navigation
+    initializeModalKeyboardNav();
+
+    console.log('✨ Advanced Article Modal initialized');
 }
 
 function openArticleModal(articleId) {
     const articleData = articlesData[articleId];
-    if (!articleData) return;
+    if (!articleData) {
+        console.error(`Article ${articleId} not found`);
+        return;
+    }
 
     const modal = document.getElementById('articleModal');
     currentArticleModal = articleId;
 
-    // Populate modal content
-    populateModalContent(articleData);
+    // Record modal open time for analytics
+    articleMetrics.modalOpenTime = Date.now();
 
-    // Show modal with animation
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
+    // Update view count and analytics
+    incrementViewCount(articleId);
+    updateTotalViews();
 
-    setTimeout(() => {
-        modal.classList.add('active');
-    }, 10);
+    // Populate modal with enhanced content
+    populateAdvancedModalContent(articleData);
 
-    // Generate related articles
-    generateRelatedArticles(articleId);
+    // Show modal with spectacular animation
+    showModalWithAnimation(modal);
 
-    // Reset reading progress
-    resetReadingProgress();
+    // Generate smart related articles based on category and tags
+    generateSmartRelatedArticles(articleId);
 
-    // Add particles to hero image
-    addModalParticles();
+    // Reset enhanced reading progress
+    resetAdvancedReadingProgress();
+
+    // Add spectacular particles to hero image
+    addAdvancedModalParticles();
+
+    // Lazy load article content if needed
+    lazyLoadArticleContent(articleId);
+
+    // Initialize modal-specific features
+    initializeModalInteractions();
+
+    console.log(`📖 Opened article: ${articleData.title}`);
 }
 
-function closeArticleModal() {
+function closeAdvancedArticleModal() {
     const modal = document.getElementById('articleModal');
 
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
+    if (!currentArticleModal) return;
 
+    // Calculate reading time for analytics
+    const readingTime = Date.now() - articleMetrics.modalOpenTime;
+    trackArticleInteraction('reading_time', currentArticleModal, { duration: readingTime });
+
+    // Animate modal close with blur effect
+    modal.classList.add('closing');
+    modal.classList.remove('active');
+
+    // Restore body scroll with smooth transition
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+
+    // Clean up modal state
     setTimeout(() => {
         modal.style.display = 'none';
+        modal.classList.remove('closing');
         currentArticleModal = null;
-    }, 300);
+
+        // Clean up particles and effects
+        cleanupModalEffects();
+    }, 400);
+
+    console.log('📖 Article modal closed');
 }
 
-function populateModalContent(articleData) {
-    // Update hero image
+function showModalWithAnimation(modal) {
+    // Add blur backdrop effect
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+
+    // Show modal with smooth animation
+    modal.style.display = 'block';
+    modal.classList.add('opening');
+
+    // Use requestAnimationFrame for smooth animation
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            modal.classList.add('active');
+            modal.classList.remove('opening');
+        });
+    });
+
+    // Add focus trap for accessibility
+    trapFocusInModal(modal);
+}
+
+function trapFocusInModal(modal) {
+    const focusableElements = modal.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstFocusableElement = focusableElements[0];
+    const lastFocusableElement = focusableElements[focusableElements.length - 1];
+
+    // Focus first element
+    if (firstFocusableElement) {
+        firstFocusableElement.focus();
+    }
+
+    // Handle tab navigation
+    modal.addEventListener('keydown', function(e) {
+        if (e.key === 'Tab') {
+            if (e.shiftKey) {
+                if (document.activeElement === firstFocusableElement) {
+                    e.preventDefault();
+                    lastFocusableElement.focus();
+                }
+            } else {
+                if (document.activeElement === lastFocusableElement) {
+                    e.preventDefault();
+                    firstFocusableElement.focus();
+                }
+            }
+        }
+    });
+}
+
+function populateAdvancedModalContent(articleData) {
+    // Update hero image with enhanced effects
     const heroImage = document.getElementById('modalHeroImage');
     heroImage.innerHTML = `<i class="${articleData.image}"></i>`;
+    heroImage.setAttribute('data-category', articleData.categoryClass);
 
-    // Update meta information
+    // Update meta information with enhanced stats and bookmark button
     const modalMeta = document.getElementById('modalMeta');
+    const isBookmarked = bookmarkedArticles.includes(currentArticleModal);
+
     modalMeta.innerHTML = `
         <span class="article-category ${articleData.categoryClass}">${articleData.category}</span>
         <div class="article-stats">
             <span class="reading-time"><i class="fas fa-clock"></i> ${articleData.readingTime}</span>
-            <span class="view-count"><i class="fas fa-eye"></i> ${articleData.viewCount}</span>
+            <span class="view-count"><i class="fas fa-eye"></i> ${getUpdatedViewCount(currentArticleModal)}</span>
+            <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}" data-article="${currentArticleModal}">
+                <i class="fas fa-bookmark"></i>
+                <span>${isBookmarked ? 'Bookmarked' : 'Bookmark'}</span>
+            </button>
         </div>
     `;
 
-    // Update title
+    // Update title with reading time calculation
     const modalTitle = document.getElementById('modalTitle');
     modalTitle.textContent = articleData.title;
 
-    // Update author
+    // Calculate and update actual reading time based on content
+    const readingTimeMinutes = calculateReadingTime(articleData.content);
+    updateReadingTimeDisplay(readingTimeMinutes);
+
+    // Update author with enhanced information
     const modalAuthor = document.getElementById('modalAuthor');
     modalAuthor.innerHTML = `
         <div class="author-avatar">
@@ -2101,155 +2199,1172 @@ function populateModalContent(articleData) {
         <div class="author-info">
             <span class="author-name">${articleData.author.name}</span>
             <span class="author-role">${articleData.author.role}</span>
+            <span class="publish-date">Published ${getRelativeDate()}</span>
+        </div>
+        <div class="article-actions-header">
+            <button class="font-size-btn" id="fontSizeToggle">
+                <i class="fas fa-text-height"></i>
+            </button>
+            <button class="dark-mode-btn" id="articleDarkMode">
+                <i class="fas fa-moon"></i>
+            </button>
         </div>
     `;
 
-    // Update article content
+    // Update article content with enhanced formatting
     const modalContent = document.getElementById('modalArticleContent');
-    modalContent.innerHTML = articleData.content;
+    modalContent.innerHTML = enhanceArticleContent(articleData.content);
 
-    // Add CSS animation classes
+    // Add advanced typography controls
+    addTypographyControls();
+}
+
+// ========================================
+// ADVANCED FEATURES & FUNCTIONALITY
+// ========================================
+
+function calculateReadingTime(content) {
+    const wordsPerMinute = 200;
+    const wordCount = content.replace(/<[^>]*>/g, '').split(/\s+/).length;
+    return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
+}
+
+function enhanceArticleContent(content) {
+    // Add enhanced styling and interactive elements
+    return content
+        .replace(/<h2>/g, '<h2 class="article-heading animate-on-scroll">')
+        .replace(/<h3>/g, '<h3 class="article-subheading animate-on-scroll">')
+        .replace(/<p>/g, '<p class="article-paragraph animate-on-scroll">')
+        .replace(/<blockquote>/g, '<blockquote class="article-quote animate-on-scroll">')
+        .replace(/<ul>/g, '<ul class="article-list animate-on-scroll">')
+        .replace(/<strong>/g, '<strong class="article-highlight">');
+}
+
+function getUpdatedViewCount(articleId) {
+    const baseCount = articlesData[articleId]?.viewCount || '0';
+    const additionalViews = Math.floor(totalArticleViews / Object.keys(articlesData).length);
+    const numericCount = parseInt(baseCount.replace(/[^0-9]/g, ''));
+    const newCount = numericCount + additionalViews;
+
+    if (newCount >= 1000) {
+        return (newCount / 1000).toFixed(1) + 'K';
+    }
+    return newCount.toString();
+}
+
+function getRelativeDate() {
+    const dates = ['2 days ago', '1 week ago', '3 days ago', '5 days ago', '1 week ago'];
+    return dates[Math.floor(Math.random() * dates.length)];
+}
+
+function updateReadingTimeDisplay(minutes) {
+    const readingTimeElements = document.querySelectorAll('.reading-time');
+    readingTimeElements.forEach(element => {
+        element.innerHTML = `<i class="fas fa-clock"></i> ${minutes} min read`;
+    });
+}
+
+function addTypographyControls() {
+    // Font size toggle
+    const fontSizeBtn = document.getElementById('fontSizeToggle');
+    let currentFontSize = 'normal';
+
+    if (fontSizeBtn) {
+        fontSizeBtn.addEventListener('click', function() {
+            const articleContent = document.getElementById('modalArticleContent');
+
+            switch (currentFontSize) {
+                case 'normal':
+                    articleContent.style.fontSize = '1.1em';
+                    currentFontSize = 'large';
+                    this.innerHTML = '<i class="fas fa-text-height"></i>';
+                    break;
+                case 'large':
+                    articleContent.style.fontSize = '1.2em';
+                    currentFontSize = 'xl';
+                    this.innerHTML = '<i class="fas fa-text-height"></i>';
+                    break;
+                default:
+                    articleContent.style.fontSize = '';
+                    currentFontSize = 'normal';
+                    this.innerHTML = '<i class="fas fa-text-height"></i>';
+            }
+
+            trackArticleInteraction('font_size_change', currentArticleModal, { size: currentFontSize });
+        });
+    }
+
+    // Dark mode toggle for article
+    const darkModeBtn = document.getElementById('articleDarkMode');
+    if (darkModeBtn) {
+        darkModeBtn.addEventListener('click', function() {
+            const modal = document.getElementById('articleModal');
+            modal.classList.toggle('dark-mode');
+
+            const isDarkMode = modal.classList.contains('dark-mode');
+            this.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+
+            trackArticleInteraction('dark_mode_toggle', currentArticleModal, { enabled: isDarkMode });
+        });
+    }
+}
+
+function incrementViewCount(articleId) {
+    totalArticleViews++;
+    localStorage.setItem('jufipai_total_views', totalArticleViews.toString());
+}
+
+function updateTotalViews() {
+    // Update view counters across all article cards
+    document.querySelectorAll('[data-article]').forEach(element => {
+        const articleId = element.getAttribute('data-article');
+        const viewCountElement = element.querySelector('.view-count');
+        if (viewCountElement && articlesData[articleId]) {
+            viewCountElement.innerHTML = `<i class="fas fa-eye"></i> ${getUpdatedViewCount(articleId)}`;
+        }
+    });
+}
+
+function updateViewCounters() {
+    updateTotalViews();
+}
+
+function trackArticleInteraction(action, articleId, data = {}) {
+    const interactionData = {
+        action,
+        articleId,
+        timestamp: Date.now(),
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+        ...data
+    };
+
+    // Store in localStorage for analytics
+    const interactions = JSON.parse(localStorage.getItem('jufipai_interactions') || '[]');
+    interactions.push(interactionData);
+
+    // Keep only last 100 interactions to prevent storage bloat
+    if (interactions.length > 100) {
+        interactions.splice(0, interactions.length - 100);
+    }
+
+    localStorage.setItem('jufipai_interactions', JSON.stringify(interactions));
+
+    console.log(`📊 Tracked interaction: ${action} on article ${articleId}`, data);
+}
+
+// ========================================
+// ADVANCED READING PROGRESS & SCROLL TRACKING
+// ========================================
+
+function initializeAdvancedReadingProgress() {
+    const modalContent = document.querySelector('.modal-content');
+    const progressBar = document.getElementById('progressBar');
+
+    if (!modalContent || !progressBar) return;
+
+    let lastScrollTime = Date.now();
+    let scrollVelocity = 0;
+    let maxScrollDepth = 0;
+
+    modalContent.addEventListener('scroll', function() {
+        const currentTime = Date.now();
+        const timeDelta = currentTime - lastScrollTime;
+
+        const scrollTop = this.scrollTop;
+        const scrollHeight = this.scrollHeight - this.clientHeight;
+        const progress = Math.min((scrollTop / scrollHeight) * 100, 100);
+
+        // Calculate scroll velocity
+        scrollVelocity = scrollTop / timeDelta;
+        lastScrollTime = currentTime;
+
+        // Update max scroll depth
+        maxScrollDepth = Math.max(maxScrollDepth, progress);
+        articleMetrics.scrollDepth = maxScrollDepth;
+
+        // Update progress bar with smooth animation
+        progressBar.style.width = progress + '%';
+
+        // Add velocity-based color changes
+        if (scrollVelocity > 2) {
+            progressBar.classList.add('fast-scroll');
+        } else {
+            progressBar.classList.remove('fast-scroll');
+        }
+
+        // Track milestone reads
+        if (progress > 25 && !progressBar.dataset.milestone25) {
+            trackArticleInteraction('read_25_percent', currentArticleModal);
+            progressBar.dataset.milestone25 = 'true';
+        }
+        if (progress > 50 && !progressBar.dataset.milestone50) {
+            trackArticleInteraction('read_50_percent', currentArticleModal);
+            progressBar.dataset.milestone50 = 'true';
+        }
+        if (progress > 75 && !progressBar.dataset.milestone75) {
+            trackArticleInteraction('read_75_percent', currentArticleModal);
+            progressBar.dataset.milestone75 = 'true';
+        }
+        if (progress > 90 && !progressBar.dataset.milestone90) {
+            trackArticleInteraction('read_completed', currentArticleModal);
+            progressBar.dataset.milestone90 = 'true';
+        }
+    });
+}
+
+function resetAdvancedReadingProgress() {
+    const progressBar = document.getElementById('progressBar');
+    const modalContent = document.querySelector('.modal-content');
+
+    if (progressBar) {
+        progressBar.style.width = '0%';
+        progressBar.classList.remove('fast-scroll');
+
+        // Reset milestone tracking
+        delete progressBar.dataset.milestone25;
+        delete progressBar.dataset.milestone50;
+        delete progressBar.dataset.milestone75;
+        delete progressBar.dataset.milestone90;
+    }
+
+    if (modalContent) {
+        modalContent.scrollTop = 0;
+    }
+
+    // Reset metrics
+    articleMetrics.scrollDepth = 0;
+}
+
+// ========================================
+// BOOKMARK SYSTEM
+// ========================================
+
+function initializeBookmarkSystem() {
+    // Add bookmark indicators to article cards
+    updateBookmarkIndicators();
+}
+
+function initializeModalBookmarks() {
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.bookmark-btn')) {
+            e.preventDefault();
+            const btn = e.target.closest('.bookmark-btn');
+            const articleId = btn.getAttribute('data-article');
+            toggleBookmark(articleId, btn);
+        }
+    });
+}
+
+function toggleBookmark(articleId, btnElement) {
+    const isCurrentlyBookmarked = bookmarkedArticles.includes(articleId);
+
+    if (isCurrentlyBookmarked) {
+        // Remove bookmark
+        bookmarkedArticles = bookmarkedArticles.filter(id => id !== articleId);
+        btnElement.classList.remove('bookmarked');
+        btnElement.querySelector('span').textContent = 'Bookmark';
+
+        showBookmarkFeedback('Bookmark removed', 'removed');
+        trackArticleInteraction('bookmark_removed', articleId);
+    } else {
+        // Add bookmark
+        bookmarkedArticles.push(articleId);
+        btnElement.classList.add('bookmarked');
+        btnElement.querySelector('span').textContent = 'Bookmarked';
+
+        showBookmarkFeedback('Article bookmarked!', 'added');
+        trackArticleInteraction('bookmark_added', articleId);
+    }
+
+    // Save to localStorage
+    localStorage.setItem('jufipai_bookmarks', JSON.stringify(bookmarkedArticles));
+
+    // Update bookmark indicators on article cards
+    updateBookmarkIndicators();
+}
+
+function showBookmarkFeedback(message, type) {
+    const feedback = document.createElement('div');
+    feedback.className = `bookmark-feedback ${type}`;
+    feedback.innerHTML = `
+        <i class="fas fa-${type === 'added' ? 'bookmark' : 'trash'}"></i>
+        <span>${message}</span>
+    `;
+
+    feedback.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'added' ? 'rgba(34, 197, 94, 0.95)' : 'rgba(239, 68, 68, 0.95)'};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        transform: translateX(300px);
+        transition: transform 0.3s ease-out;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    `;
+
+    document.body.appendChild(feedback);
+
+    requestAnimationFrame(() => {
+        feedback.style.transform = 'translateX(0)';
+    });
+
     setTimeout(() => {
-        addContentAnimations();
+        feedback.style.transform = 'translateX(300px)';
+        setTimeout(() => {
+            if (feedback.parentNode) {
+                feedback.parentNode.removeChild(feedback);
+            }
+        }, 300);
+    }, 3000);
+}
+
+function updateBookmarkIndicators() {
+    document.querySelectorAll('[data-article]').forEach(element => {
+        const articleId = element.getAttribute('data-article');
+        const isBookmarked = bookmarkedArticles.includes(articleId);
+
+        // Remove existing indicator
+        const existingIndicator = element.querySelector('.bookmark-indicator');
+        if (existingIndicator) {
+            existingIndicator.remove();
+        }
+
+        // Add indicator if bookmarked
+        if (isBookmarked) {
+            const indicator = document.createElement('div');
+            indicator.className = 'bookmark-indicator';
+            indicator.innerHTML = '<i class="fas fa-bookmark"></i>';
+            indicator.style.cssText = `
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: rgba(59, 130, 246, 0.9);
+                color: white;
+                width: 24px;
+                height: 24px;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                z-index: 10;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            `;
+            element.style.position = 'relative';
+            element.appendChild(indicator);
+        }
+    });
+}
+
+// ========================================
+// ADVANCED SOCIAL SHARING SYSTEM
+// ========================================
+
+function initializeAdvancedShareButtons() {
+    document.addEventListener('click', function(e) {
+        const shareBtn = e.target.closest('.share-btn');
+        if (!shareBtn || !currentArticleModal) return;
+
+        e.preventDefault();
+
+        const articleData = articlesData[currentArticleModal];
+        const articleUrl = `${window.location.origin}${window.location.pathname}#article-${currentArticleModal}`;
+        const title = encodeURIComponent(articleData.title);
+        const text = encodeURIComponent(`Check out this insightful article: ${articleData.title}`);
+
+        if (shareBtn.classList.contains('twitter')) {
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(articleUrl)}&via=JufipAI`;
+            openShareWindow(twitterUrl, 'Twitter');
+            trackSocialShare('twitter');
+
+        } else if (shareBtn.classList.contains('linkedin')) {
+            const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(articleUrl)}`;
+            openShareWindow(linkedinUrl, 'LinkedIn');
+            trackSocialShare('linkedin');
+
+        } else if (shareBtn.classList.contains('facebook')) {
+            const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}`;
+            openShareWindow(facebookUrl, 'Facebook');
+            trackSocialShare('facebook');
+
+        } else if (shareBtn.classList.contains('copy-link')) {
+            copyArticleLink(articleUrl, shareBtn);
+        }
+    });
+}
+
+function openShareWindow(url, platform) {
+    const width = 600;
+    const height = 400;
+    const left = (window.innerWidth - width) / 2;
+    const top = (window.innerHeight - height) / 2;
+
+    window.open(
+        url,
+        `share-${platform}`,
+        `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
+    );
+}
+
+function copyArticleLink(url, btnElement) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+            showCopyLinkSuccess(btnElement);
+            trackSocialShare('copy_link');
+        }).catch(err => {
+            console.error('Failed to copy link:', err);
+            fallbackCopyLink(url, btnElement);
+        });
+    } else {
+        fallbackCopyLink(url, btnElement);
+    }
+}
+
+function fallbackCopyLink(url, btnElement) {
+    // Fallback for browsers that don't support clipboard API
+    const textArea = document.createElement('textarea');
+    textArea.value = url;
+    textArea.style.position = 'fixed';
+    textArea.style.opacity = '0';
+    document.body.appendChild(textArea);
+    textArea.select();
+
+    try {
+        document.execCommand('copy');
+        showCopyLinkSuccess(btnElement);
+        trackSocialShare('copy_link');
+    } catch (err) {
+        console.error('Fallback copy failed:', err);
+    } finally {
+        document.body.removeChild(textArea);
+    }
+}
+
+function showCopyLinkSuccess(btnElement) {
+    const originalContent = btnElement.innerHTML;
+    const originalColor = btnElement.style.background;
+
+    btnElement.innerHTML = '<i class="fas fa-check"></i>';
+    btnElement.style.background = 'rgba(34, 197, 94, 0.9)';
+    btnElement.style.transform = 'scale(1.1)';
+
+    setTimeout(() => {
+        btnElement.innerHTML = originalContent;
+        btnElement.style.background = originalColor;
+        btnElement.style.transform = '';
+    }, 2000);
+}
+
+function trackSocialShare(platform) {
+    articleMetrics.socialShares++;
+    localStorage.setItem('jufipai_social_shares', articleMetrics.socialShares.toString());
+
+    trackArticleInteraction('social_share', currentArticleModal, { platform });
+
+    console.log(`📤 Article shared on ${platform}`);
+}
+
+// ========================================
+// ADVANCED SEARCH & FILTER SYSTEM
+// ========================================
+
+function initializeArticleSearch() {
+    // Create search interface if it doesn't exist
+    createSearchInterface();
+}
+
+function createSearchInterface() {
+    const articlesHeader = document.querySelector('.articles-header');
+    if (!articlesHeader || document.getElementById('articleSearch')) return;
+
+    const searchContainer = document.createElement('div');
+    searchContainer.className = 'articles-search-container';
+    searchContainer.innerHTML = `
+        <div class="search-input-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="articleSearch" placeholder="Search articles..." class="articles-search-input">
+            <button class="search-clear-btn" id="searchClearBtn" style="display: none;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="search-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="ai">AI Innovation</button>
+            <button class="filter-btn" data-filter="automation">Automation</button>
+            <button class="filter-btn" data-filter="case-study">Case Studies</button>
+            <button class="filter-btn" data-filter="innovation">Innovation</button>
+        </div>
+        <div class="search-results-info" id="searchResultsInfo"></div>
+    `;
+
+    articlesHeader.appendChild(searchContainer);
+
+    // Initialize search functionality
+    initializeArticleSearchAndFilter();
+}
+
+function initializeArticleSearchAndFilter() {
+    const searchInput = document.getElementById('articleSearch');
+    const clearBtn = document.getElementById('searchClearBtn');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const resultsInfo = document.getElementById('searchResultsInfo');
+
+    if (!searchInput) return;
+
+    let currentFilter = 'all';
+    let searchTimeout;
+
+    // Search input handler
+    searchInput.addEventListener('input', function(e) {
+        const query = e.target.value.trim();
+
+        // Show/hide clear button
+        clearBtn.style.display = query ? 'flex' : 'none';
+
+        // Debounce search
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            performSearch(query, currentFilter);
+            trackArticleInteraction('search', null, { query, filter: currentFilter });
+        }, 300);
+    });
+
+    // Clear button handler
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            clearBtn.style.display = 'none';
+            performSearch('', currentFilter);
+            searchInput.focus();
+        });
+    }
+
+    // Filter button handlers
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Update active filter
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            currentFilter = this.getAttribute('data-filter');
+            performSearch(searchInput.value.trim(), currentFilter);
+
+            trackArticleInteraction('filter', null, { filter: currentFilter });
+        });
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            searchInput.focus();
+        }
+
+        if (e.key === 'Escape' && document.activeElement === searchInput) {
+            searchInput.blur();
+        }
+    });
+}
+
+function performSearch(query, filter) {
+    const articleElements = document.querySelectorAll('[data-article]');
+    let visibleCount = 0;
+    let totalArticles = articleElements.length;
+
+    articleElements.forEach(element => {
+        const articleId = element.getAttribute('data-article');
+        const articleData = articlesData[articleId];
+
+        if (!articleData) return;
+
+        let matchesSearch = true;
+        let matchesFilter = true;
+
+        // Search matching
+        if (query) {
+            const searchText = `${articleData.title} ${articleData.category} ${articleData.author.name} ${articleData.content}`.toLowerCase();
+            matchesSearch = searchText.includes(query.toLowerCase());
+        }
+
+        // Filter matching
+        if (filter !== 'all') {
+            matchesFilter = articleData.categoryClass === filter;
+        }
+
+        // Show/hide article with animation
+        const shouldShow = matchesSearch && matchesFilter;
+
+        if (shouldShow) {
+            showArticleElement(element);
+            visibleCount++;
+        } else {
+            hideArticleElement(element);
+        }
+    });
+
+    // Update results info
+    updateSearchResultsInfo(visibleCount, totalArticles, query, filter);
+}
+
+function showArticleElement(element) {
+    element.style.display = '';
+    element.style.opacity = '0';
+    element.style.transform = 'scale(0.9) translateY(20px)';
+
+    requestAnimationFrame(() => {
+        element.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+        element.style.opacity = '1';
+        element.style.transform = 'scale(1) translateY(0)';
+    });
+}
+
+function hideArticleElement(element) {
+    element.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+    element.style.opacity = '0';
+    element.style.transform = 'scale(0.9) translateY(-10px)';
+
+    setTimeout(() => {
+        element.style.display = 'none';
     }, 300);
 }
 
+function updateSearchResultsInfo(visible, total, query, filter) {
+    const resultsInfo = document.getElementById('searchResultsInfo');
+    if (!resultsInfo) return;
+
+    let message = '';
+
+    if (query || filter !== 'all') {
+        if (visible === 0) {
+            message = query ? `No articles found for "${query}"` : 'No articles match the current filter';
+        } else if (visible === 1) {
+            message = `1 article found`;
+        } else {
+            message = `${visible} articles found`;
+        }
+
+        if (visible < total) {
+            message += ` (of ${total} total)`;
+        }
+    }
+
+    resultsInfo.textContent = message;
+    resultsInfo.style.display = message ? 'block' : 'none';
+}
+
+// ========================================
+// FLOATING ELEMENTS WITH MOUSE PARALLAX
+// ========================================
+
+function initializeAdvancedFloatingElements() {
+    const floatingChips = document.querySelectorAll('.floating-chip');
+    let mouseX = 0;
+    let mouseY = 0;
+
+    // Track mouse movement with throttling
+    let mouseMoveTimeout;
+    document.addEventListener('mousemove', function(e) {
+        clearTimeout(mouseMoveTimeout);
+        mouseMoveTimeout = setTimeout(() => {
+            mouseX = e.clientX / window.innerWidth;
+            mouseY = e.clientY / window.innerHeight;
+            updateFloatingElements();
+        }, 16); // ~60fps
+    });
+
+    function updateFloatingElements() {
+        floatingChips.forEach((chip, index) => {
+            const moveX = (mouseX - 0.5) * (20 + index * 10);
+            const moveY = (mouseY - 0.5) * (15 + index * 8);
+
+            chip.style.transform = `translate(${moveX}px, ${moveY}px) rotate(${moveX * 0.5}deg)`;
+        });
+    }
+
+    // Add hover effects to floating chips
+    floatingChips.forEach((chip, index) => {
+        chip.addEventListener('mouseenter', function() {
+            this.style.transform += ' scale(1.2)';
+            this.style.filter = 'brightness(1.3) saturate(1.2)';
+        });
+
+        chip.addEventListener('mouseleave', function() {
+            // Reset will happen on next mouse move
+            this.style.filter = '';
+        });
+    });
+}
+
+// ========================================
+// ADVANCED SCROLL ANIMATIONS WITH INTERSECTION OBSERVER
+// ========================================
+
+function initializeAdvancedScrollAnimations() {
+    // Create intersection observer with optimized settings
+    const observerOptions = {
+        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
+        rootMargin: '50px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const element = entry.target;
+            const ratio = entry.intersectionRatio;
+
+            if (ratio > 0.1) {
+                // Element is entering viewport
+                element.classList.add('animate-in');
+
+                // Add staggered animation delay for multiple elements
+                const index = Array.from(element.parentElement.children).indexOf(element);
+                element.style.animationDelay = `${index * 0.1}s`;
+
+                // Add parallax effect for article cards
+                if (element.classList.contains('article-card') || element.classList.contains('featured-article')) {
+                    addParallaxScrollEffect(element, ratio);
+                }
+            } else {
+                // Element is leaving viewport
+                element.classList.remove('animate-in');
+            }
+        });
+    }, observerOptions);
+
+    // Observe article cards and other elements
+    const elementsToObserve = document.querySelectorAll('.article-card, .featured-article, .articles-header');
+    elementsToObserve.forEach(element => observer.observe(element));
+}
+
+function addParallaxScrollEffect(element, ratio) {
+    const translateY = (1 - ratio) * 20;
+    const opacity = Math.max(0.5, ratio);
+
+    element.style.transform = `translateY(${translateY}px)`;
+    element.style.opacity = opacity;
+}
+
+// ========================================
+// ADVANCED LOAD MORE WITH PAGINATION
+// ========================================
+
+function initializeAdvancedLoadMore() {
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    if (!loadMoreBtn) return;
+
+    let currentPage = 1;
+    const articlesPerPage = 6;
+
+    loadMoreBtn.addEventListener('click', function() {
+        this.classList.add('loading');
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading more insights...';
+
+        // Simulate API call with realistic delay
+        setTimeout(() => {
+            loadMoreArticles(currentPage + 1);
+            currentPage++;
+
+            this.classList.remove('loading');
+            this.innerHTML = '<span>Discover More Insights</span><i class="fas fa-plus"></i>';
+
+            // Show completion message after 3 loads
+            if (currentPage >= 3) {
+                showLoadMoreCompletion();
+            }
+        }, 1500 + Math.random() * 1000); // 1.5-2.5s delay
+    });
+}
+
+function loadMoreArticles(page) {
+    // Simulate loading additional articles
+    const articlesGrid = document.querySelector('.articles-grid');
+    if (!articlesGrid) return;
+
+    // Create placeholder articles for demonstration
+    const newArticles = generateDemoArticles(page);
+
+    newArticles.forEach((articleHtml, index) => {
+        const articleElement = document.createElement('article');
+        articleElement.innerHTML = articleHtml;
+        articleElement.classList.add('article-card', 'loading-new');
+
+        // Animate entry
+        setTimeout(() => {
+            articlesGrid.appendChild(articleElement.firstElementChild);
+
+            // Initialize effects for new article
+            const newCard = articlesGrid.lastElementChild;
+            addAdvancedArticleEffects(newCard);
+
+            // Animate in
+            requestAnimationFrame(() => {
+                newCard.classList.remove('loading-new');
+                newCard.classList.add('animate-in');
+            });
+        }, index * 100);
+    });
+
+    trackArticleInteraction('load_more', null, { page });
+}
+
+function generateDemoArticles(page) {
+    const demoArticles = [
+        {
+            title: "AI-Powered Customer Service: 24/7 Excellence",
+            category: "Automation",
+            author: "James Wilson"
+        },
+        {
+            title: "Machine Learning ROI: Measuring Real Impact",
+            category: "Analytics",
+            author: "Dr. Maria Garcia"
+        },
+        {
+            title: "Voice AI Integration: The Next Frontier",
+            category: "Innovation",
+            author: "Alex Chen"
+        }
+    ];
+
+    return demoArticles.map((article, index) => `
+        <div class="article-card demo-article" data-article="demo-${page}-${index}">
+            <div class="card-particles"></div>
+            <div class="article-image">
+                <div class="image-placeholder">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="image-overlay"></div>
+            </div>
+            <div class="article-content">
+                <div class="article-meta">
+                    <span class="article-category automation">${article.category}</span>
+                    <div class="article-stats">
+                        <span class="reading-time"><i class="fas fa-clock"></i> 6 min</span>
+                        <span class="view-count"><i class="fas fa-eye"></i> New</span>
+                    </div>
+                </div>
+                <h3>${article.title}</h3>
+                <p>Coming soon! Subscribe to our newsletter to be notified when this article is published.</p>
+                <div class="article-author">
+                    <div class="author-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <span class="author-name">${article.author}</span>
+                </div>
+            </div>
+        </div>
+    `);
+}
+
+function showLoadMoreCompletion() {
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    const container = loadMoreBtn.parentElement;
+
+    // Replace button with completion message
+    const completionMessage = document.createElement('div');
+    completionMessage.className = 'load-more-completion';
+    completionMessage.innerHTML = `
+        <div class="completion-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h3>You've discovered all our insights!</h3>
+        <p>Subscribe to our newsletter to be the first to read new articles about AI automation and business transformation.</p>
+        <div class="completion-actions">
+            <button class="subscribe-btn">
+                <i class="fas fa-envelope"></i>
+                Subscribe for Updates
+            </button>
+            <button class="back-to-top-btn" onclick="scrollToTop()">
+                <i class="fas fa-arrow-up"></i>
+                Back to Top
+            </button>
+        </div>
+    `;
+
+    container.replaceChild(completionMessage, loadMoreBtn);
+
+    // Initialize completion actions
+    initializeCompletionActions();
+}
+
+function initializeCompletionActions() {
+    const subscribeBtn = document.querySelector('.subscribe-btn');
+    if (subscribeBtn) {
+        subscribeBtn.addEventListener('click', function() {
+            // Scroll to contact form
+            const contactSection = document.getElementById('contact');
+            if (contactSection) {
+                contactSection.scrollIntoView({ behavior: 'smooth' });
+            }
+            trackArticleInteraction('subscribe_intent', null);
+        });
+    }
+}
+
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    trackArticleInteraction('scroll_to_top', null);
+}
+
+// ========================================
+// PERFORMANCE MONITORING & OPTIMIZATION
+// ========================================
+
+function initializePerformanceMonitoring() {
+    // Monitor article interaction performance
+    const perfObserver = new PerformanceObserver((entryList) => {
+        entryList.getEntries().forEach(entry => {
+            if (entry.name.includes('article')) {
+                console.log(`⚡ Performance: ${entry.name} took ${entry.duration.toFixed(2)}ms`);
+            }
+        });
+    });
+
+    if ('PerformanceObserver' in window) {
+        try {
+            perfObserver.observe({ entryTypes: ['navigation', 'paint', 'measure'] });
+        } catch (e) {
+            console.log('Performance Observer not supported');
+        }
+    }
+
+    // Track memory usage if available
+    if ('memory' in performance) {
+        const memoryInfo = performance.memory;
+        console.log('🧠 Memory Usage:', {
+            used: Math.round(memoryInfo.usedJSHeapSize / 1048576) + ' MB',
+            total: Math.round(memoryInfo.totalJSHeapSize / 1048576) + ' MB',
+            limit: Math.round(memoryInfo.jsHeapSizeLimit / 1048576) + ' MB'
+        });
+    }
+}
+
+function lazyLoadArticleContent(articleId) {
+    // Simulate lazy loading for enhanced content
+    const articleData = articlesData[articleId];
+    if (!articleData) return;
+
+    // Mark as enhanced content loaded
+    performance.mark(`article-${articleId}-content-start`);
+
+    // Simulate API call for enhanced content
+    setTimeout(() => {
+        performance.mark(`article-${articleId}-content-end`);
+        performance.measure(
+            `article-${articleId}-content-load`,
+            `article-${articleId}-content-start`,
+            `article-${articleId}-content-end`
+        );
+
+        // Trigger content animations
+        addContentAnimations();
+    }, 100);
+}
+
 function addContentAnimations() {
-    const contentElements = document.querySelectorAll('#modalArticleContent h2, #modalArticleContent h3, #modalArticleContent p, #modalArticleContent ul, #modalArticleContent blockquote');
+    const contentElements = document.querySelectorAll('#modalArticleContent .animate-on-scroll');
 
     contentElements.forEach((element, index) => {
         element.style.opacity = '0';
         element.style.transform = 'translateY(20px)';
-        element.style.transition = 'all 0.6s ease';
-        element.style.transitionDelay = `${index * 0.1}s`;
+        element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
 
         setTimeout(() => {
             element.style.opacity = '1';
             element.style.transform = 'translateY(0)';
-        }, 100);
+        }, index * 100);
     });
 }
 
-function addModalParticles() {
+function initializeModalInteractions() {
+    // Add enhanced modal interactions
+    initializeModalKeyboardNav();
+    addModalResizeHandling();
+    optimizeModalScrolling();
+}
+
+function initializeModalKeyboardNav() {
+    document.addEventListener('keydown', function(e) {
+        if (!currentArticleModal) return;
+
+        switch (e.key) {
+            case 'ArrowLeft':
+                navigateToPreviousArticle();
+                break;
+            case 'ArrowRight':
+                navigateToNextArticle();
+                break;
+            case 'b':
+                if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    toggleCurrentArticleBookmark();
+                }
+                break;
+        }
+    });
+}
+
+function navigateToPreviousArticle() {
+    const articleIds = Object.keys(articlesData);
+    const currentIndex = articleIds.indexOf(currentArticleModal);
+    const prevIndex = currentIndex > 0 ? currentIndex - 1 : articleIds.length - 1;
+    const prevArticleId = articleIds[prevIndex];
+
+    openArticleModal(prevArticleId);
+    trackArticleInteraction('navigate_previous', prevArticleId);
+}
+
+function navigateToNextArticle() {
+    const articleIds = Object.keys(articlesData);
+    const currentIndex = articleIds.indexOf(currentArticleModal);
+    const nextIndex = (currentIndex + 1) % articleIds.length;
+    const nextArticleId = articleIds[nextIndex];
+
+    openArticleModal(nextArticleId);
+    trackArticleInteraction('navigate_next', nextArticleId);
+}
+
+function toggleCurrentArticleBookmark() {
+    const bookmarkBtn = document.querySelector('.bookmark-btn');
+    if (bookmarkBtn) {
+        toggleBookmark(currentArticleModal, bookmarkBtn);
+    }
+}
+
+function addModalResizeHandling() {
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            if (currentArticleModal) {
+                optimizeModalLayout();
+            }
+        }, 250);
+    });
+}
+
+function optimizeModalLayout() {
+    const modal = document.getElementById('articleModal');
+    const modalContent = modal.querySelector('.modal-content');
+
+    // Adjust modal size for different screen sizes
+    if (window.innerWidth < 768) {
+        modal.classList.add('mobile-optimized');
+    } else {
+        modal.classList.remove('mobile-optimized');
+    }
+
+    // Recalculate reading progress
+    if (modalContent) {
+        const progressEvent = new Event('scroll');
+        modalContent.dispatchEvent(progressEvent);
+    }
+}
+
+function optimizeModalScrolling() {
+    const modalContent = document.querySelector('.modal-content');
+    if (!modalContent) return;
+
+    // Add momentum scrolling for iOS
+    modalContent.style.webkitOverflowScrolling = 'touch';
+
+    // Optimize scroll performance
+    let ticking = false;
+    modalContent.addEventListener('scroll', function() {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                // Scroll-based optimizations here
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+}
+
+function addAdvancedModalParticles() {
     const heroParticles = document.querySelector('.hero-particles');
     if (!heroParticles) return;
 
     // Clear existing particles
     heroParticles.innerHTML = '';
 
-    // Create animated particles
-    for (let i = 0; i < 20; i++) {
+    // Create category-specific particles
+    const categoryClass = document.getElementById('modalHeroImage')?.getAttribute('data-category') || 'default';
+
+    createCategoryParticles(heroParticles, categoryClass);
+}
+
+function createCategoryParticles(container, category) {
+    const particleConfigs = {
+        'ai': { count: 15, colors: ['#3b82f6', '#1e40af', '#60a5fa'], shapes: ['circle', 'square'] },
+        'automation': { count: 12, colors: ['#10b981', '#059669', '#34d399'], shapes: ['circle', 'triangle'] },
+        'case-study': { count: 10, colors: ['#f59e0b', '#d97706', '#fbbf24'], shapes: ['diamond', 'circle'] },
+        'innovation': { count: 18, colors: ['#8b5cf6', '#7c3aed', '#a78bfa'], shapes: ['star', 'circle'] },
+        'default': { count: 12, colors: ['#3b82f6', '#60a5fa', '#93c5fd'], shapes: ['circle'] }
+    };
+
+    const config = particleConfigs[category] || particleConfigs['default'];
+
+    for (let i = 0; i < config.count; i++) {
         const particle = document.createElement('div');
+        particle.className = `hero-particle particle-${config.shapes[i % config.shapes.length]}`;
+
+        const size = 4 + Math.random() * 8;
+        const color = config.colors[Math.floor(Math.random() * config.colors.length)];
+        const delay = Math.random() * 4;
+        const duration = 6 + Math.random() * 4;
+
         particle.style.cssText = `
             position: absolute;
-            width: ${2 + Math.random() * 4}px;
-            height: ${2 + Math.random() * 4}px;
-            background: var(--article-accent-blue);
-            border-radius: 50%;
+            width: ${size}px;
+            height: ${size}px;
+            background: ${color};
             left: ${Math.random() * 100}%;
             top: ${Math.random() * 100}%;
-            opacity: ${0.3 + Math.random() * 0.7};
-            animation: modalParticleFloat ${4 + Math.random() * 4}s ease-in-out infinite;
-            animation-delay: ${Math.random() * 2}s;
+            opacity: ${0.4 + Math.random() * 0.6};
+            animation: heroParticleFloat ${duration}s linear ${delay}s infinite;
+            pointer-events: none;
+            border-radius: ${config.shapes[i % config.shapes.length] === 'circle' ? '50%' : '0'};
+            box-shadow: 0 0 ${size * 2}px ${color}40;
         `;
-        heroParticles.appendChild(particle);
+
+        container.appendChild(particle);
     }
 }
 
-function initializeShareButtons() {
-    const shareButtons = document.querySelectorAll('.share-btn');
-
-    shareButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const platform = this.classList.contains('twitter') ? 'twitter' :
-                           this.classList.contains('linkedin') ? 'linkedin' :
-                           this.classList.contains('facebook') ? 'facebook' : 'copy';
-
-            shareArticle(platform);
-        });
-    });
-}
-
-function shareArticle(platform) {
-    if (!currentArticleModal) return;
-
-    const articleData = articlesData[currentArticleModal];
-    const url = encodeURIComponent(window.location.href);
-    const title = encodeURIComponent(articleData.title);
-    const text = encodeURIComponent(`Check out this article: ${articleData.title}`);
-
-    let shareUrl;
-
-    switch (platform) {
-        case 'twitter':
-            shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
-            break;
-        case 'linkedin':
-            shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
-            break;
-        case 'facebook':
-            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-            break;
-        case 'copy':
-            copyToClipboard(window.location.href);
-            showCopySuccess();
-            return;
-    }
-
-    if (shareUrl) {
-        window.open(shareUrl, '_blank', 'width=600,height=400');
-    }
-}
-
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        console.log('Article URL copied to clipboard');
-    });
-}
-
-function showCopySuccess() {
-    const copyBtn = document.querySelector('.share-btn.copy-link');
-    const originalIcon = copyBtn.innerHTML;
-
-    copyBtn.innerHTML = '<i class="fas fa-check"></i>';
-    copyBtn.style.background = 'var(--article-accent-emerald)';
-
-    setTimeout(() => {
-        copyBtn.innerHTML = originalIcon;
-        copyBtn.style.background = 'var(--article-accent-blue)';
-    }, 2000);
-}
-
-function initializeReadingProgress() {
-    const modalContent = document.querySelector('.modal-content');
-    const progressBar = document.getElementById('progressBar');
-
-    if (!modalContent || !progressBar) return;
-
-    modalContent.addEventListener('scroll', function() {
-        const scrollTop = this.scrollTop;
-        const scrollHeight = this.scrollHeight - this.clientHeight;
-        const progress = (scrollTop / scrollHeight) * 100;
-
-        progressBar.style.width = Math.min(progress, 100) + '%';
-    });
-}
-
-function resetReadingProgress() {
-    const progressBar = document.getElementById('progressBar');
-    const modalContent = document.querySelector('.modal-content');
-
-    if (progressBar) progressBar.style.width = '0%';
-    if (modalContent) modalContent.scrollTop = 0;
-}
-
-function generateRelatedArticles(currentArticleId) {
+function generateSmartRelatedArticles(currentArticleId) {
     const relatedGrid = document.getElementById('relatedArticles');
     if (!relatedGrid) return;
 
-    // Get 3 random related articles (excluding current)
+    const currentArticle = articlesData[currentArticleId];
     const allArticleIds = Object.keys(articlesData).filter(id => id !== currentArticleId);
-    const relatedIds = allArticleIds.sort(() => 0.5 - Math.random()).slice(0, 3);
+
+    // Smart algorithm: prioritize same category, then by author, then random
+    const sameCategory = allArticleIds.filter(id => articlesData[id].categoryClass === currentArticle.categoryClass);
+    const sameAuthor = allArticleIds.filter(id => articlesData[id].author.name === currentArticle.author.name);
+    const others = allArticleIds.filter(id => !sameCategory.includes(id) && !sameAuthor.includes(id));
+
+    let relatedIds = [
+        ...sameCategory.slice(0, 2),
+        ...sameAuthor.slice(0, 1),
+        ...others.slice(0, 1)
+    ].slice(0, 3);
+
+    // Fill remaining slots with random articles if needed
+    while (relatedIds.length < 3 && others.length > 0) {
+        const randomId = others[Math.floor(Math.random() * others.length)];
+        if (!relatedIds.includes(randomId)) {
+            relatedIds.push(randomId);
+        }
+    }
 
     relatedGrid.innerHTML = relatedIds.map(id => {
         const article = articlesData[id];
@@ -2257,6 +3372,7 @@ function generateRelatedArticles(currentArticleId) {
             <div class="related-article-card" data-article="${id}">
                 <div class="related-image">
                     <i class="${article.image}"></i>
+                    <div class="related-overlay"></div>
                 </div>
                 <div class="related-content">
                     <span class="article-category ${article.categoryClass}">${article.category}</span>
@@ -2270,226 +3386,448 @@ function generateRelatedArticles(currentArticleId) {
         `;
     }).join('');
 
-    // Add click handlers to related articles
+    // Add click handlers to related articles with enhanced animations
     relatedGrid.querySelectorAll('.related-article-card').forEach(card => {
         card.addEventListener('click', function() {
             const articleId = this.getAttribute('data-article');
-            openArticleModal(articleId);
+
+            // Add click animation
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                openArticleModal(articleId);
+                trackArticleInteraction('related_article_click', articleId, { from: currentArticleId });
+            }, 150);
+        });
+
+        // Add hover effects
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.02) translateY(-5px)';
+            this.style.boxShadow = '0 10px 25px rgba(59, 130, 246, 0.2)';
+        });
+
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+            this.style.boxShadow = '';
         });
     });
 }
 
-function initializeLoadMore() {
-    const loadMoreBtn = document.getElementById('loadMoreBtn');
+function cleanupModalEffects() {
+    // Clean up particles and animations
+    const particles = document.querySelectorAll('.hero-particle, .spectacular-particle, .particle-burst');
+    particles.forEach(particle => {
+        if (particle.parentNode) {
+            particle.parentNode.removeChild(particle);
+        }
+    });
 
-    loadMoreBtn.addEventListener('click', function() {
-        // Simulate loading more articles
-        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-
-        setTimeout(() => {
-            this.innerHTML = '<span>Discover More Insights</span><i class="fas fa-plus"></i>';
-            showLoadMoreMessage();
-        }, 1500);
+    // Reset any transformed elements
+    document.querySelectorAll('[style*="transform"]').forEach(element => {
+        if (element.closest('#articleModal')) {
+            element.style.transform = '';
+            element.style.transition = '';
+        }
     });
 }
 
-function showLoadMoreMessage() {
-    // Create temporary notification
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        bottom: 2rem;
-        right: 2rem;
-        background: var(--article-bg-primary);
-        color: var(--text-primary);
-        padding: 1rem 2rem;
-        border-radius: 12px;
-        border: 1px solid var(--article-accent-blue);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        z-index: 10000;
-        opacity: 0;
-        transform: translateY(20px);
-        transition: all 0.3s ease;
-    `;
-    notification.textContent = "More articles coming soon! Subscribe for updates.";
+// ========================================
+// ENHANCED CSS ANIMATIONS & KEYFRAMES
+// ========================================
 
-    document.body.appendChild(notification);
-
-    setTimeout(() => {
-        notification.style.opacity = '1';
-        notification.style.transform = 'translateY(0)';
-    }, 10);
-
-    setTimeout(() => {
-        notification.style.opacity = '0';
-        notification.style.transform = 'translateY(20px)';
-        setTimeout(() => {
-            document.body.removeChild(notification);
-        }, 300);
-    }, 3000);
-}
-
-function initializeFloatingElements() {
-    // Create intersection observer for floating elements
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.animationPlayState = 'running';
-            }
-        });
-    });
-
-    // Observe floating chips
-    document.querySelectorAll('.floating-chip').forEach(chip => {
-        observer.observe(chip);
-    });
-}
-
-function initializeScrollAnimations() {
-    // Create intersection observer for scroll animations
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
-            }
-        });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -10% 0px'
-    });
-
-    // Observe article cards
-    document.querySelectorAll('.article-card, .featured-article').forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        card.style.transition = 'all 0.6s ease';
-        observer.observe(card);
-    });
-}
-
-// Add CSS animations dynamically
-const articlesAnimationStyles = document.createElement('style');
-articlesAnimationStyles.textContent = `
-    .animate-in {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
+const advancedArticleStyles = document.createElement('style');
+advancedArticleStyles.textContent = `
+    /* Advanced particle animations */
+    @keyframes spectacularParticleFloat {
+        0% {
+            opacity: 0;
+            transform: translate(-50%, -50%) rotate(0deg) translateX(0);
+        }
+        10% {
+            opacity: 1;
+        }
+        90% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -50%) rotate(360deg) translateX(var(--distance));
+        }
     }
 
-    @keyframes hoverParticleFloat {
-        0% { opacity: 0; transform: translateY(0) scale(0); }
-        50% { opacity: 1; transform: translateY(-20px) scale(1); }
-        100% { opacity: 0; transform: translateY(-40px) scale(0); }
+    @keyframes burstExpand {
+        0% {
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.8;
+        }
+        100% {
+            transform: translate(-50%, -50%) scale(3);
+            opacity: 0;
+        }
     }
 
-    @keyframes modalParticleFloat {
-        0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.6; }
-        50% { transform: translateY(-30px) rotate(180deg); opacity: 1; }
+    @keyframes heroParticleFloat {
+        0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 0.4;
+        }
+        50% {
+            opacity: 0.8;
+        }
+        100% {
+            transform: translateY(-100px) rotate(360deg);
+            opacity: 0;
+        }
     }
 
-    .related-article-card {
-        background: var(--article-bg-secondary);
+    /* Advanced modal animations */
+    .article-modal.opening {
+        animation: modalFadeIn 0.4s ease-out forwards;
+    }
+
+    .article-modal.closing {
+        animation: modalFadeOut 0.4s ease-out forwards;
+    }
+
+    @keyframes modalFadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+            backdrop-filter: blur(0px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+            backdrop-filter: blur(10px);
+        }
+    }
+
+    @keyframes modalFadeOut {
+        from {
+            opacity: 1;
+            transform: scale(1);
+            backdrop-filter: blur(10px);
+        }
+        to {
+            opacity: 0;
+            transform: scale(0.9);
+            backdrop-filter: blur(0px);
+        }
+    }
+
+    /* Enhanced article card animations */
+    .article-card.animate-in {
+        animation: cardSlideIn 0.6s ease-out forwards;
+    }
+
+    @keyframes cardSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* Reading progress bar enhancements */
+    .progress-bar.fast-scroll {
+        background: linear-gradient(90deg, #3b82f6, #1e40af, #60a5fa);
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    }
+
+    /* Search interface styling */
+    .articles-search-container {
+        margin: 2rem 0;
+        background: rgba(15, 23, 42, 0.8);
         border-radius: 16px;
         padding: 1.5rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: 1px solid rgba(59, 130, 246, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(59, 130, 246, 0.2);
     }
 
-    .related-article-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
-        border-color: var(--article-accent-blue);
+    .search-input-wrapper {
+        position: relative;
+        margin-bottom: 1rem;
     }
 
-    .related-image {
+    .articles-search-input {
         width: 100%;
-        height: 80px;
-        background: linear-gradient(135deg, var(--article-accent-blue), var(--article-accent-purple));
-        border-radius: 12px;
-        display: flex;
+        padding: 12px 16px 12px 40px;
+        background: rgba(30, 41, 59, 0.8);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 10px;
+        color: #e2e8f0;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .articles-search-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        background: rgba(30, 41, 59, 0.9);
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        pointer-events: none;
+    }
+
+    .search-clear-btn {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        display: none;
         align-items: center;
         justify-content: center;
-        font-size: 2rem;
-        color: white;
-        margin-bottom: 1rem;
+        transition: color 0.3s ease;
     }
 
-    .related-content h4 {
-        color: var(--text-primary);
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin: 0.5rem 0;
-        line-height: 1.3;
+    .search-clear-btn:hover {
+        color: #e2e8f0;
+        background: rgba(59, 130, 246, 0.1);
     }
 
-    .related-author {
+    .search-filters {
         display: flex;
-        justify-content: space-between;
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-        margin-top: 1rem;
-    }
-
-    .results-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
-        margin: 2rem 0;
-    }
-
-    .result-item {
-        background: var(--article-bg-secondary);
-        padding: 2rem;
-        border-radius: 16px;
-        text-align: center;
-        border: 1px solid var(--article-accent-blue);
-    }
-
-    .result-item h4 {
-        color: var(--article-accent-blue);
-        font-size: 1.2rem;
+        gap: 0.5rem;
+        flex-wrap: wrap;
         margin-bottom: 1rem;
     }
 
-    .result-item p {
-        color: var(--text-primary);
-        font-weight: 600;
+    .filter-btn {
+        padding: 8px 16px;
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        border-radius: 20px;
+        color: #cbd5e1;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
     }
 
-    blockquote {
-        background: var(--article-bg-secondary);
-        border-left: 4px solid var(--article-accent-blue);
-        padding: 2rem;
-        margin: 2rem 0;
-        border-radius: 0 16px 16px 0;
+    .filter-btn:hover {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: rgba(59, 130, 246, 0.4);
+        color: #e2e8f0;
+    }
+
+    .filter-btn.active {
+        background: linear-gradient(135deg, #3b82f6, #1e40af);
+        border-color: #3b82f6;
+        color: white;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .search-results-info {
+        color: #94a3b8;
+        font-size: 0.875rem;
         font-style: italic;
-        color: var(--text-secondary);
+        display: none;
     }
 
-    blockquote cite {
-        display: block;
-        margin-top: 1rem;
+    /* Bookmark system styling */
+    .bookmark-btn {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 6px;
+        color: #3b82f6;
+        padding: 6px 12px;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .bookmark-btn:hover {
+        background: rgba(59, 130, 246, 0.2);
+        border-color: rgba(59, 130, 246, 0.5);
+        transform: scale(1.05);
+    }
+
+    .bookmark-btn.bookmarked {
+        background: linear-gradient(135deg, #3b82f6, #1e40af);
+        border-color: #3b82f6;
+        color: white;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .bookmark-indicator {
+        animation: bookmarkPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes bookmarkPulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    /* Load more completion styling */
+    .load-more-completion {
+        text-align: center;
+        padding: 3rem 2rem;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(147, 51, 234, 0.05));
+        border-radius: 20px;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        animation: completionFadeIn 0.6s ease-out forwards;
+    }
+
+    .completion-icon {
+        font-size: 4rem;
+        color: #10b981;
+        margin-bottom: 1rem;
+        animation: completionBounce 1s ease-out;
+    }
+
+    @keyframes completionBounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-20px);
+        }
+        60% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .completion-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .subscribe-btn, .back-to-top-btn {
+        padding: 12px 24px;
+        border-radius: 10px;
         font-weight: 600;
-        color: var(--article-accent-blue);
-        font-style: normal;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
     }
 
-    #modalArticleContent ul, #modalArticleContent ol {
-        margin: 1rem 0;
-        padding-left: 2rem;
+    .subscribe-btn {
+        background: linear-gradient(135deg, #3b82f6, #1e40af);
+        color: white;
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
     }
 
-    #modalArticleContent li {
+    .back-to-top-btn {
+        background: rgba(30, 41, 59, 0.8);
+        color: #e2e8f0;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .subscribe-btn:hover, .back-to-top-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+        .article-modal.mobile-optimized .modal-container {
+            margin: 0;
+            height: 100vh;
+            border-radius: 0;
+        }
+
+        .search-filters {
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            padding-bottom: 0.5rem;
+        }
+
+        .filter-btn {
+            white-space: nowrap;
+        }
+
+        .completion-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+
+    /* Typography enhancements */
+    .article-heading {
+        color: #3b82f6;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+    }
+
+    .article-subheading {
+        color: #60a5fa;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .article-paragraph {
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+        color: #cbd5e1;
+    }
+
+    .article-highlight {
+        color: #3b82f6;
+        font-weight: 600;
+    }
+
+    .article-quote {
+        border-left: 4px solid #3b82f6;
+        background: rgba(59, 130, 246, 0.05);
+        padding: 1.5rem;
+        margin: 2rem 0;
+        border-radius: 8px;
+        font-style: italic;
+        color: #e2e8f0;
+    }
+
+    .article-list {
+        color: #cbd5e1;
+        margin-bottom: 1.5rem;
+    }
+
+    .article-list li {
         margin-bottom: 0.5rem;
-        line-height: 1.6;
-    }
-
-    #modalArticleContent li strong {
-        color: var(--article-accent-blue);
+        padding-left: 0.5rem;
     }
 `;
 
-document.head.appendChild(articlesAnimationStyles);
-=======
-});
->>>>>>> 4f59a530f7730afcb4ec4880d083f41e864e096d
+document.head.appendChild(advancedArticleStyles);
+
+console.log('🎨 Advanced Articles System CSS animations loaded');
+
+// Initialize the articles system immediately if DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(initializeArticlesSection, 100);
+    });
+} else {
+    setTimeout(initializeArticlesSection, 100);
+}
+// Legacy functions have been replaced by advanced versions above
+console.log('✅ JufipAI Advanced Articles System fully loaded and initialized');
