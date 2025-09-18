@@ -5,7 +5,7 @@
     "buildCommand": "echo 'Static site - no build needed'"
   },
   "deploy": {
-    "startCommand": "npx serve -s . -p $PORT",
+    "startCommand": "caddy run --config Caddyfile --adapter caddyfile",
     "healthcheckPath": "/",
     "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",
