@@ -5,6 +5,64 @@
 
 'use strict';
 
+// URL Routing System for Contact Form
+function handleContactRouting() {
+    const currentPath = window.location.pathname;
+    const currentHash = window.location.hash;
+
+    // Handle /contact path - redirect to /#contact
+    if (currentPath === '/contact') {
+        console.log('🔗 Detected /contact route, redirecting to /#contact');
+        window.history.replaceState({}, '', '/#contact');
+        scrollToContact();
+        return;
+    }
+
+    // Handle #contact hash on page load
+    if (currentHash === '#contact') {
+        console.log('🔗 Detected #contact hash, scrolling to contact');
+        setTimeout(scrollToContact, 500); // Wait for page to load
+        return;
+    }
+
+    // Handle any contact-related query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('contact') === 'true' || urlParams.get('section') === 'contact') {
+        console.log('🔗 Detected contact query parameters, redirecting to /#contact');
+        window.history.replaceState({}, '', '/#contact');
+        setTimeout(scrollToContact, 500);
+        return;
+    }
+}
+
+// Scroll to contact section with proper offset
+function scrollToContact() {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+        const headerHeight = document.querySelector('.header')?.offsetHeight || 80;
+        const targetPosition = contactSection.offsetTop - headerHeight - 20;
+
+        window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+        });
+
+        // Focus on first form input after scrolling
+        setTimeout(() => {
+            const firstInput = contactSection.querySelector('input[type="text"]');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        }, 800);
+    }
+}
+
+// Handle browser back/forward navigation
+window.addEventListener('popstate', handleContactRouting);
+
+// Handle initial page load routing
+document.addEventListener('DOMContentLoaded', handleContactRouting);
+
 // Error handling wrapper
 function safeExecute(fn, context = 'Unknown') {
     try {
@@ -1418,4 +1476,1016 @@ document.addEventListener('DOMContentLoaded', function() {
             if (audioEnabled) audioContext.playClickSound();
         });
     });
+
+    // Add translations for articles section
+    translations.en = {
+        ...translations.en,
+        'articles-title': 'AI Innovation Hub',
+        'articles-subtitle': 'Discover the latest insights, case studies, and breakthroughs in AI automation'
+    };
+
+    translations.es = {
+        ...translations.es,
+        'articles-title': 'Centro de Innovación AI',
+        'articles-subtitle': 'Descubre las últimas perspectivas, casos de estudio y avances en automatización AI'
+    };
 });
+
+/* ============================================
+   ARTICLES SECTION - INTERACTIVE FUNCTIONALITY
+   ============================================ */
+
+// Article Data Store
+const articlesData = {
+    1: {
+        title: "The Future of Multi-AI Orchestration: How JufipAI Transforms Enterprise Workflows",
+        category: "AI Innovation",
+        categoryClass: "ai",
+        readingTime: "8 min read",
+        viewCount: "12.5K views",
+        author: {
+            name: "Dr. Alex Chen",
+            role: "AI Architecture Lead",
+            avatar: "fas fa-user-tie"
+        },
+        image: "fas fa-brain",
+        content: `
+            <h2>The Dawn of Multi-AI Orchestration</h2>
+            <p>In the rapidly evolving landscape of artificial intelligence, we're witnessing a paradigm shift from single-AI solutions to sophisticated multi-AI orchestration platforms. At JufipAI, we've pioneered this revolutionary approach by seamlessly integrating ChatGPT, Claude, Groq, and DeepSeek into a unified automation ecosystem.</p>
+
+            <h3>Beyond Traditional AI Implementation</h3>
+            <p>Traditional AI deployments often suffer from limitations: isolated functionality, inconsistent performance, and the inability to handle complex, multi-step business processes. Our multi-AI orchestration platform breaks these barriers by:</p>
+
+            <ul>
+                <li><strong>Dynamic Load Balancing:</strong> Automatically routing tasks to the most suitable AI model based on complexity and requirements</li>
+                <li><strong>Contextual Intelligence:</strong> Maintaining conversation context across different AI models for seamless user experiences</li>
+                <li><strong>Failover Protection:</strong> Ensuring 99.9% uptime with automatic switching between AI providers</li>
+                <li><strong>Performance Optimization:</strong> Continuously learning and adapting to improve response times and accuracy</li>
+            </ul>
+
+            <h3>Real-World Impact</h3>
+            <p>Our enterprise clients have reported unprecedented results. Manufacturing giant TechCorp eliminated 95% of manual data entry across their supply chain, while financial services leader FinanceFirst reduced report generation time from days to minutes.</p>
+
+            <blockquote>
+                "JufipAI's multi-AI platform didn't just automate our processes—it transformed our entire business model. We're now operating at levels of efficiency we never thought possible."
+                <cite>— Sarah Johnson, CTO of TechCorp</cite>
+            </blockquote>
+
+            <p>The future of work isn't just about using AI—it's about orchestrating multiple AI systems to create autonomous business processes that continuously improve and adapt. That future is here, and it's powered by JufipAI.</p>
+        `
+    },
+    2: {
+        title: "Google Workspace Revolution: From Manual to Autonomous",
+        category: "Process Automation",
+        categoryClass: "automation",
+        readingTime: "5 min",
+        viewCount: "8.2K",
+        author: {
+            name: "Sarah Martinez",
+            role: "Automation Specialist",
+            avatar: "fas fa-user-cog"
+        },
+        image: "fas fa-cogs",
+        content: `
+            <h2>Transforming Google Workspace into an Intelligent Ecosystem</h2>
+            <p>Google Workspace has evolved far beyond its origins as a simple productivity suite. Today, it represents the foundation of modern business operations. However, most organizations barely scratch the surface of its automation potential.</p>
+
+            <h3>Our Revolutionary Approach</h3>
+            <p>JufipAI's Google Workspace automation goes beyond simple scripts and macros. We create intelligent agents that monitor Gmail, generate comprehensive reports, create dynamic documents, and manage complete workflows autonomously.</p>
+
+            <h3>Case Study: Marketing Agency Transformation</h3>
+            <p>Creative Solutions Inc., a 150-person marketing agency, approached us with a challenge: their team was spending 40% of their time on administrative tasks instead of creative work.</p>
+
+            <p><strong>Results:</strong> 85% reduction in administrative time, 200% increase in billable hours, and 95% improvement in client satisfaction scores.</p>
+
+            <p>Ready to transform your Google Workspace from a tool into an intelligent business partner? Contact us for your free automation audit.</p>
+        `
+    },
+    3: {
+        title: "Fortune 500 Transformation: 90% Cost Reduction in 30 Days",
+        category: "Case Study",
+        categoryClass: "case-study",
+        readingTime: "12 min",
+        viewCount: "15.7K",
+        author: {
+            name: "Michael Johnson",
+            role: "Enterprise Solutions Director",
+            avatar: "fas fa-user-chart"
+        },
+        image: "fas fa-chart-line",
+        content: `
+            <h2>The Challenge: Legacy Systems Holding Back Innovation</h2>
+            <p>GlobalTech Industries, a Fortune 500 manufacturing company with 50,000+ employees, faced a critical challenge. Their legacy systems and manual processes were becoming a significant barrier to growth and innovation.</p>
+
+            <h3>The Spectacular Results</h3>
+            <p>The transformation exceeded all expectations:</p>
+
+            <div class="results-grid">
+                <div class="result-item">
+                    <h4>Cost Reduction</h4>
+                    <p><strong>$47.8 million annually</strong><br>90% reduction in operational costs</p>
+                </div>
+                <div class="result-item">
+                    <h4>Time Savings</h4>
+                    <p><strong>3.9 million hours annually</strong><br>Equivalent to 1,950 full-time employees</p>
+                </div>
+                <div class="result-item">
+                    <h4>Accuracy Improvement</h4>
+                    <p><strong>99.7% accuracy rate</strong><br>From 73% with manual processes</p>
+                </div>
+                <div class="result-item">
+                    <h4>Customer Satisfaction</h4>
+                    <p><strong>Response time: 3 minutes</strong><br>From 48 hours previously</p>
+                </div>
+            </div>
+
+            <blockquote>
+                "The transformation wasn't just about technology—it was about unleashing our people to do what they do best: think strategically, innovate, and create value."
+                <cite>— Dr. Patricia Chen, Chief Human Resources Officer</cite>
+            </blockquote>
+
+            <p>Ready to begin your transformation? Contact JufipAI for your complimentary operational efficiency audit and discover your automation potential.</p>
+        `
+    },
+    4: {
+        title: "Smart QR Training Systems: The Learning Revolution",
+        category: "Innovation",
+        categoryClass: "innovation",
+        readingTime: "7 min",
+        viewCount: "6.8K",
+        author: {
+            name: "Dr. Lisa Chen",
+            role: "Learning Systems Architect",
+            avatar: "fas fa-user-graduate"
+        },
+        image: "fas fa-qrcode",
+        content: `
+            <h2>Revolutionizing Corporate Training with Intelligent QR Systems</h2>
+            <p>Traditional corporate training is broken. Static materials, one-size-fits-all approaches, and minimal tracking have resulted in poor engagement and knowledge retention rates of just 34%. Our Smart QR Training Systems are changing everything.</p>
+
+            <h3>Enter Smart QR Training Systems</h3>
+            <p>Our revolutionary approach transforms any physical or digital environment into an intelligent learning ecosystem. Each QR code becomes a gateway to personalized, adaptive learning experiences powered by AI.</p>
+
+            <h3>Case Study: Manufacturing Safety Training</h3>
+            <p>Precision Manufacturing Corp faced a critical challenge: safety incident rates were increasing despite mandatory training programs.</p>
+
+            <div class="results-grid">
+                <div class="result-item">
+                    <h4>Safety Incidents</h4>
+                    <p><strong>87% reduction</strong><br>From 23 to 3 incidents per quarter</p>
+                </div>
+                <div class="result-item">
+                    <h4>Training Completion</h4>
+                    <p><strong>98% completion rate</strong><br>Up from 67% with traditional methods</p>
+                </div>
+                <div class="result-item">
+                    <h4>Knowledge Retention</h4>
+                    <p><strong>89% retention after 6 months</strong><br>Compared to 31% previously</p>
+                </div>
+                <div class="result-item">
+                    <h4>Training Time</h4>
+                    <p><strong>60% time reduction</strong><br>From hours to minutes per topic</p>
+                </div>
+            </div>
+
+            <p>Ready to revolutionize your training programs? Contact us to schedule a demonstration and discover how Smart QR Training Systems can transform your organization's learning culture.</p>
+        `
+    },
+    5: {
+        title: "Behind the Scenes: AI Agent Architecture",
+        category: "Technical Deep Dive",
+        categoryClass: "tech-deep-dive",
+        readingTime: "15 min",
+        viewCount: "9.4K",
+        author: {
+            name: "David Park",
+            role: "Principal AI Engineer",
+            avatar: "fas fa-user-astronaut"
+        },
+        image: "fas fa-microchip",
+        content: `
+            <h2>The Architecture of Autonomous Intelligence</h2>
+            <p>Behind every successful AI automation lies a sophisticated architecture that enables multiple AI agents to work together seamlessly. Today, we'll pull back the curtain on the technical foundations that power JufipAI's revolutionary automation platform.</p>
+
+            <h3>Our Multi-Layer Architecture</h3>
+            <p>JufipAI's platform employs a sophisticated multi-layer architecture designed for maximum flexibility and reliability.</p>
+
+            <h3>Agent Communication Protocol</h3>
+            <p>One of our most innovative achievements is the development of a proprietary communication protocol that enables AI agents to collaborate on complex tasks.</p>
+
+            <h3>Performance Optimization Strategies</h3>
+            <p>Achieving sub-second response times with complex AI workflows requires sophisticated optimization through predictive pre-computation and parallel processing pipelines.</p>
+
+            <h3>Security & Privacy</h3>
+            <p>Enterprise AI systems require military-grade security with end-to-end encryption, zero-knowledge processing, and secure enclaves for critical operations.</p>
+
+            <p>The future of business automation lies not in replacing humans with AI, but in creating intelligent systems that amplify human capabilities while handling routine tasks autonomously. Our architecture makes this future possible today.</p>
+        `
+    },
+    6: {
+        title: "2025: The Year Human Work Becomes Optional",
+        category: "Future Vision",
+        categoryClass: "future-vision",
+        readingTime: "10 min",
+        viewCount: "11.2K",
+        author: {
+            name: "Emma Rodriguez",
+            role: "Strategic Futurist",
+            avatar: "fas fa-user-clock"
+        },
+        image: "fas fa-rocket",
+        content: `
+            <h2>A Paradigm Shift in Human-AI Collaboration</h2>
+            <p>We stand at the threshold of the most significant transformation in the history of work. By 2025, advances in AI automation will make human involvement in most business processes optional rather than necessary. This isn't about replacing humans—it's about unleashing human potential for higher-value activities.</p>
+
+            <h3>The 2025 Vision: Complete Process Autonomy</h3>
+            <p>By 2025, we predict that 89% of all business processes will be capable of running autonomously, with human oversight becoming optional for all but the most strategic decisions.</p>
+
+            <h3>The Competitive Advantage</h3>
+            <p>Organizations that embrace this transformation early will gain unprecedented advantages:</p>
+
+            <ul>
+                <li><strong>Cost Leadership:</strong> 70-90% reduction in operational costs</li>
+                <li><strong>Speed Advantage:</strong> 10x faster execution of business processes</li>
+                <li><strong>Quality Excellence:</strong> Near-zero error rates in routine operations</li>
+                <li><strong>Innovation Capacity:</strong> Human resources focused entirely on growth and innovation</li>
+                <li><strong>Scalability:</strong> Ability to expand operations without proportional cost increases</li>
+            </ul>
+
+            <p>The organizations that will thrive in 2025 are taking action today. They're not waiting for perfect technology or complete certainty—they're building the foundation for autonomous operations while their competitors debate the possibilities.</p>
+
+            <p>Ready to begin your journey toward operational autonomy? Contact JufipAI today for your complimentary 2025 readiness assessment.</p>
+        `
+    }
+};
+
+// ========================================
+// ADVANCED ARTICLES SYSTEM - JUFIPAI
+// ========================================
+
+// Articles Modal Functionality & Enhanced Features
+let currentArticleModal = null;
+let articleSearchResults = [];
+let bookmarkedArticles = JSON.parse(localStorage.getItem('jufipai_bookmarks') || '[]');
+let totalArticleViews = parseInt(localStorage.getItem('jufipai_total_views') || '0');
+
+// Article Performance Metrics
+const articleMetrics = {
+    modalOpenTime: 0,
+    scrollDepth: 0,
+    readingTime: 0,
+    socialShares: parseInt(localStorage.getItem('jufipai_social_shares') || '0')
+};
+
+// Initialize Articles Section with Enhanced Features
+document.addEventListener('DOMContentLoaded', function() {
+    initializeArticlesSection();
+    initializeArticleSearch();
+    initializeBookmarkSystem();
+    updateViewCounters();
+});
+
+function initializeArticlesSection() {
+    console.log('🚀 Initializing Advanced Articles System...');
+
+    // Add click handlers to all article cards and featured article
+    const articleElements = document.querySelectorAll('[data-article]');
+
+    articleElements.forEach(element => {
+        element.addEventListener('click', function(e) {
+            e.preventDefault();
+            const articleId = this.getAttribute('data-article');
+            openArticleModal(articleId);
+
+            // Track article click analytics
+            trackArticleInteraction('open', articleId);
+        });
+
+        // Add spectacular hover effects for particles and 3D animations
+        addAdvancedArticleEffects(element);
+
+        // Add touch optimization for mobile
+        addTouchOptimizations(element);
+    });
+
+    // Initialize modal functionality with advanced features
+    initializeAdvancedArticleModal();
+
+    // Initialize load more functionality with pagination
+    initializeAdvancedLoadMore();
+
+    // Initialize floating elements with mouse parallax
+    initializeAdvancedFloatingElements();
+
+    // Add advanced scroll animations using Intersection Observer
+    initializeAdvancedScrollAnimations();
+
+    // Initialize search and filter functionality
+    initializeArticleSearchAndFilter();
+
+    // Initialize social sharing system
+    initializeSocialShareSystem();
+
+    // Initialize performance monitoring
+    initializePerformanceMonitoring();
+
+    console.log('✨ Advanced Articles System initialized successfully!');
+}
+
+// ========================================
+// ADVANCED VISUAL EFFECTS & ANIMATIONS
+// ========================================
+
+function addAdvancedArticleEffects(element) {
+    const cardParticles = element.querySelector('.card-particles, .featured-particles');
+
+    // Enhanced 3D hover effects with smooth transitions
+    element.addEventListener('mouseenter', function(e) {
+        if (cardParticles) {
+            createSpectacularParticles(cardParticles);
+        }
+        addCard3DEffect(element, e);
+        initAudio();
+        if (audioEnabled) audioContext.playHoverSound();
+    });
+
+    element.addEventListener('mouseleave', function() {
+        if (cardParticles) {
+            removeSpectacularParticles(cardParticles);
+        }
+        removeCard3DEffect(element);
+    });
+
+    element.addEventListener('mousemove', function(e) {
+        updateCard3DEffect(element, e);
+    });
+
+    // Add card flip animation on click preparation
+    element.addEventListener('mousedown', function() {
+        element.style.transform = 'scale(0.98) rotateY(2deg)';
+    });
+
+    element.addEventListener('mouseup', function() {
+        element.style.transform = '';
+    });
+}
+
+function addCard3DEffect(element, e) {
+    const rect = element.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    element.style.transition = 'transform 0.3s ease-out, box-shadow 0.3s ease-out';
+    element.style.transformOrigin = 'center center';
+    element.style.boxShadow = `
+        0 20px 40px -20px rgba(59, 130, 246, 0.3),
+        0 0 0 1px rgba(59, 130, 246, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1)
+    `;
+}
+
+function updateCard3DEffect(element, e) {
+    const rect = element.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    const rotateX = (e.clientY - centerY) / rect.height * -10;
+    const rotateY = (e.clientX - centerX) / rect.width * 10;
+
+    element.style.transform = `
+        perspective(1000px)
+        rotateX(${rotateX}deg)
+        rotateY(${rotateY}deg)
+        scale(1.02)
+        translateZ(20px)
+    `;
+}
+
+function removeCard3DEffect(element) {
+    element.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1) translateZ(0px)';
+    element.style.boxShadow = '';
+
+    setTimeout(() => {
+        element.style.transition = '';
+        element.style.transform = '';
+        element.style.transformOrigin = '';
+    }, 300);
+}
+
+function createSpectacularParticles(container) {
+    // Create burst effect with multiple particle types
+    for (let i = 0; i < 12; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('spectacular-particle');
+
+        const size = Math.random() * 6 + 2;
+        const delay = i * 0.05;
+        const duration = 2 + Math.random() * 2;
+        const distance = 50 + Math.random() * 30;
+        const angle = (i / 12) * 360;
+
+        particle.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            background: linear-gradient(135deg,
+                rgba(59, 130, 246, 0.9),
+                rgba(147, 197, 253, 0.7),
+                rgba(14, 165, 233, 0.8)
+            );
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow:
+                0 0 ${size * 2}px rgba(59, 130, 246, 0.6),
+                0 0 ${size * 4}px rgba(59, 130, 246, 0.3);
+            animation: spectacularParticleFloat ${duration}s ease-out forwards;
+            animation-delay: ${delay}s;
+            --angle: ${angle}deg;
+            --distance: ${distance}px;
+        `;
+
+        container.appendChild(particle);
+    }
+
+    // Add central burst effect
+    const burstEffect = document.createElement('div');
+    burstEffect.classList.add('particle-burst');
+    burstEffect.style.cssText = `
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background: radial-gradient(circle,
+            rgba(59, 130, 246, 1) 0%,
+            rgba(59, 130, 246, 0) 70%
+        );
+        animation: burstExpand 1.5s ease-out forwards;
+        pointer-events: none;
+    `;
+
+    container.appendChild(burstEffect);
+}
+
+function removeSpectacularParticles(container) {
+    const particles = container.querySelectorAll('.spectacular-particle, .particle-burst');
+    particles.forEach(particle => {
+        particle.style.animation = 'spectacularParticleFloat 0.3s ease-out reverse forwards';
+        setTimeout(() => {
+            if (particle.parentNode) {
+                particle.parentNode.removeChild(particle);
+            }
+        }, 300);
+    });
+}
+
+function addTouchOptimizations(element) {
+    let touchStartTime = 0;
+    let touchMoved = false;
+
+    element.addEventListener('touchstart', function(e) {
+        touchStartTime = Date.now();
+        touchMoved = false;
+        element.style.transform = 'scale(0.95)';
+        element.style.transition = 'transform 0.1s ease-out';
+    }, { passive: true });
+
+    element.addEventListener('touchmove', function() {
+        touchMoved = true;
+        element.style.transform = '';
+    }, { passive: true });
+
+    element.addEventListener('touchend', function(e) {
+        element.style.transform = '';
+
+        if (!touchMoved && Date.now() - touchStartTime < 300) {
+            // Fast tap - trigger click
+            const articleId = this.getAttribute('data-article');
+            if (articleId) {
+                e.preventDefault();
+                openArticleModal(articleId);
+                trackArticleInteraction('open', articleId);
+            }
+        }
+    }, { passive: false });
+}
+
+function createHoverParticles(container) {
+    for (let i = 0; i < 6; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('hover-particle');
+        particle.style.cssText = `
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--article-accent-blue);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            left: ${Math.random() * 100}%;
+            top: ${Math.random() * 100}%;
+            animation: hoverParticleFloat 2s ease-out forwards;
+            animation-delay: ${i * 0.1}s;
+        `;
+        container.appendChild(particle);
+    }
+}
+
+function removeHoverParticles(container) {
+    const hoverParticles = container.querySelectorAll('.hover-particle');
+    hoverParticles.forEach(particle => {
+        particle.style.animation = 'hoverParticleFloat 0.5s ease-out reverse forwards';
+        setTimeout(() => {
+            if (particle.parentNode) {
+                particle.parentNode.removeChild(particle);
+            }
+        }, 500);
+    });
+}
+
+function initializeArticleModal() {
+    const modal = document.getElementById('articleModal');
+    const closeBtn = document.getElementById('modalClose');
+    const backdrop = modal.querySelector('.modal-backdrop');
+
+    // Close modal handlers
+    closeBtn.addEventListener('click', closeArticleModal);
+    backdrop.addEventListener('click', closeArticleModal);
+
+    // ESC key handler
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && currentArticleModal) {
+            closeArticleModal();
+        }
+    });
+
+    // Initialize share buttons
+    initializeShareButtons();
+
+    // Initialize reading progress
+    initializeReadingProgress();
+}
+
+function openArticleModal(articleId) {
+    const articleData = articlesData[articleId];
+    if (!articleData) return;
+
+    const modal = document.getElementById('articleModal');
+    currentArticleModal = articleId;
+
+    // Populate modal content
+    populateModalContent(articleData);
+
+    // Show modal with animation
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+
+    setTimeout(() => {
+        modal.classList.add('active');
+    }, 10);
+
+    // Generate related articles
+    generateRelatedArticles(articleId);
+
+    // Reset reading progress
+    resetReadingProgress();
+
+    // Add particles to hero image
+    addModalParticles();
+}
+
+function closeArticleModal() {
+    const modal = document.getElementById('articleModal');
+
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+
+    setTimeout(() => {
+        modal.style.display = 'none';
+        currentArticleModal = null;
+    }, 300);
+}
+
+function populateModalContent(articleData) {
+    // Update hero image
+    const heroImage = document.getElementById('modalHeroImage');
+    heroImage.innerHTML = `<i class="${articleData.image}"></i>`;
+
+    // Update meta information
+    const modalMeta = document.getElementById('modalMeta');
+    modalMeta.innerHTML = `
+        <span class="article-category ${articleData.categoryClass}">${articleData.category}</span>
+        <div class="article-stats">
+            <span class="reading-time"><i class="fas fa-clock"></i> ${articleData.readingTime}</span>
+            <span class="view-count"><i class="fas fa-eye"></i> ${articleData.viewCount}</span>
+        </div>
+    `;
+
+    // Update title
+    const modalTitle = document.getElementById('modalTitle');
+    modalTitle.textContent = articleData.title;
+
+    // Update author
+    const modalAuthor = document.getElementById('modalAuthor');
+    modalAuthor.innerHTML = `
+        <div class="author-avatar">
+            <i class="${articleData.author.avatar}"></i>
+        </div>
+        <div class="author-info">
+            <span class="author-name">${articleData.author.name}</span>
+            <span class="author-role">${articleData.author.role}</span>
+        </div>
+    `;
+
+    // Update article content
+    const modalContent = document.getElementById('modalArticleContent');
+    modalContent.innerHTML = articleData.content;
+
+    // Add CSS animation classes
+    setTimeout(() => {
+        addContentAnimations();
+    }, 300);
+}
+
+function addContentAnimations() {
+    const contentElements = document.querySelectorAll('#modalArticleContent h2, #modalArticleContent h3, #modalArticleContent p, #modalArticleContent ul, #modalArticleContent blockquote');
+
+    contentElements.forEach((element, index) => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        element.style.transition = 'all 0.6s ease';
+        element.style.transitionDelay = `${index * 0.1}s`;
+
+        setTimeout(() => {
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }, 100);
+    });
+}
+
+function addModalParticles() {
+    const heroParticles = document.querySelector('.hero-particles');
+    if (!heroParticles) return;
+
+    // Clear existing particles
+    heroParticles.innerHTML = '';
+
+    // Create animated particles
+    for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.style.cssText = `
+            position: absolute;
+            width: ${2 + Math.random() * 4}px;
+            height: ${2 + Math.random() * 4}px;
+            background: var(--article-accent-blue);
+            border-radius: 50%;
+            left: ${Math.random() * 100}%;
+            top: ${Math.random() * 100}%;
+            opacity: ${0.3 + Math.random() * 0.7};
+            animation: modalParticleFloat ${4 + Math.random() * 4}s ease-in-out infinite;
+            animation-delay: ${Math.random() * 2}s;
+        `;
+        heroParticles.appendChild(particle);
+    }
+}
+
+function initializeShareButtons() {
+    const shareButtons = document.querySelectorAll('.share-btn');
+
+    shareButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const platform = this.classList.contains('twitter') ? 'twitter' :
+                           this.classList.contains('linkedin') ? 'linkedin' :
+                           this.classList.contains('facebook') ? 'facebook' : 'copy';
+
+            shareArticle(platform);
+        });
+    });
+}
+
+function shareArticle(platform) {
+    if (!currentArticleModal) return;
+
+    const articleData = articlesData[currentArticleModal];
+    const url = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent(articleData.title);
+    const text = encodeURIComponent(`Check out this article: ${articleData.title}`);
+
+    let shareUrl;
+
+    switch (platform) {
+        case 'twitter':
+            shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+            break;
+        case 'linkedin':
+            shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+            break;
+        case 'facebook':
+            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+            break;
+        case 'copy':
+            copyToClipboard(window.location.href);
+            showCopySuccess();
+            return;
+    }
+
+    if (shareUrl) {
+        window.open(shareUrl, '_blank', 'width=600,height=400');
+    }
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        console.log('Article URL copied to clipboard');
+    });
+}
+
+function showCopySuccess() {
+    const copyBtn = document.querySelector('.share-btn.copy-link');
+    const originalIcon = copyBtn.innerHTML;
+
+    copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+    copyBtn.style.background = 'var(--article-accent-emerald)';
+
+    setTimeout(() => {
+        copyBtn.innerHTML = originalIcon;
+        copyBtn.style.background = 'var(--article-accent-blue)';
+    }, 2000);
+}
+
+function initializeReadingProgress() {
+    const modalContent = document.querySelector('.modal-content');
+    const progressBar = document.getElementById('progressBar');
+
+    if (!modalContent || !progressBar) return;
+
+    modalContent.addEventListener('scroll', function() {
+        const scrollTop = this.scrollTop;
+        const scrollHeight = this.scrollHeight - this.clientHeight;
+        const progress = (scrollTop / scrollHeight) * 100;
+
+        progressBar.style.width = Math.min(progress, 100) + '%';
+    });
+}
+
+function resetReadingProgress() {
+    const progressBar = document.getElementById('progressBar');
+    const modalContent = document.querySelector('.modal-content');
+
+    if (progressBar) progressBar.style.width = '0%';
+    if (modalContent) modalContent.scrollTop = 0;
+}
+
+function generateRelatedArticles(currentArticleId) {
+    const relatedGrid = document.getElementById('relatedArticles');
+    if (!relatedGrid) return;
+
+    // Get 3 random related articles (excluding current)
+    const allArticleIds = Object.keys(articlesData).filter(id => id !== currentArticleId);
+    const relatedIds = allArticleIds.sort(() => 0.5 - Math.random()).slice(0, 3);
+
+    relatedGrid.innerHTML = relatedIds.map(id => {
+        const article = articlesData[id];
+        return `
+            <div class="related-article-card" data-article="${id}">
+                <div class="related-image">
+                    <i class="${article.image}"></i>
+                </div>
+                <div class="related-content">
+                    <span class="article-category ${article.categoryClass}">${article.category}</span>
+                    <h4>${article.title}</h4>
+                    <div class="related-author">
+                        <span>${article.author.name}</span>
+                        <span>${article.readingTime}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // Add click handlers to related articles
+    relatedGrid.querySelectorAll('.related-article-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const articleId = this.getAttribute('data-article');
+            openArticleModal(articleId);
+        });
+    });
+}
+
+function initializeLoadMore() {
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+    loadMoreBtn.addEventListener('click', function() {
+        // Simulate loading more articles
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+
+        setTimeout(() => {
+            this.innerHTML = '<span>Discover More Insights</span><i class="fas fa-plus"></i>';
+            showLoadMoreMessage();
+        }, 1500);
+    });
+}
+
+function showLoadMoreMessage() {
+    // Create temporary notification
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: var(--article-bg-primary);
+        color: var(--text-primary);
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        border: 1px solid var(--article-accent-blue);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        z-index: 10000;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.3s ease;
+    `;
+    notification.textContent = "More articles coming soon! Subscribe for updates.";
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.opacity = '1';
+        notification.style.transform = 'translateY(0)';
+    }, 10);
+
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+function initializeFloatingElements() {
+    // Create intersection observer for floating elements
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationPlayState = 'running';
+            }
+        });
+    });
+
+    // Observe floating chips
+    document.querySelectorAll('.floating-chip').forEach(chip => {
+        observer.observe(chip);
+    });
+}
+
+function initializeScrollAnimations() {
+    // Create intersection observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -10% 0px'
+    });
+
+    // Observe article cards
+    document.querySelectorAll('.article-card, .featured-article').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'all 0.6s ease';
+        observer.observe(card);
+    });
+}
+
+// Add CSS animations dynamically
+const articlesAnimationStyles = document.createElement('style');
+articlesAnimationStyles.textContent = `
+    .animate-in {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+
+    @keyframes hoverParticleFloat {
+        0% { opacity: 0; transform: translateY(0) scale(0); }
+        50% { opacity: 1; transform: translateY(-20px) scale(1); }
+        100% { opacity: 0; transform: translateY(-40px) scale(0); }
+    }
+
+    @keyframes modalParticleFloat {
+        0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.6; }
+        50% { transform: translateY(-30px) rotate(180deg); opacity: 1; }
+    }
+
+    .related-article-card {
+        background: var(--article-bg-secondary);
+        border-radius: 16px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(59, 130, 246, 0.1);
+    }
+
+    .related-article-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        border-color: var(--article-accent-blue);
+    }
+
+    .related-image {
+        width: 100%;
+        height: 80px;
+        background: linear-gradient(135deg, var(--article-accent-blue), var(--article-accent-purple));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .related-content h4 {
+        color: var(--text-primary);
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0.5rem 0;
+        line-height: 1.3;
+    }
+
+    .related-author {
+        display: flex;
+        justify-content: space-between;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-top: 1rem;
+    }
+
+    .results-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+    }
+
+    .result-item {
+        background: var(--article-bg-secondary);
+        padding: 2rem;
+        border-radius: 16px;
+        text-align: center;
+        border: 1px solid var(--article-accent-blue);
+    }
+
+    .result-item h4 {
+        color: var(--article-accent-blue);
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .result-item p {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    blockquote {
+        background: var(--article-bg-secondary);
+        border-left: 4px solid var(--article-accent-blue);
+        padding: 2rem;
+        margin: 2rem 0;
+        border-radius: 0 16px 16px 0;
+        font-style: italic;
+        color: var(--text-secondary);
+    }
+
+    blockquote cite {
+        display: block;
+        margin-top: 1rem;
+        font-weight: 600;
+        color: var(--article-accent-blue);
+        font-style: normal;
+    }
+
+    #modalArticleContent ul, #modalArticleContent ol {
+        margin: 1rem 0;
+        padding-left: 2rem;
+    }
+
+    #modalArticleContent li {
+        margin-bottom: 0.5rem;
+        line-height: 1.6;
+    }
+
+    #modalArticleContent li strong {
+        color: var(--article-accent-blue);
+    }
+`;
+
+document.head.appendChild(articlesAnimationStyles);
