@@ -1476,6 +1476,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (audioEnabled) audioContext.playClickSound();
         });
     });
+<<<<<<< HEAD
 
     // Add translations for articles section
     translations.en = {
@@ -2489,3 +2490,6 @@ articlesAnimationStyles.textContent = `
 `;
 
 document.head.appendChild(articlesAnimationStyles);
+=======
+});
+>>>>>>> 4f59a530f7730afcb4ec4880d083f41e864e096d
