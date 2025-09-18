@@ -36,7 +36,7 @@
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="./styles.css">
-    <!-- Banner Fix CSS - Override problematic banner drift -->
+    <!-- BANNER DRIFT FIX - Multi-layered approach -->
     <link rel="stylesheet" href="./banner-fix.css">
     
     <!-- Structured Data for SEO -->
@@ -261,7 +261,7 @@
                 <div class="service-card" data-sound="click">
                     <i class="service-icon fas fa-chart-bar"></i>
                     <h3 data-translate="service4-title">Self-Generating Reports</h3>
-                    <p data-translate="service4-desc">Reports that create themselves. Our AI agents continuously monitor your data, generate insights, and deliver comprehensive reports without any manual input.</p>
+                    <p data-translate="service3-desc">Reports that create themselves. Our AI agents continuously monitor your data, generate insights, and deliver comprehensive reports without any manual input.</p>
                 </div>
 
                 <div class="service-card" data-sound="click">
@@ -608,9 +608,11 @@
         </main>
     </div>
 
+    <!-- BANNER DRIFT FIX SCRIPTS - Multi-layered JavaScript approach -->
+    <script src="./banner-position-lock.js"></script>
     <script src="./script.js"></script>
-    <!-- Enhanced Banner Interactions - Position-stable animations -->
     <script src="./banner-interactions.js"></script>
+    
     <!-- Premium Professional Popup -->
     <div id="servicePopup" style="display: none;">
         <div class="premium-popup-content">
