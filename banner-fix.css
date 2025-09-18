@@ -1,18 +1,25 @@
-/* AGGRESSIVE BANNER DRIFT FIX - COMPLETE OVERRIDE */
-/* This completely replaces the problematic sticky banner positioning */
+/* ULTRA-AGGRESSIVE BANNER DRIFT FIX - MAXIMUM OVERRIDE */
+/* This completely eliminates ALL drift-causing CSS from styles.css */
 
-/* NUCLEAR OPTION: Complete override of all banner properties */
-.sticky-cta {
-    /* Force stable positioning */
+/* ULTIMATE NUCLEAR OPTION: Override every possible conflicting rule */
+.sticky-cta,
+.sticky-cta[style],
+div.sticky-cta,
+#stickyCTA,
+*[id="stickyCTA"],
+*[class*="sticky-cta"] {
+    /* FORCE STABLE POSITIONING WITH MAXIMUM SPECIFICITY */
     position: fixed !important;
     bottom: 20px !important;
     left: 50% !important;
-    
-    /* REMOVE ALL DRIFT-CAUSING PROPERTIES */
+
+    /* COMPLETE ELIMINATION OF ALL DRIFT-CAUSING PROPERTIES */
     transform: translateX(-50%) !important;
     margin: 0 !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
     will-change: auto !important;
     
     /* Force stable dimensions and positioning */
@@ -263,12 +270,47 @@
     -o-transform: translateX(-50%) !important;
 }
 
-/* Final nuclear option - force recalculation on load */
+/* FINAL ULTRA-NUCLEAR OPTION - Complete CSS Domination */
 @supports (transform: translateX(-50%)) {
-    .sticky-cta {
+    .sticky-cta, #stickyCTA, *[class*="sticky-cta"] {
         transform: translateX(-50%) !important;
         left: 50% !important;
         margin-left: 0 !important;
+        margin-right: 0 !important;
         will-change: auto !important;
     }
+}
+
+/* ULTIMATE OVERRIDE: Target every possible CSS selector combination */
+html .sticky-cta,
+body .sticky-cta,
+div.sticky-cta,
+.sticky-cta.sticky-cta,
+.sticky-cta.sticky-cta.sticky-cta {
+    transform: translateX(-50%) !important;
+    left: 50% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    will-change: auto !important;
+    position: fixed !important;
+}
+
+/* BRUTE FORCE: Override ANY inline styles */
+.sticky-cta[style*="transform"],
+.sticky-cta[style*="margin-left"],
+.sticky-cta[style*="will-change"] {
+    transform: translateX(-50%) !important;
+    left: 50% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    will-change: auto !important;
+}
+
+/* CSS SPECIFICITY HAMMER: Use all possible selectors */
+*:not(html):not(head) .sticky-cta {
+    transform: translateX(-50%) !important;
+    left: 50% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    will-change: auto !important;
 }

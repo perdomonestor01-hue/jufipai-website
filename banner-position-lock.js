@@ -1,13 +1,48 @@
-// BANNER POSITION LOCK - JavaScript-based drift prevention
-// This script ensures the banner stays perfectly centered regardless of CSS conflicts
+// ULTRA-AGGRESSIVE BANNER POSITION LOCK - JavaScript-based drift annihilation
+// This script uses brute force methods to eliminate ALL banner drift
 
 (function() {
     'use strict';
-    
+
     // Configuration
     const BANNER_ID = 'stickyCTA';
-    const CHECK_INTERVAL = 100; // Check every 100ms
-    const POSITION_TOLERANCE = 5; // Allow 5px deviation before correction
+    const CHECK_INTERVAL = 50; // Check every 50ms (more aggressive)
+    const POSITION_TOLERANCE = 2; // Allow only 2px deviation before correction
+
+    // Inject ultra-aggressive CSS directly via JavaScript
+    function injectUltraAggressiveCSS() {
+        const style = document.createElement('style');
+        style.setAttribute('data-banner-fix', 'ultra-aggressive');
+        style.innerHTML = `
+            .sticky-cta, #stickyCTA, *[id="stickyCTA"], *[class*="sticky-cta"] {
+                transform: translateX(-50%) !important;
+                left: 50% !important;
+                margin-left: 0px !important;
+                margin-right: 0px !important;
+                will-change: auto !important;
+                position: fixed !important;
+                bottom: 20px !important;
+            }
+
+            /* Override ALL hover states */
+            .sticky-cta:hover, #stickyCTA:hover {
+                transform: translateX(-50%) translateY(-2px) !important;
+                left: 50% !important;
+                margin-left: 0px !important;
+                margin-right: 0px !important;
+                will-change: auto !important;
+            }
+
+            /* Override ALL animation states */
+            .sticky-cta, .sticky-cta:hover, .sticky-cta:active, .sticky-cta.hidden {
+                margin-left: 0px !important;
+                margin-right: 0px !important;
+                will-change: auto !important;
+            }
+        `;
+        document.head.appendChild(style);
+        console.log('🔥 Ultra-aggressive CSS injected directly into DOM');
+    }
     
     let banner = null;
     let observer = null;
@@ -37,18 +72,31 @@
             if (Math.abs(currentLeft - expectedLeft) > POSITION_TOLERANCE) {
                 console.log('🔧 Banner drift detected, correcting position...');
                 
-                // Apply nuclear CSS override directly via JavaScript
+                // Apply ULTRA-NUCLEAR CSS override directly via JavaScript
                 const criticalStyles = {
                     'position': 'fixed',
                     'left': '50%',
                     'transform': 'translateX(-50%)',
-                    'margin-left': '0',
-                    'margin-right': '0',
+                    'margin-left': '0px',
+                    'margin-right': '0px',
+                    'margin-top': '0px',
+                    'margin-bottom': '0px',
+                    'margin': '0px',
                     'will-change': 'auto',
-                    'right': 'auto'
+                    'right': 'auto',
+                    'bottom': '20px'
                 };
-                
-                // Apply each style with highest priority
+
+                // Apply each style with highest priority MULTIPLE TIMES
+                Object.entries(criticalStyles).forEach(([property, value]) => {
+                    banner.style.setProperty(property, value, 'important');
+                    // Force it again with different methods
+                    banner.style[property] = value;
+                    banner.style.cssText += `${property}: ${value} !important;`;
+                });
+
+                // BRUTE FORCE: Remove all conflicting attributes
+                banner.removeAttribute('style');
                 Object.entries(criticalStyles).forEach(([property, value]) => {
                     banner.style.setProperty(property, value, 'important');
                 });
@@ -67,15 +115,18 @@
     
     // Initialize position monitoring
     function initializePositionLock() {
+        // FIRST: Inject ultra-aggressive CSS
+        injectUltraAggressiveCSS();
+
         banner = document.getElementById(BANNER_ID);
-        
+
         if (!banner) {
             console.warn('Banner element not found, retrying...');
             setTimeout(initializePositionLock, 500);
             return;
         }
-        
-        console.log('🔒 Banner position lock initialized');
+
+        console.log('🔒 Ultra-aggressive banner position lock initialized');
         
         // Initial position lock
         lockBannerPosition();
