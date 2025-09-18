@@ -3831,3 +3831,229 @@ if (document.readyState === 'loading') {
 }
 // Legacy functions have been replaced by advanced versions above
 console.log('✅ JufipAI Advanced Articles System fully loaded and initialized');
+
+// ===== STICKY FREE DIAGNOSIS CTA FUNCTIONALITY =====
+
+class StickyCTA {
+    constructor() {
+        this.element = document.getElementById("stickyCTA");
+        this.closeBtn = document.getElementById("stickyCTAClose");
+        this.isVisible = true;
+        this.hideTimeout = null;
+        this.showAfterScroll = 300; // Show after scrolling 300px
+
+        this.init();
+    }
+
+    init() {
+        if (!this.element) return;
+
+        // Initially hide the CTA
+        this.element.style.display = "none";
+
+        // Show CTA after user scrolls down
+        this.setupScrollTrigger();
+
+        // Setup close functionality
+        this.setupCloseHandler();
+
+        // Setup language support
+        this.setupLanguageSupport();
+
+        // Setup interaction tracking
+        this.setupInteractionTracking();
+
+        // Auto-hide after 30 seconds if no interaction
+        this.setupAutoHide();
+    }
+
+    setupScrollTrigger() {
+        let hasShown = false;
+        const showCTA = () => {
+            if (!hasShown && window.scrollY > this.showAfterScroll) {
+                hasShown = true;
+                this.show();
+            }
+        };
+
+        // Throttled scroll listener
+        let scrollTimeout = null;
+        window.addEventListener("scroll", () => {
+            if (scrollTimeout) return;
+            scrollTimeout = setTimeout(() => {
+                showCTA();
+                scrollTimeout = null;
+            }, 100);
+        });
+    }
+
+    setupCloseHandler() {
+        if (this.closeBtn) {
+            this.closeBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                this.hide(true);
+                
+                // Remember user closed it for 24 hours
+                localStorage.setItem("jufipai_sticky_cta_closed", Date.now().toString());
+                
+                // Track close event
+                this.trackEvent("cta_closed", "user_closed");
+            });
+        }
+    }
+
+    setupLanguageSupport() {
+        // Update text based on current language
+        const updateLanguage = () => {
+            const isSpanish = document.querySelector(".language-option[data-lang=\"es\"].active");
+            
+            const titleEl = this.element.querySelector(".sticky-main-text");
+            const subtitleEl = this.element.querySelector(".sticky-sub-text");
+            const buttonEl = this.element.querySelector(".sticky-cta-button");
+
+            if (titleEl && subtitleEl && buttonEl) {
+                if (isSpanish) {
+                    titleEl.textContent = "DIAGNÓSTICO GRATUITO DE IA";
+                    subtitleEl.textContent = "Análisis completo sin costo";
+                    buttonEl.innerHTML = `Obtener Análisis GRATIS <i class="fas fa-arrow-right"></i>`;
+                } else {
+                    titleEl.textContent = "FREE AI Automation Diagnosis";
+                    subtitleEl.textContent = "Complete blueprint at zero cost";
+                    buttonEl.innerHTML = `Get FREE Analysis <i class="fas fa-arrow-right"></i>`;
+                }
+            }
+        };
+
+        // Listen for language changes
+        document.addEventListener("languageChanged", updateLanguage);
+        
+        // Initial language setup
+        updateLanguage();
+    }
+
+    setupInteractionTracking() {
+        const button = this.element.querySelector(".sticky-cta-button");
+        if (button) {
+            button.addEventListener("click", () => {
+                this.trackEvent("cta_clicked", "sticky_bottom");
+                
+                // Hide CTA after click
+                this.hide();
+            });
+        }
+
+        // Track hover interactions
+        this.element.addEventListener("mouseenter", () => {
+            this.trackEvent("cta_hovered", "sticky_bottom");
+            this.cancelAutoHide();
+        });
+    }
+
+    setupAutoHide() {
+        // Auto-hide after 30 seconds if no interaction
+        this.hideTimeout = setTimeout(() => {
+            if (this.isVisible) {
+                this.hide();
+                this.trackEvent("cta_auto_hidden", "timeout_30s");
+            }
+        }, 30000);
+    }
+
+    show() {
+        if (!this.element) return;
+
+        // Check if user has closed it recently (24 hours)
+        const closedTime = localStorage.getItem("jufipai_sticky_cta_closed");
+        if (closedTime && (Date.now() - parseInt(closedTime)) < 86400000) { // 24 hours
+            return;
+        }
+
+        this.element.style.display = "block";
+        this.element.classList.remove("hidden");
+        this.isVisible = true;
+
+        this.trackEvent("cta_shown", "scroll_trigger");
+
+        // Add entrance animation
+        setTimeout(() => {
+            this.element.style.animation = "slideUpBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)";
+        }, 100);
+    }
+
+    hide(permanent = false) {
+        if (!this.element) return;
+
+        this.element.classList.add("hidden");
+        this.isVisible = false;
+
+        if (this.hideTimeout) {
+            clearTimeout(this.hideTimeout);
+            this.hideTimeout = null;
+        }
+
+        // Completely hide after animation
+        setTimeout(() => {
+            if (!this.isVisible) {
+                this.element.style.display = "none";
+            }
+        }, 300);
+
+        this.trackEvent("cta_hidden", permanent ? "user_action" : "auto_hide");
+    }
+
+    cancelAutoHide() {
+        if (this.hideTimeout) {
+            clearTimeout(this.hideTimeout);
+            this.hideTimeout = null;
+        }
+
+        // Reset auto-hide timer
+        this.hideTimeout = setTimeout(() => {
+            if (this.isVisible) {
+                this.hide();
+                this.trackEvent("cta_auto_hidden", "timeout_extended");
+            }
+        }, 60000); // Extended to 60 seconds after interaction
+    }
+
+    trackEvent(action, source) {
+        // Enhanced tracking for sticky CTA
+        try {
+            const trackingData = JSON.parse(localStorage.getItem("jufipai_analytics") || "{}");
+            
+            if (!trackingData.stickyCTA) {
+                trackingData.stickyCTA = {};
+            }
+
+            if (!trackingData.stickyCTA[action]) {
+                trackingData.stickyCTA[action] = 0;
+            }
+
+            trackingData.stickyCTA[action]++;
+            trackingData.stickyCTA.lastAction = {
+                action,
+                source,
+                timestamp: new Date().toISOString()
+            };
+
+            localStorage.setItem("jufipai_analytics", JSON.stringify(trackingData));
+            
+            console.log(`📊 Sticky CTA: ${action} (${source})`);
+        } catch (error) {
+            console.warn("Tracking error:", error);
+        }
+    }
+}
+
+// Initialize Sticky CTA when DOM is loaded
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+        new StickyCTA();
+    });
+} else {
+    new StickyCTA();
+}
+
+// Export for testing
+window.StickyCTA = StickyCTA;
+
