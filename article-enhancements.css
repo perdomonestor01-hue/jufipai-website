@@ -230,26 +230,29 @@
     }
 }
 
-/* Enhanced Close Button */
+/* Enhanced Close Button - CRITICAL FIX */
 .modal-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, var(--close-btn-primary), var(--close-btn-hover));
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    transition: all 0.3s ease;
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 60px !important;
+    height: 60px !important;
+    background: linear-gradient(135deg, var(--close-btn-primary), var(--close-btn-hover)) !important;
+    border: 3px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 999999 !important;
+    transition: all 0.3s ease !important;
     box-shadow:
-        0 4px 15px rgba(255, 68, 88, 0.3),
-        0 0 30px rgba(255, 68, 88, 0.2);
-    animation: closeButtonPulse 2s ease-in-out infinite;
+        0 8px 25px rgba(255, 68, 88, 0.5),
+        0 0 50px rgba(255, 68, 88, 0.4),
+        inset 0 0 20px rgba(255, 255, 255, 0.1) !important;
+    animation: closeButtonPulse 2s ease-in-out infinite !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 @keyframes closeButtonPulse {
@@ -266,11 +269,12 @@
 }
 
 .modal-close::before {
-    content: '✕';
-    color: white;
-    font-size: 24px;
-    font-weight: 300;
-    line-height: 1;
+    content: '✕' !important;
+    color: white !important;
+    font-size: 28px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
 }
 
 .modal-close:hover {
@@ -511,6 +515,34 @@
     z-index: 10001;
 }
 
+/* Backup Close Button - Always Visible */
+.modal-backdrop::after {
+    content: '✕ CLOSE' !important;
+    position: fixed !important;
+    top: 10px !important;
+    right: 10px !important;
+    background: rgba(255, 68, 88, 0.9) !important;
+    color: white !important;
+    padding: 12px 20px !important;
+    border-radius: 25px !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    z-index: 1000000 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    animation: backupCloseButtonBounce 3s ease-in-out infinite !important;
+}
+
+@keyframes backupCloseButtonBounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
 /* Responsive Design Improvements */
 @media (max-width: 768px) {
     .modal-container {
@@ -520,10 +552,11 @@
     }
 
     .modal-close {
-        width: 45px;
-        height: 45px;
-        top: 15px;
-        right: 15px;
+        width: 55px !important;
+        height: 55px !important;
+        top: 10px !important;
+        right: 10px !important;
+        font-size: 20px !important;
     }
 
     .modal-article {

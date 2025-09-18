@@ -110,15 +110,50 @@ function enhanceModalInteractions() {
 
     if (!modal || !modalContainer) return;
 
-    // Enhance close button visibility
-    if (closeBtn) {
-        // Make close button more prominent
-        closeBtn.innerHTML = '<i class="fas fa-times"></i>';
-        closeBtn.setAttribute('aria-label', 'Close article');
-        closeBtn.setAttribute('title', 'Close (ESC)');
+    // Force create close button if it doesn't exist
+    if (!closeBtn) {
+        const newCloseBtn = document.createElement('button');
+        newCloseBtn.id = 'modalClose';
+        newCloseBtn.className = 'modal-close';
+        newCloseBtn.innerHTML = '✕';
+        newCloseBtn.setAttribute('aria-label', 'Close article');
+        newCloseBtn.setAttribute('title', 'Close (ESC)');
+        modalContainer.appendChild(newCloseBtn);
+    }
 
-        // Add ripple effect on click
-        closeBtn.addEventListener('click', function(e) {
+    // Get the close button (existing or newly created)
+    const actualCloseBtn = document.getElementById('modalClose');
+
+    if (actualCloseBtn) {
+        // Ensure close button is always visible and functional
+        actualCloseBtn.style.cssText = `
+            position: fixed !important;
+            top: 20px !important;
+            right: 20px !important;
+            width: 60px !important;
+            height: 60px !important;
+            background: linear-gradient(135deg, #ff4458, #ff6b7d) !important;
+            border: 3px solid rgba(255, 255, 255, 0.3) !important;
+            border-radius: 50% !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            z-index: 999999 !important;
+            color: white !important;
+            font-size: 28px !important;
+            font-weight: bold !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        `;
+
+        // Add close functionality
+        actualCloseBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeModalWithAnimation();
+
+            // Add ripple effect
             const ripple = document.createElement('span');
             ripple.className = 'close-ripple';
             ripple.style.cssText = `
@@ -136,6 +171,17 @@ function enhanceModalInteractions() {
         });
     }
 
+    // Add backup close functionality to backdrop
+    const backdrop = modal.querySelector('.modal-backdrop');
+    if (backdrop) {
+        backdrop.style.cursor = 'pointer';
+        backdrop.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModalWithAnimation();
+            }
+        });
+    }
+
     // Add smooth scroll behavior
     const modalContent = modal.querySelector('.modal-content');
     if (modalContent) {
@@ -145,10 +191,26 @@ function enhanceModalInteractions() {
         });
     }
 
-    // Enhanced ESC key closing
+    // Enhanced keyboard shortcuts for closing
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && modal.classList.contains('active')) {
-            closeModalWithAnimation();
+        const modal = document.getElementById('articleModal');
+        if (modal && (modal.classList.contains('active') || modal.style.display !== 'none')) {
+            if (e.key === 'Escape' || e.key === 'q' || e.key === 'Q') {
+                e.preventDefault();
+                closeModalWithAnimation();
+            }
+        }
+    });
+
+    // Add click-anywhere-to-close functionality
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('articleModal');
+        if (modal && modal.classList.contains('active')) {
+            // If clicking outside the modal content, close it
+            const modalContent = modal.querySelector('.modal-container');
+            if (modalContent && !modalContent.contains(e.target)) {
+                closeModalWithAnimation();
+            }
         }
     });
 }
@@ -169,18 +231,42 @@ function updateReadingProgress(progress) {
     }
 }
 
-// Close modal with animation
+// Close modal with animation - ENHANCED VERSION
 function closeModalWithAnimation() {
     const modal = document.getElementById('articleModal');
     const modalContainer = modal?.querySelector('.modal-container');
 
-    if (modalContainer) {
-        modalContainer.style.animation = 'modalSlideDown 0.3s ease-out forwards';
+    // Multiple ways to close the modal for reliability
+    if (modal) {
+        if (modalContainer) {
+            modalContainer.style.animation = 'modalSlideDown 0.3s ease-out forwards';
+        }
+
         setTimeout(() => {
             modal.classList.remove('active');
             modal.style.display = 'none';
+            modal.style.visibility = 'hidden';
+            modal.style.opacity = '0';
             updateReadingProgress(0);
+
+            // Clear any existing content
+            const content = modal.querySelector('#modalArticleContent');
+            if (content) content.innerHTML = '';
+
+            // Reset scroll position
+            const modalContent = modal.querySelector('.modal-content');
+            if (modalContent) modalContent.scrollTop = 0;
         }, 300);
+    }
+}
+
+// Universal close function - works everywhere
+function forceCloseModal() {
+    const modal = document.getElementById('articleModal');
+    if (modal) {
+        modal.remove();
+        // Recreate modal structure if needed
+        location.reload();
     }
 }
 
