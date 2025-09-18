@@ -1,0 +1,8 @@
+# Prevent Railway from auto-detecting as staticfile
+# Force it to use Node.js buildpack
+
+.git
+.gitignore
+README.md
+*.md
+.DS_Store
