@@ -3,7 +3,7 @@
 nodejs = "18"
 
 [phases.build]
-cmds = ["npm ci --only=production"]
+cmds = ["npm install --production"]
 
 [phases.start]
 cmd = "npm start"
