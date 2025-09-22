@@ -32,9 +32,16 @@
     <!-- Performance Optimized Font Loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="./styles.css" as="style">
+    <link rel="preload" href="./script.js" as="script">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></noscript>
     <link rel="stylesheet" href="./styles.css">
     <!-- Article Section Visual Enhancements -->
     <link rel="stylesheet" href="./article-enhancements.css">
@@ -611,10 +618,9 @@
     </div>
 
     <!-- BANNER DRIFT FIX SCRIPTS - Multi-layered JavaScript approach -->
-    <script src="./banner-position-lock.js"></script>
-    <script src="./script.js"></script>
-    <script src="./banner-interactions.js"></script>
-    <script src="./article-enhancements.js"></script>
+    <script src="./banner-position-lock.js" defer></script>
+    <script src="./script.js" defer></script>
+    <script src="./article-enhancements.js" defer></script>
     
     <!-- Premium Professional Popup -->
     <div id="servicePopup" style="display: none;">
