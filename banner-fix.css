@@ -1,4 +1,4 @@
-/* ULTRA-AGGRESSIVE BANNER DRIFT FIX - MAXIMUM OVERRIDE */
+/* ULTRA-AGGRESSIVE BANNER DRIFT FIX - ABSOLUTE CENTER LOCK */
 /* This completely eliminates ALL drift-causing CSS from styles.css */
 
 /* ULTIMATE NUCLEAR OPTION: Override every possible conflicting rule */
@@ -7,17 +7,26 @@
 div.sticky-cta,
 #stickyCTA,
 *[id="stickyCTA"],
-*[class*="sticky-cta"] {
-    /* FORCE STABLE POSITIONING WITH MAXIMUM SPECIFICITY */
+*[class*="sticky-cta"],
+body .sticky-cta,
+html body .sticky-cta,
+html body div.sticky-cta,
+html body #stickyCTA {
+    /* ABSOLUTE CENTER POSITIONING - CANNOT DRIFT */
     position: fixed !important;
     bottom: 20px !important;
-    left: 50% !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: fit-content !important;
+    max-width: 600px !important;
+
+    /* BACKUP CENTERING METHOD */
+    transform: none !important;
+    translate: none !important;
 
     /* COMPLETE ELIMINATION OF ALL DRIFT-CAUSING PROPERTIES */
-    transform: translateX(-50%) !important;
-    margin: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
     will-change: auto !important;
@@ -45,272 +54,153 @@ div.sticky-cta,
 }
 
 /* Stable hover effect that ONLY affects visual properties */
-.sticky-cta:hover {
-    transform: translateX(-50%) translateY(-3px) !important;
+.sticky-cta:hover,
+body .sticky-cta:hover,
+html body .sticky-cta:hover,
+#stickyCTA:hover {
+    /* NO TRANSFORM - only visual changes */
+    transform: none !important;
     box-shadow: 0 15px 50px rgba(59, 130, 246, 0.5) !important;
+    /* Keep centered position */
+    left: 0 !important;
+    right: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
     filter: brightness(1.1) !important;
     
     /* Ensure no position drift on hover */
     left: 50% !important;
-    margin: 0 !important;
-    will-change: auto !important;
+    transform: translateX(-50%) !important;
 }
 
-/* Hidden state with absolutely no position changes */
-.sticky-cta.hidden {
-    transform: translateX(-50%) translateY(120px) !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    
-    /* Keep position stable even when hidden */
-    left: 50% !important;
-    margin: 0 !important;
-}
-
-/* Active state that doesn't affect positioning */
-.sticky-cta:active {
-    transform: translateX(-50%) scale(0.95) !important;
-    transition: transform 0.1s ease !important;
-    
-    /* Lock position during active state */
-    left: 50% !important;
-    margin: 0 !important;
-}
-
-/* Override ALL child positioning */
-.sticky-cta * {
-    will-change: auto !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
-
-.sticky-cta-content {
-    display: flex !important;
-    align-items: center !important;
-    gap: 20px !important;
-    position: relative !important;
-    margin: 0 !important;
-}
-
-.sticky-cta-text {
-    display: flex !important;
-    flex-direction: column !important;
-    color: white !important;
-    min-width: 0 !important;
-    margin: 0 !important;
-}
-
-.sticky-cta-text i {
-    color: #fbbf24 !important;
-    font-size: 1.2rem !important;
-    margin-bottom: 2px !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    animation: pulse 2s infinite !important;
-}
-
-.sticky-main-text {
-    font-size: 0.95rem !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.5px !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
-    margin: 0 !important;
-}
-
-.sticky-sub-text {
-    font-size: 0.75rem !important;
-    opacity: 0.9 !important;
-    font-weight: 400 !important;
-    margin-top: 2px !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
-
-.sticky-cta-button {
-    background: rgba(255, 255, 255, 0.15) !important;
-    color: white !important;
-    text-decoration: none !important;
-    padding: 8px 16px !important;
-    border-radius: 25px !important;
-    font-weight: 600 !important;
-    font-size: 0.85rem !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    transition: all 0.3s ease !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    backdrop-filter: blur(10px) !important;
-    white-space: nowrap !important;
-    margin: 0 !important;
-}
-
-.sticky-cta-button:hover {
-    background: rgba(255, 255, 255, 0.25) !important;
-    transform: scale(1.05) !important;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
-}
-
+/* Prevent ALL layout shifts on close button interaction */
 .sticky-cta-close {
+    /* Force stable close button positioning */
     position: absolute !important;
-    top: -8px !important;
-    right: -8px !important;
-    background: rgba(0, 0, 0, 0.5) !important;
-    color: white !important;
+    top: 50% !important;
+    right: 15px !important;
+    transform: translateY(-50%) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 20px !important;
+    height: 20px !important;
+    background: none !important;
     border: none !important;
-    border-radius: 50% !important;
-    width: 24px !important;
-    height: 24px !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    cursor: pointer !important;
+    font-size: 16px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    cursor: pointer !important;
-    font-size: 0.7rem !important;
-    transition: all 0.3s ease !important;
-    backdrop-filter: blur(10px) !important;
-    margin: 0 !important;
+    will-change: auto !important;
 }
 
 .sticky-cta-close:hover {
-    background: rgba(239, 68, 68, 0.8) !important;
-    transform: scale(1.1) !important;
+    /* Visual only change on hover - no position changes */
+    color: rgba(255, 255, 255, 1) !important;
+    transform: translateY(-50%) scale(1.1) !important;
 }
 
-/* Mobile responsive fixes */
-@media (max-width: 768px) {
-    .sticky-cta {
-        left: 10px !important;
-        right: 10px !important;
-        transform: none !important;
-        max-width: none !important;
-        padding: 10px 16px !important;
-        border-radius: 40px !important;
-        margin: 0 !important;
-        will-change: auto !important;
-    }
-
-    .sticky-cta:hover {
-        transform: translateY(-2px) !important;
-        left: 10px !important;
-        right: 10px !important;
-    }
-
-    .sticky-cta.hidden {
-        transform: translateY(120px) !important;
-        left: 10px !important;
-        right: 10px !important;
-    }
-
-    .sticky-cta-content {
-        gap: 12px !important;
-    }
-
-    .sticky-main-text {
-        font-size: 0.85rem !important;
-    }
-
-    .sticky-sub-text {
-        font-size: 0.7rem !important;
-    }
-
-    .sticky-cta-button {
-        padding: 6px 12px !important;
-        font-size: 0.8rem !important;
-        gap: 6px !important;
-    }
+/* Remove ALL conflicting styles from the inner content */
+.sticky-cta-content {
+    /* Stable inner content */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 15px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    will-change: auto !important;
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
 }
 
-/* Animation overrides */
-@keyframes slideUpBounce {
-    0% {
-        transform: translateX(-50%) translateY(120px);
-        opacity: 0;
-    }
-    60% {
-        transform: translateX(-50%) translateY(-10px);
-        opacity: 1;
-    }
-    100% {
-        transform: translateX(-50%) translateY(0);
-        opacity: 1;
-    }
+/* Prevent text content from causing layout shifts */
+.sticky-cta-text {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 
-@media (max-width: 768px) {
-    @keyframes slideUpBounce {
-        0% {
-            transform: translateY(120px);
-            opacity: 0;
-        }
-        60% {
-            transform: translateY(-10px);
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(0);
-            opacity: 1;
-        }
-    }
+/* Ultra-stable button styling */
+.sticky-cta-button {
+    /* Stable button with no transforms */
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 10px 20px !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 30px !important;
+    color: white !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    transition: background 0.2s ease !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+    transform: none !important;
 }
 
-/* Force stable animation */
-.sticky-cta {
-    animation: slideUpBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+.sticky-cta-button:hover {
+    /* Visual only change - no position shifts */
+    background: rgba(255, 255, 255, 0.3) !important;
+    transform: none !important;
+    margin: 0 !important;
 }
 
-/* Reset any problematic CSS custom properties */
-.sticky-cta {
-    --transform: translateX(-50%) !important;
-}
-
-/* Webkit and browser-specific fixes */
-.sticky-cta {
-    -webkit-transform: translateX(-50%) !important;
-    -moz-transform: translateX(-50%) !important;
-    -ms-transform: translateX(-50%) !important;
-    -o-transform: translateX(-50%) !important;
-}
-
-/* FINAL ULTRA-NUCLEAR OPTION - Complete CSS Domination */
-@supports (transform: translateX(-50%)) {
-    .sticky-cta, #stickyCTA, *[class*="sticky-cta"] {
-        transform: translateX(-50%) !important;
+/* FORCE OVERRIDE ANY OTHER CSS FILES */
+@media all {
+    .sticky-cta,
+    #stickyCTA {
+        /* Final override for all screen sizes */
+        position: fixed !important;
+        bottom: 20px !important;
         left: 50% !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        will-change: auto !important;
+        transform: translateX(-50%) !important;
+        margin: 0 auto !important;
     }
 }
 
-/* ULTIMATE OVERRIDE: Target every possible CSS selector combination */
-html .sticky-cta,
-body .sticky-cta,
-div.sticky-cta,
-.sticky-cta.sticky-cta,
-.sticky-cta.sticky-cta.sticky-cta {
-    transform: translateX(-50%) !important;
-    left: 50% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    will-change: auto !important;
+/* Remove all animation keyframes that might affect position */
+@keyframes none {
+    0%, 100% {
+        transform: none;
+    }
+}
+
+/* ABSOLUTE FINAL OVERRIDE - Use ID selector with maximum specificity */
+html body div#stickyCTA.sticky-cta {
+    /* LOCKED CENTER POSITION */
     position: fixed !important;
-}
-
-/* BRUTE FORCE: Override ANY inline styles */
-.sticky-cta[style*="transform"],
-.sticky-cta[style*="margin-left"],
-.sticky-cta[style*="will-change"] {
-    transform: translateX(-50%) !important;
+    bottom: 20px !important;
     left: 50% !important;
+    transform: translateX(-50%) !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
     will-change: auto !important;
+    animation: none !important;
+    transition: opacity 0.2s ease, box-shadow 0.2s ease !important;
 }
 
-/* CSS SPECIFICITY HAMMER: Use all possible selectors */
-*:not(html):not(head) .sticky-cta {
+/* Prevent any JavaScript animation libraries from moving the banner */
+.aos-animate .sticky-cta,
+.animated .sticky-cta,
+.sticky-cta.animated,
+.sticky-cta.aos-animate {
+    animation: none !important;
     transform: translateX(-50%) !important;
     left: 50% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    margin: 0 !important;
+}
+
+/* Remove all transform-origin properties that might cause drift */
+.sticky-cta * {
+    transform-origin: center !important;
     will-change: auto !important;
 }
