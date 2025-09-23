@@ -1,6 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- 🚨 IMMEDIATE NUCLEAR SCROLL FIX - Runs before anything else -->
+    <style>
+        /* EMERGENCY INLINE CSS - Forces scrolling immediately */
+        html, body {
+            overflow: auto !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            position: relative !important;
+            height: auto !important;
+            min-height: 100vh !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        body.welcome-active, body.loading-active, body.no-scroll, body.frozen {
+            overflow: auto !important;
+            overflow-y: auto !important;
+            position: relative !important;
+        }
+        /* Hide any potential blocking overlays immediately */
+        #loading, #welcomeOverlay, #customerWelcomeOverlay, .loading, .welcome-overlay {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
+    </style>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JufipAI - AI Solutions & Automation</title>
