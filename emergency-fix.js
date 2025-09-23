@@ -41,8 +41,15 @@
 
         // Ensure body is visible and scrollable
         document.body.style.overflow = 'auto';
+        document.body.style.overflowY = 'auto';
+        document.body.style.overflowX = 'hidden';
         document.body.style.position = 'relative';
         document.documentElement.style.overflow = 'auto';
+        document.documentElement.style.overflowY = 'auto';
+
+        // Remove any classes that might block scrolling
+        document.body.classList.remove('welcome-active');
+        document.body.classList.remove('no-scroll');
 
         console.log('🎉 All blocking overlays removed - website should be accessible now');
     }
