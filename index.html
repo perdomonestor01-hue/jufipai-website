@@ -29,9 +29,18 @@
     <link rel="icon" type="image/svg+xml" href="./favicon.svg">
     <link rel="icon" type="image/x-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmYmJmMjQ7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzNiODJmNjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgcng9IjYiIGZpbGw9InVybCgjZ3JhZCkiLz4KICA8dGV4dCB4PSIxNiIgeT0iMjIiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIj5KPC90ZXh0Pgo8L3N2Zz4K">
     
-    <!-- Performance Optimized Font Loading -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- HTTP/3 & Performance Optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+    <!-- Preload Critical Assets -->
+    <link rel="preload" href="./styles.css" as="style">
+    <link rel="preload" href="./script.js" as="script">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" as="style">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -155,7 +164,32 @@
             <div class="customer-welcome-title" data-translate="customer-welcome-title">Thanks for contacting JufipAI</div>
             <div class="customer-welcome-subtitle" data-translate="customer-welcome-subtitle">Your automation journey begins now</div>
             <div class="customer-welcome-details" data-translate="customer-welcome-details">
-                One of our specialized team members is already contacting you shortly.<br>
+                We've sent you a welcome email with everything you need to schedule your free 30-minute consultation.<br><br>
+                <strong>Check your inbox now!</strong>
+            </div>
+
+            <!-- Email Instructions -->
+            <div style="
+                margin-top: 2rem;
+                padding: 1.5rem;
+                background: rgba(59, 130, 246, 0.1);
+                border-radius: 12px;
+                border-left: 4px solid #3b82f6;
+                text-align: left;
+                max-width: 500px;
+                margin-left: auto;
+                margin-right: auto;
+            ">
+                <p style="color: #e2e8f0; font-size: 1rem; line-height: 1.6; margin: 0;">
+                    <strong>Best regards,</strong><br>
+                    The JufipAI Team
+                </p>
+                <p style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.6; margin-top: 1rem; font-style: italic;">
+                    <strong>P.S.</strong> Please check your spam folder if you don't see the Calendly confirmation email after booking. If you have any questions before our call, simply reply to the email we just sent you.
+                </p>
+            </div>
+
+            <div style="margin-top: 2rem; color: #94a3b8; font-size: 0.95rem;">
                 <strong>Get ready to flip how you work forever!</strong>
             </div>
         </div>
@@ -197,6 +231,11 @@
                     <div class="language-slider" aria-hidden="true"></div>
                     <div class="language-option active" data-lang="en" role="tab" tabindex="0" aria-selected="true" aria-label="English">ENG</div>
                     <div class="language-option" data-lang="es" role="tab" tabindex="-1" aria-selected="false" aria-label="Español">ESP</div>
+                </div>
+            </div>
+            <div class="dark-mode-toggle" role="group" aria-label="Theme selection">
+                <div class="theme-switch" id="themeSwitch" role="button" tabindex="0" aria-label="Toggle dark/light mode">
+                    <div class="theme-slider" aria-hidden="true"></div>
                 </div>
             </div>
         </nav>
@@ -257,27 +296,106 @@
             </div>
         </section>
 
-        <!-- Process Section -->
-        <section class="process" id="process">
-            <h2 data-translate="process-title">Our Risk-Free Process</h2>
-            <div class="process-steps">
-                <div class="process-step">
-                    <div class="step-number">1</div>
-                    <h3 data-translate="process1-title">Free Diagnosis</h3>
-                    <p data-translate="process1-desc">We analyze your current workflows and identify automation opportunities</p>
-                    <div class="free-badge" data-translate="badge-free">100% FREE</div>
+        <!-- Testimonials Section -->
+        <section class="testimonials" id="testimonials">
+            <h2 data-translate="testimonials-title">Trusted By Industry Leaders</h2>
+            <p class="testimonials-subtitle" data-translate="testimonials-subtitle">See how we've transformed businesses across different industries</p>
+
+            <div class="testimonials-grid">
+                <!-- Real Estate Agent Testimonial -->
+                <div class="testimonial-card" data-industry="real-estate" data-sound="click">
+                    <div class="testimonial-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3 data-translate="testimonial1-industry">Real Estate Agency</h3>
+                    <div class="testimonial-preview" data-translate="testimonial1-preview">
+                        "JufipAI automated our entire lead management system..."
+                    </div>
+                    <div class="testimonial-full" style="display: none;">
+                        <p data-translate="testimonial1-full">
+                            "JufipAI automated our entire lead management system. Now client inquiries are instantly categorized, property showings are scheduled automatically, and follow-ups happen without any manual work. We closed 40% more deals in just 3 months!"
+                        </p>
+                        <div class="testimonial-author">
+                            <strong data-translate="testimonial1-name">Sarah Martinez</strong>
+                            <span data-translate="testimonial1-role">Lead Broker, Premium Properties</span>
+                        </div>
+                    </div>
+                    <button class="testimonial-toggle" data-translate="testimonial-read-more">
+                        <span class="toggle-text">Read More</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
                 </div>
-                <div class="process-step">
-                    <div class="step-number">2</div>
-                    <h3 data-translate="process2-title">Free Solution Draft</h3>
-                    <p data-translate="process2-desc">Complete automation blueprint with AI integration plan and cost projections</p>
-                    <div class="free-badge" data-translate="badge-free">100% FREE</div>
+
+                <!-- Remodeling Company Testimonial -->
+                <div class="testimonial-card" data-industry="remodeling" data-sound="click">
+                    <div class="testimonial-icon">
+                        <i class="fas fa-hammer"></i>
+                    </div>
+                    <h3 data-translate="testimonial2-industry">Remodeling Company</h3>
+                    <div class="testimonial-preview" data-translate="testimonial2-preview">
+                        "Project management became effortless with their automation..."
+                    </div>
+                    <div class="testimonial-full" style="display: none;">
+                        <p data-translate="testimonial2-full">
+                            "Project management became effortless with their automation. Material orders, contractor scheduling, and client updates all happen automatically. We eliminated 20 hours of weekly admin work and can now handle 3x more projects simultaneously."
+                        </p>
+                        <div class="testimonial-author">
+                            <strong data-translate="testimonial2-name">Michael Chen</strong>
+                            <span data-translate="testimonial2-role">Owner, Elite Renovations</span>
+                        </div>
+                    </div>
+                    <button class="testimonial-toggle" data-translate="testimonial-read-more">
+                        <span class="toggle-text">Read More</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
                 </div>
-                <div class="process-step">
-                    <div class="step-number">3</div>
-                    <h3 data-translate="process3-title">Entry-Level Implementation</h3>
-                    <p data-translate="process3-desc">If you love our plan, we implement it at affordable entry-level pricing</p>
-                    <div class="free-badge" data-translate="badge-approve">ONLY IF YOU APPROVE</div>
+
+                <!-- Staffing Agency Testimonial -->
+                <div class="testimonial-card" data-industry="staffing" data-sound="click">
+                    <div class="testimonial-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 data-translate="testimonial3-industry">Staffing Agency</h3>
+                    <div class="testimonial-preview" data-translate="testimonial3-preview">
+                        "Resume screening, candidate matching, and interview scheduling..."
+                    </div>
+                    <div class="testimonial-full" style="display: none;">
+                        <p data-translate="testimonial3-full">
+                            "Resume screening, candidate matching, and interview scheduling all run on autopilot now. Our AI agents process hundreds of applications daily and match candidates to jobs with 95% accuracy. Placement time dropped from 3 weeks to 5 days!"
+                        </p>
+                        <div class="testimonial-author">
+                            <strong data-translate="testimonial3-name">Jennifer Rodriguez</strong>
+                            <span data-translate="testimonial3-role">Director, TalentFirst Staffing</span>
+                        </div>
+                    </div>
+                    <button class="testimonial-toggle" data-translate="testimonial-read-more">
+                        <span class="toggle-text">Read More</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+
+                <!-- Food Production Testimonial -->
+                <div class="testimonial-card" data-industry="food-production" data-sound="click">
+                    <div class="testimonial-icon">
+                        <i class="fas fa-industry"></i>
+                    </div>
+                    <h3 data-translate="testimonial4-industry">Food Production</h3>
+                    <div class="testimonial-preview" data-translate="testimonial4-preview">
+                        "Inventory tracking, quality control reports, and supplier ordering..."
+                    </div>
+                    <div class="testimonial-full" style="display: none;">
+                        <p data-translate="testimonial4-full">
+                            "Inventory tracking, quality control reports, and supplier ordering are completely automated. The system predicts demand, reorders supplies automatically, and generates compliance reports instantly. We cut waste by 35% and reduced staffing costs significantly."
+                        </p>
+                        <div class="testimonial-author">
+                            <strong data-translate="testimonial4-name">David Thompson</strong>
+                            <span data-translate="testimonial4-role">Operations Manager, Fresh Foods Co.</span>
+                        </div>
+                    </div>
+                    <button class="testimonial-toggle" data-translate="testimonial-read-more">
+                        <span class="toggle-text">Read More</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
                 </div>
             </div>
         </section>

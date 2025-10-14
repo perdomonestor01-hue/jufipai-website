@@ -237,13 +237,13 @@ function sendWelcomeEmail(customerEmail, customerName, companyName) {
 
     <div class="cta-section">
       <div style="font-size: 20px; font-weight: 700; color: #1e40af; margin-bottom: 15px;">
-        🎯 YOUR NEXT STEP: Schedule Your Free Consultation
+        &#127919; YOUR NEXT STEP: Schedule Your Free Consultation
       </div>
       <div style="color: #475569; font-size: 15px; margin-bottom: 20px;">
         Click the button below to schedule your 30-minute consultation at your convenience:
       </div>
       <a href="${calendlyLink}" class="cta-button">
-        📅 SCHEDULE YOUR CONSULTATION NOW
+        &#128197; SCHEDULE YOUR CONSULTATION NOW
       </a>
       <div style="color: #64748b; font-size: 13px; margin-top: 15px;">
         Or copy this link: <a href="${calendlyLink}" style="color: #3b82f6;">${calendlyLink}</a>
@@ -252,7 +252,7 @@ function sendWelcomeEmail(customerEmail, customerName, companyName) {
 
     <div class="reminder-box">
       <div class="reminder-title">
-        📌 IMPORTANT REMINDERS
+        &#128204; IMPORTANT REMINDERS
       </div>
       <div class="reminder-content">
         We really appreciate your intention of making business with us. When you schedule an appointment, you will receive <strong>2 automated reminders</strong> to attend the virtual meeting. Remember, this is a <strong>30-minute consultation</strong> and we really care about your and our agenda.
@@ -262,7 +262,7 @@ function sendWelcomeEmail(customerEmail, customerName, companyName) {
     </div>
 
     <div class="benefits">
-      <div class="benefits-title">💡 What to Expect in Your Consultation:</div>
+      <div class="benefits-title">&#128161; What to Expect in Your Consultation:</div>
       <div class="benefit-item">Deep dive into your current workflows</div>
       <div class="benefit-item">Identification of automation opportunities</div>
       <div class="benefit-item">Custom AI integration strategy for your business</div>
@@ -271,7 +271,7 @@ function sendWelcomeEmail(customerEmail, customerName, companyName) {
     </div>
 
     <div class="content" style="text-align: center; font-size: 18px; color: #3b82f6; font-weight: 600;">
-      Get ready to flip how you work forever! 🚀
+      Get ready to flip how you work forever! &#128640;
     </div>
 
     <div class="footer">
@@ -300,26 +300,26 @@ Hi ${customerName},
 
 Thank you for contacting JufipAI! We received your automation inquiry for ${companyName} and we're excited to help transform your business with AI-powered solutions.
 
-🎯 YOUR NEXT STEP: Schedule Your Free Consultation
+YOUR NEXT STEP: Schedule Your Free Consultation
 
 Please schedule your 30-minute consultation at your convenience:
 ${calendlyLink}
 
-📌 IMPORTANT REMINDERS:
+IMPORTANT REMINDERS:
 
 We really appreciate your intention of making business with us. When you schedule an appointment, you will receive 2 automated reminders to attend the virtual meeting. Remember, this is a 30-minute consultation and we really care about your and our agenda.
 
 If you need to reschedule, you can do so easily through the confirmation email.
 
-💡 What to Expect in Your Consultation:
+What to Expect in Your Consultation:
 
-✓ Deep dive into your current workflows
-✓ Identification of automation opportunities
-✓ Custom AI integration strategy for your business
-✓ Clear roadmap and timeline
-✓ Answer all your questions
+- Deep dive into your current workflows
+- Identification of automation opportunities
+- Custom AI integration strategy for your business
+- Clear roadmap and timeline
+- Answer all your questions
 
-Get ready to flip how you work forever! 🚀
+Get ready to flip how you work forever!
 
 Best regards,
 The JufipAI Team
