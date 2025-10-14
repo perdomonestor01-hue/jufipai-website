@@ -492,9 +492,8 @@ document.getElementById('contactForm').addEventListener('submit', async function
     submitBtn.style.background = 'linear-gradient(135deg, #6b7280, #9ca3af)';
     
     try {
-        // Send to Google Spreadsheet
-        // You need to create a Google Apps Script Web App with your spreadsheet ID
-        const response = await fetch('https://script.google.com/macros/s/AKfycbx6pu8s3tWi_vyVS76X_fqeJTgyS5399MCcX2j3se7zB4IVE0LUCNHkh3IY-u_fjwu-/exec', {
+        // Send to Google Spreadsheet via contact@jufipai.com Apps Script
+        const response = await fetch('https://script.google.com/macros/s/AKfycbxUJ6mzP1jubnhHK31Y_74FY6EIG61MdJW8VlrBX56r6hK2-Ing3EW_9o7uHs--9_3t/exec', {
             method: 'POST',
             mode: 'no-cors',
             headers: {
@@ -1131,7 +1130,40 @@ const translations = {
         'feature9': 'Automated report generation and distribution',
         'feature10': 'Deep Google Workspace integration',
         'feature11': 'Real-time data synchronization across platforms',
-        'feature12': 'Smart workflow automation that learns and adapts'
+        'feature12': 'Smart workflow automation that learns and adapts',
+
+        // Testimonials Section
+        'testimonials-title': 'Trusted By Industry Leaders',
+        'testimonials-read-more': 'Read More',
+        'testimonials-read-less': 'Read Less',
+
+        // Real Estate Testimonial
+        'testimonials-industry-1': 'Real Estate',
+        'testimonials-preview-1': '"JufipAI transformed our property management—automated listings, instant client responses, and smart contract processing..."',
+        'testimonials-full-1': 'JufipAI revolutionized how we manage properties. Their AI agents handle everything from automated MLS listings to instant client inquiries. Smart contract processing reduced our paperwork by 85%, and automated follow-ups converted 40% more leads. The ROI was immediate—we saved $120K in the first year alone.',
+        'testimonials-author-1': 'Sarah Chen',
+        'testimonials-role-1': 'Managing Broker, Elite Realty Group',
+
+        // Remodeling Testimonial
+        'testimonials-industry-2': 'Remodeling Companies',
+        'testimonials-preview-2': '"From project estimates to material ordering—everything automated. Our efficiency jumped 300% while costs dropped 60%..."',
+        'testimonials-full-2': 'We implemented JufipAI\'s automation across our entire operation. Automated project estimates, intelligent material ordering, and smart scheduling eliminated 90% of administrative work. Our team focuses on building, not paperwork. Client satisfaction scores increased 45%, and we completed 3x more projects with the same staff.',
+        'testimonials-author-2': 'Mike Rodriguez',
+        'testimonials-role-2': 'Owner, Premier Home Renovations',
+
+        // Staffing Testimonial
+        'testimonials-industry-3': 'Staffing Agencies',
+        'testimonials-preview-3': '"AI-powered candidate matching and automated screening saved us 200 hours monthly. Placement time cut from weeks to days..."',
+        'testimonials-full-3': 'JufipAI\'s intelligent automation completely transformed our staffing process. AI agents screen candidates, match skills to positions, and handle initial communications—all automatically. What used to take weeks now happens in days. We placed 250% more candidates this year with zero additional staff, and our clients love the speed and accuracy.',
+        'testimonials-author-3': 'Jennifer Williams',
+        'testimonials-role-3': 'Director of Operations, TalentFirst Solutions',
+
+        // Food Production Testimonial
+        'testimonials-industry-4': 'Food Production',
+        'testimonials-preview-4': '"Automated inventory tracking, smart ordering, and compliance reports—all running 24/7. Food waste down 75%, profits up 120%..."',
+        'testimonials-full-4': 'The automation JufipAI built for us is incredible. AI agents monitor inventory levels, automatically order supplies, generate compliance reports, and track production metrics in real-time. Food waste dropped 75%, labor costs decreased 55%, and we gained complete visibility into our operation. This system paid for itself in under 3 months.',
+        'testimonials-author-4': 'Carlos Martinez',
+        'testimonials-role-4': 'Production Manager, FreshStart Foods'
     },
     es: {
         // Navigation  
@@ -1204,7 +1236,40 @@ const translations = {
         'feature9': 'Generación y distribución automatizada de reportes',
         'feature10': 'Integración profunda con Google Workspace',
         'feature11': 'Sincronización de datos en tiempo real entre plataformas',
-        'feature12': 'Automatización de flujos de trabajo inteligente que aprende y se adapta'
+        'feature12': 'Automatización de flujos de trabajo inteligente que aprende y se adapta',
+
+        // Sección de Testimonios
+        'testimonials-title': 'Confiado por Líderes de la Industria',
+        'testimonials-read-more': 'Leer Más',
+        'testimonials-read-less': 'Leer Menos',
+
+        // Testimonio Bienes Raíces
+        'testimonials-industry-1': 'Bienes Raíces',
+        'testimonials-preview-1': '"JufipAI transformó nuestra gestión de propiedades—listados automatizados, respuestas instantáneas a clientes, y procesamiento inteligente de contratos..."',
+        'testimonials-full-1': 'JufipAI revolucionó cómo manejamos propiedades. Sus agentes AI manejan todo desde listados MLS automatizados hasta consultas instantáneas de clientes. El procesamiento inteligente de contratos redujo nuestro papeleo en un 85%, y los seguimientos automatizados convirtieron un 40% más de clientes potenciales. El ROI fue inmediato—ahorramos $120K solo en el primer año.',
+        'testimonials-author-1': 'Sarah Chen',
+        'testimonials-role-1': 'Corredor Gerente, Elite Realty Group',
+
+        // Testimonio Remodelación
+        'testimonials-industry-2': 'Empresas de Remodelación',
+        'testimonials-preview-2': '"Desde estimados de proyectos hasta pedidos de materiales—todo automatizado. Nuestra eficiencia aumentó 300% mientras los costos bajaron 60%..."',
+        'testimonials-full-2': 'Implementamos la automatización de JufipAI en toda nuestra operación. Estimados de proyectos automatizados, pedido inteligente de materiales, y programación inteligente eliminaron el 90% del trabajo administrativo. Nuestro equipo se enfoca en construir, no en papeleo. Las puntuaciones de satisfacción del cliente aumentaron 45%, y completamos 3 veces más proyectos con el mismo personal.',
+        'testimonials-author-2': 'Mike Rodriguez',
+        'testimonials-role-2': 'Propietario, Premier Home Renovations',
+
+        // Testimonio Agencias de Personal
+        'testimonials-industry-3': 'Agencias de Personal',
+        'testimonials-preview-3': '"Coincidencia de candidatos impulsada por AI y evaluación automatizada nos ahorraron 200 horas mensuales. Tiempo de colocación reducido de semanas a días..."',
+        'testimonials-full-3': 'La automatización inteligente de JufipAI transformó completamente nuestro proceso de personal. Los agentes AI evalúan candidatos, coinciden habilidades con posiciones, y manejan comunicaciones iniciales—todo automáticamente. Lo que solía tomar semanas ahora sucede en días. Colocamos 250% más candidatos este año sin personal adicional, y a nuestros clientes les encanta la velocidad y precisión.',
+        'testimonials-author-3': 'Jennifer Williams',
+        'testimonials-role-3': 'Directora de Operaciones, TalentFirst Solutions',
+
+        // Testimonio Producción de Alimentos
+        'testimonials-industry-4': 'Producción de Alimentos',
+        'testimonials-preview-4': '"Seguimiento de inventario automatizado, pedidos inteligentes, y reportes de cumplimiento—todo funcionando 24/7. Desperdicio de alimentos bajó 75%, ganancias subieron 120%..."',
+        'testimonials-full-4': 'La automatización que JufipAI construyó para nosotros es increíble. Los agentes AI monitorean niveles de inventario, ordenan suministros automáticamente, generan reportes de cumplimiento, y rastrean métricas de producción en tiempo real. El desperdicio de alimentos bajó 75%, los costos de mano de obra disminuyeron 55%, y obtuvimos visibilidad completa de nuestra operación. Este sistema se pagó solo en menos de 3 meses.',
+        'testimonials-author-4': 'Carlos Martinez',
+        'testimonials-role-4': 'Gerente de Producción, FreshStart Foods'
     }
 };
 
@@ -1419,3 +1484,220 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Dark Mode Toggle System with localStorage persistence
+document.addEventListener('DOMContentLoaded', function() {
+    const themeSwitch = document.getElementById('themeSwitch');
+    const html = document.documentElement;
+
+    // Check for saved theme preference or default to 'dark'
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    html.setAttribute('data-theme', currentTheme);
+
+    // Theme toggle function
+    function toggleTheme() {
+        const currentTheme = html.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        // Update theme
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+
+        // Play sound effect
+        initAudio();
+        if (audioEnabled) audioContext.playClickSound();
+
+        // Log theme change
+        console.log(`🎨 Theme changed to: ${newTheme === 'light' ? '☀️ Light' : '🌙 Dark'} Mode`);
+    }
+
+    // Click event
+    if (themeSwitch) {
+        themeSwitch.addEventListener('click', toggleTheme);
+
+        // Keyboard accessibility
+        themeSwitch.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleTheme();
+            }
+        });
+
+        // Hover sound
+        themeSwitch.addEventListener('mouseenter', function() {
+            initAudio();
+            if (audioEnabled) audioContext.playHoverSound();
+        });
+    }
+
+    console.log('✅ Dark Mode Toggle initialized');
+});
+
+// Lazy Loading System using Intersection Observer
+(function initLazyLoading() {
+    // Lazy load images
+    const lazyImages = document.querySelectorAll('img[data-src], img[loading="lazy"]');
+    const lazyBackgrounds = document.querySelectorAll('[data-bg]');
+
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+
+                // Load image source
+                if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                }
+
+                // Load background image
+                if (img.dataset.bg) {
+                    img.style.backgroundImage = `url(${img.dataset.bg})`;
+                    img.removeAttribute('data-bg');
+                }
+
+                img.classList.add('loaded');
+                observer.unobserve(img);
+            }
+        });
+    }, {
+        rootMargin: '50px 0px', // Start loading 50px before element is visible
+        threshold: 0.01
+    });
+
+    // Observe all lazy images
+    lazyImages.forEach(img => imageObserver.observe(img));
+    lazyBackgrounds.forEach(el => imageObserver.observe(el));
+
+    // Lazy load sections for better performance
+    const sections = document.querySelectorAll('section');
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('section-visible');
+            }
+        });
+    }, {
+        rootMargin: '0px',
+        threshold: 0.1
+    });
+
+    sections.forEach(section => sectionObserver.observe(section));
+
+    // Prefetch links on hover for faster navigation
+    const links = document.querySelectorAll('a[href^="http"], a[href^="https"]');
+    links.forEach(link => {
+        link.addEventListener('mouseenter', function() {
+            const href = this.getAttribute('href');
+            if (href && !href.includes('#') && !document.querySelector(`link[rel="prefetch"][href="${href}"]`)) {
+                const prefetchLink = document.createElement('link');
+                prefetchLink.rel = 'prefetch';
+                prefetchLink.href = href;
+                document.head.appendChild(prefetchLink);
+            }
+        }, { once: true });
+    });
+
+    console.log(`✅ Lazy Loading initialized: ${lazyImages.length} images, ${sections.length} sections`);
+})();
+
+// ========================================
+// TESTIMONIALS TOGGLE SYSTEM
+// ========================================
+(function initTestimonials() {
+    const testimonialCards = document.querySelectorAll('.testimonial-card');
+
+    if (testimonialCards.length === 0) {
+        console.log('ℹ️ No testimonial cards found');
+        return;
+    }
+
+    testimonialCards.forEach(card => {
+        const toggleButton = card.querySelector('.testimonial-toggle');
+        const toggleText = toggleButton?.querySelector('span:not(.testimonial-toggle-icon)');
+
+        if (!toggleButton) return;
+
+        // Store original button text
+        const expandText = toggleText?.getAttribute('data-translate') || 'Read More';
+        const collapseText = 'Read Less';
+
+        toggleButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+
+            // Toggle expanded state
+            const isExpanded = card.classList.toggle('expanded');
+
+            // Update button text based on state
+            if (toggleText) {
+                if (isExpanded) {
+                    toggleText.textContent = collapseText;
+                    toggleText.setAttribute('data-translate', 'testimonials-read-less');
+                } else {
+                    toggleText.textContent = expandText === 'Read More' ? 'Read More' : expandText;
+                    toggleText.setAttribute('data-translate', 'testimonials-read-more');
+                }
+            }
+
+            // Play sound effect if available
+            try {
+                if (typeof playClickSound === 'function') {
+                    playClickSound();
+                }
+            } catch (err) {
+                // Silent fail if sound function doesn't exist
+            }
+
+            // Smooth scroll to card if expanding and partially off-screen
+            if (isExpanded) {
+                setTimeout(() => {
+                    const cardRect = card.getBoundingClientRect();
+                    const windowHeight = window.innerHeight;
+
+                    // If card bottom is below viewport, scroll into view
+                    if (cardRect.bottom > windowHeight) {
+                        card.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest'
+                        });
+                    }
+                }, 300); // Wait for expansion animation
+            }
+        });
+
+        // Also make the entire card clickable (except links and buttons)
+        card.addEventListener('click', function(e) {
+            // Don't trigger if clicking on a link or button
+            if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
+                return;
+            }
+
+            // Don't trigger if clicking inside the toggle button
+            if (toggleButton.contains(e.target)) {
+                return;
+            }
+
+            // Trigger the toggle button click
+            toggleButton.click();
+        });
+
+        // Add keyboard accessibility
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-expanded', 'false');
+
+        card.addEventListener('keydown', function(e) {
+            // Trigger on Enter or Space key
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleButton.click();
+
+                // Update aria-expanded attribute
+                const isExpanded = card.classList.contains('expanded');
+                card.setAttribute('aria-expanded', isExpanded.toString());
+            }
+        });
+    });
+
+    console.log(`✅ Testimonials initialized: ${testimonialCards.length} cards with toggle functionality`);
+})();
