@@ -1134,36 +1134,22 @@ const translations = {
 
         // Testimonials Section
         'testimonials-title': 'Trusted By Industry Leaders',
-        'testimonials-read-more': 'Read More',
-        'testimonials-read-less': 'Read Less',
 
-        // Real Estate Testimonial
-        'testimonials-industry-1': 'Real Estate',
-        'testimonials-preview-1': '"JufipAI transformed our property management—automated listings, instant client responses, and smart contract processing..."',
-        'testimonials-full-1': 'JufipAI revolutionized how we manage properties. Their AI agents handle everything from automated MLS listings to instant client inquiries. Smart contract processing reduced our paperwork by 85%, and automated follow-ups converted 40% more leads. The ROI was immediate—we saved $120K in the first year alone.',
-        'testimonials-author-1': 'Sarah Chen',
-        'testimonials-role-1': 'Managing Broker, Elite Realty Group',
+        // Testimonial 1 - Real Estate
+        'testimonial1-industry': 'Real Estate Agency',
+        'testimonial1-desc': '"JufipAI automated our entire lead management system. Client inquiries are instantly categorized, property showings schedule automatically, and follow-ups happen without manual work. We closed 40% more deals in just 3 months."',
 
-        // Remodeling Testimonial
-        'testimonials-industry-2': 'Remodeling Companies',
-        'testimonials-preview-2': '"From project estimates to material ordering—everything automated. Our efficiency jumped 300% while costs dropped 60%..."',
-        'testimonials-full-2': 'We implemented JufipAI\'s automation across our entire operation. Automated project estimates, intelligent material ordering, and smart scheduling eliminated 90% of administrative work. Our team focuses on building, not paperwork. Client satisfaction scores increased 45%, and we completed 3x more projects with the same staff.',
-        'testimonials-author-2': 'Mike Rodriguez',
-        'testimonials-role-2': 'Owner, Premier Home Renovations',
+        // Testimonial 2 - Remodeling
+        'testimonial2-industry': 'Remodeling Company',
+        'testimonial2-desc': '"Project management became effortless. Material orders, contractor scheduling, and client updates all happen automatically. We eliminated 20 hours of weekly admin work and can now handle 3x more projects simultaneously."',
 
-        // Staffing Testimonial
-        'testimonials-industry-3': 'Staffing Agencies',
-        'testimonials-preview-3': '"AI-powered candidate matching and automated screening saved us 200 hours monthly. Placement time cut from weeks to days..."',
-        'testimonials-full-3': 'JufipAI\'s intelligent automation completely transformed our staffing process. AI agents screen candidates, match skills to positions, and handle initial communications—all automatically. What used to take weeks now happens in days. We placed 250% more candidates this year with zero additional staff, and our clients love the speed and accuracy.',
-        'testimonials-author-3': 'Jennifer Williams',
-        'testimonials-role-3': 'Director of Operations, TalentFirst Solutions',
+        // Testimonial 3 - Staffing
+        'testimonial3-industry': 'Staffing Agency',
+        'testimonial3-desc': '"Resume screening, candidate matching, and interview scheduling run on autopilot. Our AI agents process hundreds of applications daily with 95% accuracy. Placement time dropped from 3 weeks to 5 days."',
 
-        // Food Production Testimonial
-        'testimonials-industry-4': 'Food Production',
-        'testimonials-preview-4': '"Automated inventory tracking, smart ordering, and compliance reports—all running 24/7. Food waste down 75%, profits up 120%..."',
-        'testimonials-full-4': 'The automation JufipAI built for us is incredible. AI agents monitor inventory levels, automatically order supplies, generate compliance reports, and track production metrics in real-time. Food waste dropped 75%, labor costs decreased 55%, and we gained complete visibility into our operation. This system paid for itself in under 3 months.',
-        'testimonials-author-4': 'Carlos Martinez',
-        'testimonials-role-4': 'Production Manager, FreshStart Foods'
+        // Testimonial 4 - Food Production
+        'testimonial4-industry': 'Food Production',
+        'testimonial4-desc': '"Inventory tracking, quality control reports, and supplier ordering are completely automated. The system predicts demand and reorders automatically. We cut waste by 35% and reduced staffing costs significantly."'
     },
     es: {
         // Navigation  
@@ -1240,36 +1226,22 @@ const translations = {
 
         // Sección de Testimonios
         'testimonials-title': 'Confiado por Líderes de la Industria',
-        'testimonials-read-more': 'Leer Más',
-        'testimonials-read-less': 'Leer Menos',
 
-        // Testimonio Bienes Raíces
-        'testimonials-industry-1': 'Bienes Raíces',
-        'testimonials-preview-1': '"JufipAI transformó nuestra gestión de propiedades—listados automatizados, respuestas instantáneas a clientes, y procesamiento inteligente de contratos..."',
-        'testimonials-full-1': 'JufipAI revolucionó cómo manejamos propiedades. Sus agentes AI manejan todo desde listados MLS automatizados hasta consultas instantáneas de clientes. El procesamiento inteligente de contratos redujo nuestro papeleo en un 85%, y los seguimientos automatizados convirtieron un 40% más de clientes potenciales. El ROI fue inmediato—ahorramos $120K solo en el primer año.',
-        'testimonials-author-1': 'Sarah Chen',
-        'testimonials-role-1': 'Corredor Gerente, Elite Realty Group',
+        // Testimonio 1 - Bienes Raíces
+        'testimonial1-industry': 'Agencia de Bienes Raíces',
+        'testimonial1-desc': '"JufipAI automatizó todo nuestro sistema de gestión de prospectos. Las consultas de clientes se categorizan instantáneamente, las visitas a propiedades se programan automáticamente, y los seguimientos ocurren sin trabajo manual. Cerramos 40% más negocios en solo 3 meses."',
 
-        // Testimonio Remodelación
-        'testimonials-industry-2': 'Empresas de Remodelación',
-        'testimonials-preview-2': '"Desde estimados de proyectos hasta pedidos de materiales—todo automatizado. Nuestra eficiencia aumentó 300% mientras los costos bajaron 60%..."',
-        'testimonials-full-2': 'Implementamos la automatización de JufipAI en toda nuestra operación. Estimados de proyectos automatizados, pedido inteligente de materiales, y programación inteligente eliminaron el 90% del trabajo administrativo. Nuestro equipo se enfoca en construir, no en papeleo. Las puntuaciones de satisfacción del cliente aumentaron 45%, y completamos 3 veces más proyectos con el mismo personal.',
-        'testimonials-author-2': 'Mike Rodriguez',
-        'testimonials-role-2': 'Propietario, Premier Home Renovations',
+        // Testimonio 2 - Remodelación
+        'testimonial2-industry': 'Empresa de Remodelación',
+        'testimonial2-desc': '"La gestión de proyectos se volvió sencilla. Los pedidos de materiales, programación de contratistas, y actualizaciones de clientes suceden automáticamente. Eliminamos 20 horas de trabajo administrativo semanal y ahora manejamos 3 veces más proyectos simultáneamente."',
 
-        // Testimonio Agencias de Personal
-        'testimonials-industry-3': 'Agencias de Personal',
-        'testimonials-preview-3': '"Coincidencia de candidatos impulsada por AI y evaluación automatizada nos ahorraron 200 horas mensuales. Tiempo de colocación reducido de semanas a días..."',
-        'testimonials-full-3': 'La automatización inteligente de JufipAI transformó completamente nuestro proceso de personal. Los agentes AI evalúan candidatos, coinciden habilidades con posiciones, y manejan comunicaciones iniciales—todo automáticamente. Lo que solía tomar semanas ahora sucede en días. Colocamos 250% más candidatos este año sin personal adicional, y a nuestros clientes les encanta la velocidad y precisión.',
-        'testimonials-author-3': 'Jennifer Williams',
-        'testimonials-role-3': 'Directora de Operaciones, TalentFirst Solutions',
+        // Testimonio 3 - Agencias de Personal
+        'testimonial3-industry': 'Agencia de Personal',
+        'testimonial3-desc': '"La evaluación de currículums, coincidencia de candidatos, y programación de entrevistas funcionan en piloto automático. Nuestros agentes AI procesan cientos de aplicaciones diariamente con 95% de precisión. El tiempo de colocación bajó de 3 semanas a 5 días."',
 
-        // Testimonio Producción de Alimentos
-        'testimonials-industry-4': 'Producción de Alimentos',
-        'testimonials-preview-4': '"Seguimiento de inventario automatizado, pedidos inteligentes, y reportes de cumplimiento—todo funcionando 24/7. Desperdicio de alimentos bajó 75%, ganancias subieron 120%..."',
-        'testimonials-full-4': 'La automatización que JufipAI construyó para nosotros es increíble. Los agentes AI monitorean niveles de inventario, ordenan suministros automáticamente, generan reportes de cumplimiento, y rastrean métricas de producción en tiempo real. El desperdicio de alimentos bajó 75%, los costos de mano de obra disminuyeron 55%, y obtuvimos visibilidad completa de nuestra operación. Este sistema se pagó solo en menos de 3 meses.',
-        'testimonials-author-4': 'Carlos Martinez',
-        'testimonials-role-4': 'Gerente de Producción, FreshStart Foods'
+        // Testimonio 4 - Producción de Alimentos
+        'testimonial4-industry': 'Producción de Alimentos',
+        'testimonial4-desc': '"El seguimiento de inventario, reportes de control de calidad, y pedidos a proveedores están completamente automatizados. El sistema predice la demanda y reordena automáticamente. Redujimos el desperdicio en 35% y disminuimos significativamente los costos de personal."'
     }
 };
 
