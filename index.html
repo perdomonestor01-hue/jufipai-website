@@ -45,6 +45,9 @@
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="./styles.css">
+
+    <!-- Google Sign-In (GSI) Library -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     
     <!-- Structured Data for SEO -->
     <script type="application/ld+json">
@@ -224,6 +227,7 @@
             <ul class="nav-links" role="menubar">
                 <li role="none"><a href="#services" role="menuitem" data-en="Services" data-es="Servicios" aria-label="Navigate to Services section">Services</a></li>
                 <li role="none"><a href="#features" role="menuitem" data-en="Features" data-es="Características" aria-label="Navigate to Features section">Features</a></li>
+                <li role="none"><a href="#blog" role="menuitem" data-en="Blog" data-es="Blog" aria-label="Navigate to Blog section">Blog</a></li>
                 <li role="none"><a href="#contact" role="menuitem" data-en="Contact" data-es="Contacto" aria-label="Navigate to Contact section">Contact</a></li>
             </ul>
             <div class="language-toggle" role="group" aria-label="Language selection">
@@ -231,6 +235,21 @@
                     <div class="language-slider" aria-hidden="true"></div>
                     <div class="language-option active" data-lang="en" role="tab" tabindex="0" aria-selected="true" aria-label="English">ENG</div>
                     <div class="language-option" data-lang="es" role="tab" tabindex="-1" aria-selected="false" aria-label="Español">ESP</div>
+                </div>
+            </div>
+
+            <!-- Google Sign-In -->
+            <div class="auth-container" id="authContainer">
+                <!-- Sign-In Button (shown when not logged in) -->
+                <div id="googleSignInBtn"></div>
+
+                <!-- User Profile (shown when logged in) -->
+                <div class="user-profile" id="userProfile" style="display: none;">
+                    <img src="" alt="Profile" class="user-avatar" id="userAvatar">
+                    <span class="user-name" id="userName"></span>
+                    <button class="sign-out-btn" id="signOutBtn" aria-label="Sign out">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
                 </div>
             </div>
             <div class="dark-mode-toggle" role="group" aria-label="Theme selection">
@@ -353,6 +372,87 @@
             </div>
         </section>
 
+        <!-- Blog/Articles Section -->
+        <section class="blog" id="blog">
+            <div class="container">
+                <div class="blog-header">
+                    <h2 data-translate="blog-title">Latest AI Insights</h2>
+                    <p class="blog-subtitle" data-translate="blog-subtitle">3-minute reads on automation that works</p>
+                </div>
+
+                <!-- Featured Article Hero -->
+                <article class="featured-article" id="featuredArticle">
+                    <div class="featured-image">
+                        <img src="" alt="Featured article" id="featuredImage">
+                        <div class="reading-time">
+                            <i class="fas fa-clock"></i>
+                            <span>3 min read</span>
+                        </div>
+                        <div class="new-badge" id="newBadge" style="display: none;">NEW</div>
+                    </div>
+                    <div class="featured-content">
+                        <div class="article-category" id="featuredCategory">AI Automation</div>
+                        <h3 id="featuredTitle">Loading latest article...</h3>
+                        <p class="article-teaser" id="featuredTeaser"></p>
+                        <div class="article-meta">
+                            <span class="article-date" id="featuredDate"></span>
+                            <button class="read-more-btn" id="featuredReadMore" aria-label="Read full article">
+                                Read Full Article <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                        <a href="#" class="linkedin-link" id="featuredLinkedIn" target="_blank" rel="noopener noreferrer" style="display: none;">
+                            <i class="fab fa-linkedin"></i> View on LinkedIn
+                        </a>
+
+                        <!-- Social Sharing -->
+                        <div class="social-share" id="featuredShare">
+                            <span class="share-label">Share:</span>
+                            <button class="share-btn" data-platform="twitter" aria-label="Share on X/Twitter">
+                                <i class="fab fa-x-twitter"></i>
+                            </button>
+                            <button class="share-btn" data-platform="linkedin" aria-label="Share on LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                            </button>
+                            <button class="share-btn" data-platform="facebook" aria-label="Share on Facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </button>
+                            <button class="share-btn" data-platform="copy" aria-label="Copy link">
+                                <i class="fas fa-link"></i>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Article Archive Grid -->
+                <div class="archive-section">
+                    <div class="archive-header">
+                        <h3 data-translate="archive-title">Archive</h3>
+                        <div class="archive-controls">
+                            <div class="article-search">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="articleSearchInput" placeholder="Search articles..." aria-label="Search articles">
+                                <button class="search-clear" id="searchClear" aria-label="Clear search" style="display: none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="category-filters" id="categoryFilters" role="tablist">
+                                <button class="filter-btn active" data-category="all" role="tab" aria-selected="true">All</button>
+                                <button class="filter-btn" data-category="automation" role="tab" aria-selected="false">Automation</button>
+                                <button class="filter-btn" data-category="ai" role="tab" aria-selected="false">AI Tools</button>
+                                <button class="filter-btn" data-category="productivity" role="tab" aria-selected="false">Productivity</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="articles-grid" id="articlesGrid" role="list">
+                        <!-- Dynamically populated by ArticleManager -->
+                    </div>
+                    <button class="load-more-btn" id="loadMoreArticles" style="display: none;">
+                        Load More <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
         <!-- Contact Section -->
         <section class="contact" id="contact">
             <h2 data-translate="contact-title">Ready to Automate Everything?</h2>
@@ -389,25 +489,28 @@
     </div>
 
     <script src="./script.js"></script>
-    <!-- Premium Professional Popup -->
-    <div id="servicePopup" style="display: none;">
-        <div class="premium-popup-content">
-            <!-- Popup Header with Gradient Border -->
+    <!-- Premium Professional Popup - Redesigned Modal -->
+    <div id="servicePopup" class="popup-overlay" style="display: none;">
+        <div class="popup-backdrop" id="popupBackdrop"></div>
+        <div class="premium-popup-content popup-modal">
+            <!-- Enhanced Popup Header -->
             <div class="popup-header">
-                <div class="popup-icon-container">
-                    <i id="popupIcon" class="fas fa-robot popup-service-icon"></i>
+                <div class="popup-header-left">
+                    <div class="popup-icon-container">
+                        <i id="popupIcon" class="fas fa-robot popup-service-icon"></i>
+                    </div>
+                    <h2 id="popupTitle" class="popup-title"></h2>
                 </div>
-                <h2 id="popupTitle" class="popup-title"></h2>
-                <button id="popupClose" class="popup-close-btn">
+                <button id="popupClose" class="popup-close-btn" aria-label="Close popup">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <!-- Popup Content with Enhanced Typography -->
             <div class="popup-content-wrapper">
                 <div id="popupContent" class="popup-content-text"></div>
             </div>
-            
+
             <!-- Premium CTA Section -->
             <div class="popup-cta-section">
                 <div class="popup-value-prop">
