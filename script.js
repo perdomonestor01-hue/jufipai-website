@@ -1957,7 +1957,7 @@ const ArticleManager = {
     articlesPerPage: 6,
     activeCategory: 'all',
     searchQuery: '',
-    apiEndpoint: 'https://jufipai-linkedin-poster-production.up.railway.app', // Production API
+    apiEndpoint: 'https://jposter-production.up.railway.app', // Production API
     isLoading: false,
 
     async init() {
@@ -2015,12 +2015,36 @@ const ArticleManager = {
         this.isLoading = true;
 
         try {
-            const response = await fetch(`${this.apiEndpoint}/articles`);
+            // Try static data first (embedded at build time by GitHub Actions)
+            let response = await fetch('/data/articles.json');
+
             if (response.ok) {
-                this.articles = await response.json();
+                const staticArticles = await response.json();
+                if (staticArticles.length > 0) {
+                    this.articles = staticArticles;
+                    console.log('[ArticleManager] ✓ Loaded from static data:', staticArticles.length, 'articles');
+                } else {
+                    // Static file empty, try live API
+                    console.log('[ArticleManager] Static data empty, trying live API...');
+                    response = await fetch(`${this.apiEndpoint}/articles`);
+                    if (response.ok) {
+                        this.articles = await response.json();
+                        console.log('[ArticleManager] ✓ Loaded from live API');
+                    } else {
+                        this.articles = this.getDefaultArticles();
+                    }
+                }
             } else {
-                console.log('[ArticleManager] API not available, using defaults');
-                this.articles = this.getDefaultArticles();
+                // No static file, fallback to live API
+                console.log('[ArticleManager] No static data, trying live API...');
+                response = await fetch(`${this.apiEndpoint}/articles`);
+                if (response.ok) {
+                    this.articles = await response.json();
+                    console.log('[ArticleManager] ✓ Loaded from live API');
+                } else {
+                    console.log('[ArticleManager] API not available, using defaults');
+                    this.articles = this.getDefaultArticles();
+                }
             }
         } catch (error) {
             console.log('[ArticleManager] Fetch error, using defaults:', error.message);
