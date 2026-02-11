@@ -27,6 +27,9 @@ _site/
 dist/
 build/
 
+# Backup directories
+*-backup-*/
+
 # Dependencies (if added later)
 node_modules/
 npm-debug.log*
@@ -34,3 +37,13 @@ npm-debug.log*
 # Environment variables
 .env
 .env.local
+# CRITICAL: Claude Code conversation logs
+.claude/
+
+# Security patterns (auto-added by sync-resources)
+.env.*
+*.key
+*.pem
+credentials.json
+secrets.json
+.user-preferences/

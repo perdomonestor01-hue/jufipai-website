@@ -10,10 +10,17 @@ function doPost(e) {
 
     // Open the spreadsheet
     const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-    const sheet = spreadsheet.getActiveSheet(); // or specify sheet name: spreadsheet.getSheetByName('Sheet1');
 
     // Get form data
     const formData = e.parameter;
+
+    // Check action type - handle sign-ins separately
+    if (formData['action'] === 'sign_in') {
+      return handleSignIn(spreadsheet, formData);
+    }
+
+    // Default: Handle contact form submission
+    const sheet = spreadsheet.getActiveSheet();
 
     // Create timestamp
     const timestamp = new Date();
@@ -63,6 +70,68 @@ function doPost(e) {
       .createTextOutput(JSON.stringify({
         success: false,
         message: 'Error submitting data: ' + error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * Handle Google Sign-In user data storage
+ * Stores signed-in users to a separate sheet for email list building
+ */
+function handleSignIn(spreadsheet, formData) {
+  try {
+    // Get or create the SignedInUsers sheet
+    let usersSheet = spreadsheet.getSheetByName('SignedInUsers');
+
+    if (!usersSheet) {
+      // Create the sheet with headers
+      usersSheet = spreadsheet.insertSheet('SignedInUsers');
+      usersSheet.appendRow(['Email', 'Name', 'Signed In At', 'Source', 'First Seen']);
+
+      // Format header row
+      usersSheet.getRange(1, 1, 1, 5).setFontWeight('bold');
+    }
+
+    const email = formData['email'] || '';
+    const name = formData['name'] || '';
+    const signedInAt = formData['signedInAt'] || new Date().toISOString();
+    const source = formData['source'] || 'google_signin';
+
+    // Check if user already exists
+    const data = usersSheet.getDataRange().getValues();
+    const existingRow = data.findIndex(row => row[0] === email);
+
+    if (existingRow === -1) {
+      // New user - add to sheet
+      usersSheet.appendRow([
+        email,
+        name,
+        signedInAt,
+        source,
+        new Date().toISOString()
+      ]);
+      console.log('New user stored:', email);
+    } else {
+      // Existing user - update last sign-in time
+      usersSheet.getRange(existingRow + 1, 3).setValue(signedInAt);
+      console.log('Existing user updated:', email);
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        message: 'User stored successfully',
+        isNewUser: existingRow === -1
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    console.error('Error in handleSignIn:', error);
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        message: 'Error storing user: ' + error.toString()
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }

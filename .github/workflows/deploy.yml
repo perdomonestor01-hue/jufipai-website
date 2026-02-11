@@ -33,8 +33,35 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
+
+      - name: Build with Vite
+        run: |
+          echo "Building JufipAI website with Vite..."
+          npm run build
+          echo "Vite build complete!"
+
+          # Log build info
+          echo "Trigger: ${{ github.event_name }}"
+
+          # Log webhook payload if triggered by LinkedIn Poster
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "═══════════════════════════════════════════════════════════"
+            echo "  Triggered by LinkedIn Poster webhook"
+            echo "  Article ID: ${{ github.event.client_payload.article_id }}"
+            echo "  Triggered at: ${{ github.event.client_payload.triggered_at }}"
+            echo "═══════════════════════════════════════════════════════════"
+          fi
 
       - name: Fetch articles from API
         run: |
@@ -42,14 +69,14 @@ jobs:
           echo "  Fetching articles from LinkedIn Poster API"
           echo "═══════════════════════════════════════════════════════════"
 
-          mkdir -p _site/data
+          mkdir -p dist/data
 
           # Fetch with retry logic (3 attempts)
           for i in 1 2 3; do
             echo "Attempt $i: Fetching articles..."
             if curl -f -s --max-time 30 \
               "https://jposter-production.up.railway.app/articles" \
-              -o _site/data/articles.json; then
+              -o dist/data/articles.json; then
               echo "✓ Successfully fetched articles (attempt $i)"
               break
             else
@@ -62,48 +89,25 @@ jobs:
           done
 
           # Validate JSON and fallback to empty array if needed
-          if [ -f "_site/data/articles.json" ]; then
-            if python3 -c "import json; json.load(open('_site/data/articles.json'))" 2>/dev/null; then
-              ARTICLE_COUNT=$(python3 -c "import json; print(len(json.load(open('_site/data/articles.json'))))")
+          if [ -f "dist/data/articles.json" ]; then
+            if python3 -c "import json; json.load(open('dist/data/articles.json'))" 2>/dev/null; then
+              ARTICLE_COUNT=$(python3 -c "import json; print(len(json.load(open('dist/data/articles.json'))))")
               echo "✓ Articles JSON is valid - $ARTICLE_COUNT articles loaded"
             else
               echo "✗ Invalid JSON, using empty array"
-              echo "[]" > _site/data/articles.json
+              echo "[]" > dist/data/articles.json
             fi
           else
             echo "✗ No articles fetched, using empty array"
-            echo "[]" > _site/data/articles.json
+            echo "[]" > dist/data/articles.json
           fi
 
           echo "═══════════════════════════════════════════════════════════"
 
-      - name: Build website
-        run: |
-          echo "Building JufipAI website..."
-
-          # Copy all files to _site directory for Pages
-          cp -r * _site/ 2>/dev/null || true
-
-          # Remove .git and other unnecessary files from _site
-          rm -rf _site/.git _site/.github _site/node_modules
-
-          # Log build info
-          echo "Build complete!"
-          echo "Trigger: ${{ github.event_name }}"
-
-          # Log webhook payload if triggered by LinkedIn Poster
-          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-            echo "═══════════════════════════════════════════════════════════"
-            echo "  Triggered by LinkedIn Poster webhook"
-            echo "  Article ID: ${{ github.event.client_payload.article_id }}"
-            echo "  Triggered at: ${{ github.event.client_payload.triggered_at }}"
-            echo "═══════════════════════════════════════════════════════════"
-          fi
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '_site'
+          path: 'dist'
 
   # Deployment job
   deploy:

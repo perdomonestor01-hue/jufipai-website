@@ -1,0 +1,18 @@
+{
+  "name": "JuFiPai - AI Consulting",
+  "short_name": "JuFiPai",
+  "description": "Transform your business with AI automation and integration services.",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#3b82f6",
+  "background_color": "#0a0a0a",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

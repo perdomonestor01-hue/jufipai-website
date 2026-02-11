@@ -5,6 +5,41 @@
 
 'use strict';
 
+// ========================================
+// XSS SANITIZATION HELPERS
+// ========================================
+const sanitize = {
+    // Sanitize HTML content (allows safe tags, strips dangerous ones)
+    html: (dirty) => {
+        if (typeof dirty !== 'string') return '';
+        return typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(dirty) : dirty;
+    },
+    // Escape text for safe insertion into HTML (no tags allowed)
+    text: (dirty) => {
+        if (typeof dirty !== 'string') return '';
+        const div = document.createElement('div');
+        div.textContent = dirty;
+        return div.innerHTML;
+    },
+    // Validate and sanitize URLs (only http/https allowed)
+    url: (url) => {
+        if (typeof url !== 'string' || !url) return '';
+        try {
+            const parsed = new URL(url);
+            return ['https:', 'http:'].includes(parsed.protocol) ? url : '';
+        } catch {
+            return '';
+        }
+    },
+    // Sanitize a value for use inside an HTML attribute
+    attr: (dirty) => {
+        if (typeof dirty !== 'string') return '';
+        return dirty.replace(/[&"'<>]/g, (c) => ({
+            '&': '&amp;', '"': '&quot;', "'": '&#39;', '<': '&lt;', '>': '&gt;'
+        }[c]));
+    }
+};
+
 // Error handling wrapper
 function safeExecute(fn, context = 'Unknown') {
     try {
@@ -474,6 +509,48 @@ document.addEventListener('mousemove', (e) => {
     });
 });
 
+// Form validation error display helper
+function showFormError(fieldId, message) {
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+
+    // Remove any existing error on this field
+    clearFormError(fieldId);
+
+    // Add error styling
+    field.style.borderColor = '#ef4444';
+    field.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.15)';
+
+    // Create and insert error message
+    const errorEl = document.createElement('div');
+    errorEl.className = 'form-error-message';
+    errorEl.id = `${fieldId}-error`;
+    errorEl.textContent = message;
+    errorEl.style.cssText = 'color: #ef4444; font-size: 0.85rem; margin-top: 0.25rem; margin-bottom: 0.5rem;';
+    field.setAttribute('aria-describedby', errorEl.id);
+    field.parentNode.appendChild(errorEl);
+
+    // Focus the field
+    field.focus();
+
+    // Auto-clear on input
+    const clearHandler = () => {
+        clearFormError(fieldId);
+        field.removeEventListener('input', clearHandler);
+    };
+    field.addEventListener('input', clearHandler);
+}
+
+function clearFormError(fieldId) {
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+    field.style.borderColor = '';
+    field.style.boxShadow = '';
+    field.removeAttribute('aria-describedby');
+    const existing = document.getElementById(`${fieldId}-error`);
+    if (existing) existing.remove();
+}
+
 // Contact form handling with Google Spreadsheet integration
 document.getElementById('contactForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -482,7 +559,38 @@ document.getElementById('contactForm').addEventListener('submit', async function
 
     const formData = new FormData(this);
     const formObject = Object.fromEntries(formData);
-    
+
+    // --- Client-side form validation ---
+    const nameValue = (formObject.name || '').trim();
+    const emailValue = (formObject.email || '').trim();
+    const descriptionValue = (formObject.description || '').trim();
+
+    // Required field checks
+    if (!nameValue) {
+        showFormError('name', 'Please enter your full name.');
+        return;
+    }
+    if (!emailValue) {
+        showFormError('email', 'Please enter your email address.');
+        return;
+    }
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRegex.test(emailValue)) {
+        showFormError('email', 'Please enter a valid email address.');
+        return;
+    }
+    if (!descriptionValue) {
+        showFormError('description', 'Please describe your project.');
+        return;
+    }
+
+    // Sanitize all form inputs before submission
+    formObject.name = sanitize.text(nameValue);
+    formObject.email = sanitize.text(emailValue);
+    formObject.company = sanitize.text((formObject.company || '').trim());
+    formObject.description = sanitize.text(descriptionValue);
+
     const submitBtn = this.querySelector('.form-submit');
     const originalText = submitBtn.textContent;
     
@@ -854,7 +962,7 @@ function showServicePopup(title, content, icon = 'fas fa-robot', clickedCard) {
 
         // Set content
         popupTitle.textContent = title;
-        popupContent.innerHTML = content;
+        popupContent.innerHTML = sanitize.html(content);
         popupIcon.className = icon + ' popup-service-icon';
 
         // Show popup as centered modal
@@ -2405,22 +2513,27 @@ Sometimes the best technology project isn't adding something new. It's removing 
             return;
         }
 
-        grid.innerHTML = toShow.map(article => `
-            <article class="article-card ${article.image ? 'has-image' : ''}" data-id="${article.id}" tabindex="0" role="listitem">
+        grid.innerHTML = toShow.map(article => {
+            const safeImage = sanitize.url(article.image || '');
+            const safeTitle = sanitize.text(article.title || '');
+            const safeTeaser = sanitize.text(article.teaser || article.content?.substring(0, 100) + '...' || '');
+            const safeId = sanitize.attr(article.id || '');
+            return `
+            <article class="article-card ${safeImage ? 'has-image' : ''}" data-id="${safeId}" tabindex="0" role="listitem">
                 <div class="article-card-image">
-                    ${article.image ? `<img src="${article.image}" alt="${article.title}" loading="lazy">` : ''}
+                    ${safeImage ? `<img src="${safeImage}" alt="${safeTitle}" loading="lazy">` : ''}
                 </div>
                 <div class="article-card-content">
                     <div class="article-category">${this.formatCategory(article.category)}</div>
-                    <h4>${article.title}</h4>
-                    <p>${article.teaser || article.content?.substring(0, 100) + '...'}</p>
+                    <h4>${safeTitle}</h4>
+                    <p>${safeTeaser}</p>
                     <div class="article-card-footer">
                         <span>${this.formatDate(article.createdAt)}</span>
                         <span><i class="fas fa-clock"></i> ${article.readTime || 3} min</span>
                     </div>
                 </div>
-            </article>
-        `).join('');
+            </article>`;
+        }).join('');
 
         // Add click handlers
         grid.querySelectorAll('.article-card').forEach(card => {
@@ -2450,6 +2563,10 @@ Sometimes the best technology project isn't adding something new. It's removing 
         // Use the existing popup system with article content
         const pageUrl = encodeURIComponent(window.location.href + '#blog');
         const shareText = encodeURIComponent(article.title + ' - JufipAI');
+        const safeLinkedinUrl = sanitize.url(article.linkedinUrl || '');
+        const sanitizedParagraphs = (article.content || '').split('\n')
+            .map(p => p.trim() ? `<p>${sanitize.html(p)}</p>` : '')
+            .join('');
 
         const formattedContent = `
             <div class="article-popup-content">
@@ -2462,10 +2579,10 @@ Sometimes the best technology project isn't adding something new. It's removing 
                     <span class="article-readtime"><i class="fas fa-clock"></i> ${article.readTime || 3} min read</span>
                 </div>
                 <div class="article-popup-body">
-                    ${article.content.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('')}
+                    ${sanitizedParagraphs}
                 </div>
-                ${article.linkedinUrl ? `
-                    <a href="${article.linkedinUrl}" target="_blank" rel="noopener noreferrer" class="linkedin-link" style="margin-top: 1.5rem;" onclick="event.stopPropagation(); window.open('${article.linkedinUrl}', '_blank', 'noopener,noreferrer'); return false;">
+                ${safeLinkedinUrl ? `
+                    <a href="${sanitize.attr(safeLinkedinUrl)}" target="_blank" rel="noopener noreferrer" class="linkedin-link" style="margin-top: 1.5rem;" onclick="event.stopPropagation(); window.open('${sanitize.attr(safeLinkedinUrl)}', '_blank', 'noopener,noreferrer'); return false;">
                         <i class="fab fa-linkedin"></i> View on LinkedIn
                     </a>
                 ` : ''}
@@ -2575,9 +2692,9 @@ Sometimes the best technology project isn't adding something new. It's removing 
                 </h4>
                 <div class="related-grid">
                     ${related.map(article => `
-                        <div class="related-card" data-article-id="${article.id}" tabindex="0">
+                        <div class="related-card" data-article-id="${sanitize.attr(article.id || '')}" tabindex="0">
                             <span class="related-category">${this.formatCategory(article.category)}</span>
-                            <h5>${article.title}</h5>
+                            <h5>${sanitize.text(article.title || '')}</h5>
                             <span class="related-time"><i class="fas fa-clock"></i> ${article.readTime || 3} min</span>
                         </div>
                     `).join('')}
@@ -2815,7 +2932,7 @@ const NotificationManager = {
 
         toast.innerHTML = `
             <i class="fas fa-${iconMap[type] || 'info-circle'}"></i>
-            <span>${message}</span>
+            <span>${sanitize.text(message)}</span>
             <button class="toast-close" aria-label="Close"><i class="fas fa-times"></i></button>
         `;
 

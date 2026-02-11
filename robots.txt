@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Sitemap: https://jufipai.com/sitemap.xml
+Disallow: /node_modules/
+Disallow: /dist/
+Disallow: /src/

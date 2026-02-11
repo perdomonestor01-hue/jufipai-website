@@ -11,11 +11,15 @@
     <meta name="author" content="JufipAI">
     <meta name="robots" content="index, follow">
     
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://jufipai.com/">
+
     <!-- Open Graph Meta Tags for Social Media -->
     <meta property="og:title" content="JufipAI - AI Solutions & Automation">
     <meta property="og:description" content="Transform your business with AI automation. Free diagnosis and risk-free implementation for complete process optimization.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://jufipai.com">
+    <meta property="og:url" content="https://jufipai.com/">
+    <meta property="og:image" content="https://jufipai.com/favicon.svg">
     <meta property="og:site_name" content="JufipAI">
     <meta property="og:locale" content="en_US">
     <meta property="og:locale:alternate" content="es_ES">
@@ -24,7 +28,15 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="JufipAI - AI Solutions & Automation">
     <meta name="twitter:description" content="Transform your business with AI automation. Free diagnosis and risk-free implementation.">
-    
+    <meta name="twitter:image" content="https://jufipai.com/favicon.svg">
+
+    <!-- Umami Analytics -->
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="REPLACE_WITH_UMAMI_ID"></script>
+
+    <!-- PWA Manifest & Theme Color -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#3b82f6">
+
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="./favicon.svg">
     <link rel="icon" type="image/x-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmYmJmMjQ7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzNiODJmNjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgcng9IjYiIGZpbGw9InVybCgjZ3JhZCkiLz4KICA8dGV4dCB4PSIxNiIgeT0iMjIiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIj5KPC90ZXh0Pgo8L3N2Zz4K">
@@ -32,19 +44,14 @@
     <!-- HTTP/3 & Performance Optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 
     <!-- Preload Critical Assets -->
-    <link rel="preload" href="./styles.css" as="style">
-    <link rel="preload" href="./script.js" as="script">
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" as="style">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="./styles.css">
 
     <!-- Google Sign-In (GSI) Library -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -117,8 +124,61 @@
         ]
     }
     </script>
+
+    <!-- FAQ Schema for Services -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "What is AI + Automation Integration?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "We create intelligent automation that connects ChatGPT, Claude, Groq, and DeepSeek with your existing systems, eliminating human intervention entirely. This goes beyond basic AI deployment to deliver complete workflow automation."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How does Google Workspace Automation work?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "We transform Google Workspace from a tool into an intelligent ecosystem with automated workflows, smart document processing, and zero-touch data management that runs without manual input."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What are Self-Generating Reports?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Our AI agents continuously monitor your data, generate insights, and deliver comprehensive reports without any manual input. Reports create themselves automatically on your schedule."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is the AI Automation Diagnosis really free?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, the AI automation diagnosis is completely free. We analyze your workflow and deliver a complete automation blueprint at zero cost, with no consultations or meetings required."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What kind of cost savings can I expect from AI automation?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Our clients typically see operational cost reductions of up to 90%, elimination of manual data entry, and implementation timelines measured in days rather than months. Our AI agents work 24/7 with enterprise-grade security."
+                }
+            }
+        ]
+    }
+    </script>
 </head>
 <body>
+    <!-- Accessible Skip-to-Main Link -->
+    <a href="#services" class="skip-to-main">Skip to main content</a>
+
     <!-- SPECTACULAR VISUAL WELCOME OVERLAY -->
     <div class="welcome-overlay" id="welcomeOverlay" role="dialog" aria-labelledby="welcome-title" aria-modal="true">
         <!-- Animated Background Glow -->
@@ -245,7 +305,7 @@
 
                 <!-- User Profile (shown when logged in) -->
                 <div class="user-profile" id="userProfile" style="display: none;">
-                    <img src="" alt="Profile" class="user-avatar" id="userAvatar">
+                    <img src="" alt="Profile" class="user-avatar" id="userAvatar" loading="lazy" decoding="async" width="32" height="32">
                     <span class="user-name" id="userName"></span>
                     <button class="sign-out-btn" id="signOutBtn" aria-label="Sign out">
                         <i class="fas fa-sign-out-alt"></i>
@@ -383,7 +443,7 @@
                 <!-- Featured Article Hero -->
                 <article class="featured-article" id="featuredArticle">
                     <div class="featured-image">
-                        <img src="" alt="Featured article" id="featuredImage">
+                        <img src="" alt="Featured article" id="featuredImage" loading="lazy" decoding="async" width="800" height="450">
                         <div class="reading-time">
                             <i class="fas fa-clock"></i>
                             <span>3 min read</span>
@@ -488,7 +548,8 @@
         </main>
     </div>
 
-    <script src="./script.js"></script>
+    <!-- Vite Entry Point -->
+    <script type="module" src="./src/main.ts"></script>
     <!-- Premium Professional Popup - Redesigned Modal -->
     <div id="servicePopup" class="popup-overlay" style="display: none;">
         <div class="popup-backdrop" id="popupBackdrop"></div>

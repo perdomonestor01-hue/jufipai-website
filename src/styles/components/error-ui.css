@@ -1,0 +1,186 @@
+/* ==============================================
+   Error UI Styles
+   Matches the site's dark/glass theme.
+   ============================================== */
+
+/* Section Error (full section replacement) */
+.section-error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 1.5rem;
+    grid-column: 1 / -1; /* Span full grid if inside a grid */
+}
+
+.section-error-inner {
+    text-align: center;
+    max-width: 420px;
+    padding: 2.5rem 2rem;
+    background: var(--surface-glass, rgba(31, 41, 55, 0.6));
+    border-radius: 20px;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(239, 68, 68, 0.08);
+}
+
+.section-error-icon {
+    margin-bottom: 1.25rem;
+}
+
+.section-error-icon i {
+    font-size: 2.5rem;
+    color: #f59e0b;
+    opacity: 0.8;
+}
+
+.section-error-message {
+    color: #cbd5e1;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 0 1.5rem 0;
+}
+
+.section-error-retry {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.5rem;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    border-radius: 25px;
+    background: rgba(59, 130, 246, 0.1);
+    color: #93c5fd;
+    font-size: 0.9rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.section-error-retry:hover {
+    background: rgba(59, 130, 246, 0.25);
+    border-color: rgba(59, 130, 246, 0.6);
+    color: #bfdbfe;
+    transform: translateY(-2px);
+}
+
+.section-error-retry:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+.section-error-retry i {
+    font-size: 0.8rem;
+}
+
+/* Form Submission Error (inline banner below form) */
+.form-submission-error {
+    margin-top: 1rem;
+    animation: errorSlideIn 0.3s ease-out;
+}
+
+@keyframes errorSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-submission-error-inner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.form-submission-error-inner > i {
+    flex-shrink: 0;
+    font-size: 1.1rem;
+    color: #ef4444;
+}
+
+.form-submission-error-inner > span {
+    flex: 1;
+}
+
+.form-error-retry {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 20px;
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    font-size: 0.8rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-error-retry:hover {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.6);
+    color: #fecaca;
+}
+
+.form-error-retry:focus-visible {
+    outline: 2px solid #ef4444;
+    outline-offset: 2px;
+}
+
+.form-error-retry i {
+    font-size: 0.7rem;
+}
+
+/* Featured article error state */
+.featured-article-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    background: var(--surface-glass, rgba(31, 41, 55, 0.6));
+    border-radius: 24px;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    margin-bottom: 4rem;
+    padding: 3rem 2rem;
+    text-align: center;
+}
+
+.featured-article-error .section-error-icon i {
+    font-size: 3rem;
+}
+
+/* Auth error state (inline in nav) */
+.auth-error-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auth-error-indicator:hover {
+    background: rgba(239, 68, 68, 0.25);
+}
+
+.auth-error-indicator i {
+    font-size: 0.7rem;
+}
