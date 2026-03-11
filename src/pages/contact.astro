@@ -1,0 +1,247 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Contact"
+  description="Get in touch about AI and automation for your business."
+>
+  <section class="contact-page">
+    <div class="contact-inner">
+      <header class="contact-header">
+        <h1 data-en="Contact" data-es="Contacto">Contact</h1>
+        <p
+          class="contact-sub"
+          data-en="Have a process that needs fixing? Let's talk."
+          data-es="Tienes un proceso que necesita arreglarse? Hablemos."
+        >
+          Have a process that needs fixing? Let's talk.
+        </p>
+      </header>
+
+      <div class="contact-grid">
+        <form class="contact-form" id="contact-form">
+          <div class="form-field">
+            <label for="name" data-en="Name" data-es="Nombre">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              placeholder="Your name"
+              data-en-placeholder="Your name"
+              data-es-placeholder="Tu nombre"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="email" data-en="Email" data-es="Correo">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              placeholder="you@company.com"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="message" data-en="Message" data-es="Mensaje"
+              >Message</label
+            >
+            <textarea
+              id="message"
+              name="message"
+              rows="6"
+              required
+              placeholder="Tell me about the process you want to automate..."
+              data-en-placeholder="Tell me about the process you want to automate..."
+              data-es-placeholder="Cuentame sobre el proceso que quieres automatizar..."
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="submit-btn"
+            data-en="Let's talk"
+            data-es="Hablemos">Let's talk</button
+          >
+        </form>
+
+        <div class="contact-info">
+          <div class="info-block">
+            <h3 data-en="Email" data-es="Correo">Email</h3>
+            <a href="mailto:fabien@jufipai.com">fabien@jufipai.com</a>
+          </div>
+
+          <div class="info-block">
+            <h3
+              data-en="Book a call"
+              data-es="Agenda una llamada"
+            >
+              Book a call
+            </h3>
+            <a
+              href="https://calendly.com/jufipai"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-en="Schedule on Calendly"
+              data-es="Agenda en Calendly">Schedule on Calendly</a
+            >
+          </div>
+
+          <div class="info-block">
+            <h3>LinkedIn</h3>
+            <a
+              href="https://www.linkedin.com/company/jufipai"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-en="Follow on LinkedIn"
+              data-es="Seguir en LinkedIn">Follow on LinkedIn</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const form = document.getElementById('contact-form') as HTMLFormElement;
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const name = data.get('name') as string;
+      const email = data.get('email') as string;
+      const message = data.get('message') as string;
+
+      const subject = encodeURIComponent(`JufipAI: Message from ${name}`);
+      const body = encodeURIComponent(
+        `From: ${name} (${email})\n\n${message}`
+      );
+      window.location.href = `mailto:fabien@jufipai.com?subject=${subject}&body=${body}`;
+    });
+  });
+</script>
+
+<style>
+  .contact-page {
+    padding: calc(var(--nav-height) + var(--space-xl)) 0 var(--space-xl);
+  }
+
+  .contact-inner {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+  }
+
+  .contact-header {
+    margin-bottom: var(--space-xl);
+  }
+
+  .contact-header h1 {
+    font-family: var(--font-display);
+    font-size: var(--text-display);
+    margin-bottom: var(--space-sm);
+  }
+
+  .contact-sub {
+    font-size: 1.125rem;
+    color: var(--text-muted);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: var(--space-2xl);
+    align-items: start;
+  }
+
+  .form-field {
+    margin-bottom: var(--space-md);
+  }
+
+  .form-field label {
+    display: block;
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+  }
+
+  .form-field input,
+  .form-field textarea {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: var(--text-body-size);
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    color: var(--text-body);
+    transition: border-color var(--duration) var(--ease);
+    resize: vertical;
+  }
+
+  .form-field input:focus,
+  .form-field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .submit-btn {
+    font-family: var(--font-body);
+    font-size: var(--text-body-size);
+    font-weight: 500;
+    padding: 0.75rem 2rem;
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background var(--duration) var(--ease);
+  }
+
+  .submit-btn:hover {
+    background: var(--accent-dark);
+  }
+
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .info-block h3 {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: var(--space-xs);
+  }
+
+  .info-block a {
+    font-size: var(--text-body-size);
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  @media (max-width: 768px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-xl);
+    }
+
+    .contact-info {
+      order: -1;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+    }
+  }
+</style>

@@ -1,0 +1,40 @@
+:root {
+  /* Colors */
+  --bg-primary: #FAFAF8;
+  --bg-secondary: #F7F7F5;
+  --bg-dark: #1A1A1A;
+  --text-primary: #1A1A1A;
+  --text-body: #3D3D3D;
+  --text-muted: #8C8C8C;
+  --accent: #14B8A6;
+  --accent-dark: #0F8A7E;
+  --white: #FFFFFF;
+
+  /* Typography */
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --text-display: clamp(2rem, 5vw, 3.5rem);
+  --text-section: clamp(1.25rem, 3vw, 1.75rem);
+  --text-body-size: 1.0625rem;
+  --text-small: 0.875rem;
+  --text-xs: 0.75rem;
+
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 4rem;
+  --space-2xl: 8rem;
+
+  /* Layout */
+  --max-width: 72rem;
+  --content-width: 48rem;
+  --nav-height: 4rem;
+
+  /* Transitions */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration: 0.3s;
+}

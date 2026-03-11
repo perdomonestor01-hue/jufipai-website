@@ -1,0 +1,334 @@
+---
+import Base from '../layouts/Base.astro';
+import ContentCard from '../components/ContentCard.astro';
+import { fetchArticles } from '../lib/api';
+
+const articles = await fetchArticles();
+---
+
+<Base
+  title="Writing"
+  description="Articles, questions, and takes on AI and automation for real businesses."
+>
+  <section class="writing-page">
+    <div class="writing-inner">
+      <header class="writing-header">
+        <h1 data-en="Writing" data-es="Escritos">Writing</h1>
+        <span class="writing-count">{articles.length} posts</span>
+      </header>
+
+      <div class="writing-controls">
+        <div
+          class="filter-group"
+          role="tablist"
+          aria-label="Filter by content type"
+        >
+          <button
+            class="filter-btn active"
+            data-filter="all"
+            role="tab"
+            aria-selected="true"
+            data-en="All"
+            data-es="Todos">All</button
+          >
+          <button
+            class="filter-btn"
+            data-filter="article"
+            role="tab"
+            aria-selected="false"
+            data-en="Articles"
+            data-es="Articulos">Articles</button
+          >
+          <button
+            class="filter-btn"
+            data-filter="deep_question"
+            role="tab"
+            aria-selected="false"
+            data-en="Questions"
+            data-es="Preguntas">Questions</button
+          >
+          <button
+            class="filter-btn"
+            data-filter="unpopular_take"
+            role="tab"
+            aria-selected="false"
+            data-en="Takes"
+            data-es="Opiniones">Takes</button
+          >
+        </div>
+
+        <div class="search-box">
+          <input
+            type="search"
+            id="article-search"
+            placeholder="Search articles..."
+            data-en-placeholder="Search articles..."
+            data-es-placeholder="Buscar articulos..."
+            autocomplete="off"
+          />
+        </div>
+      </div>
+
+      <div class="articles-grid" id="articles-grid">
+        {
+          articles.map((article, i) => (
+            <div
+              class="article-item"
+              data-type={article.contentType}
+              data-title={article.title.toLowerCase()}
+              data-teaser={article.teaser.toLowerCase()}
+              hidden={i >= 12}
+            >
+              <ContentCard article={article} />
+            </div>
+          ))
+        }
+      </div>
+
+      <p
+        class="empty-state"
+        id="empty-state"
+        hidden
+        data-en="No articles found."
+        data-es="No se encontraron articulos."
+      >
+        No articles found.
+      </p>
+
+      <button
+        class="load-more-btn"
+        id="load-more"
+        data-en="Load more"
+        data-es="Cargar mas">Load more</button
+      >
+    </div>
+  </section>
+</Base>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const grid = document.getElementById('articles-grid');
+    if (!grid) return;
+
+    const ITEMS_PER_PAGE = 12;
+    let visibleCount = ITEMS_PER_PAGE;
+    let activeFilter = 'all';
+    let searchQuery = '';
+
+    function applyFilters() {
+      const items = Array.from(
+        grid!.querySelectorAll('.article-item')
+      ) as HTMLElement[];
+      let shown = 0;
+      let totalMatches = 0;
+
+      items.forEach((item) => {
+        const type = item.dataset.type || '';
+        const title = item.dataset.title || '';
+        const teaser = item.dataset.teaser || '';
+
+        const matchesFilter =
+          activeFilter === 'all' || type === activeFilter;
+        const matchesSearch =
+          !searchQuery ||
+          title.includes(searchQuery) ||
+          teaser.includes(searchQuery);
+
+        if (matchesFilter && matchesSearch) {
+          totalMatches++;
+          if (shown < visibleCount) {
+            item.hidden = false;
+            shown++;
+          } else {
+            item.hidden = true;
+          }
+        } else {
+          item.hidden = true;
+        }
+      });
+
+      const emptyEl = document.getElementById('empty-state');
+      const loadBtn = document.getElementById('load-more');
+
+      if (emptyEl) emptyEl.hidden = totalMatches > 0;
+      if (loadBtn) loadBtn.hidden = shown >= totalMatches;
+    }
+
+    document.querySelectorAll('.filter-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach((b) => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        activeFilter =
+          (btn as HTMLElement).dataset.filter || 'all';
+        visibleCount = ITEMS_PER_PAGE;
+        applyFilters();
+      });
+    });
+
+    const searchInput = document.getElementById(
+      'article-search'
+    ) as HTMLInputElement;
+    let debounceTimer: ReturnType<typeof setTimeout>;
+
+    searchInput?.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        searchQuery = searchInput.value.toLowerCase().trim();
+        visibleCount = ITEMS_PER_PAGE;
+        applyFilters();
+      }, 300);
+    });
+
+    document
+      .getElementById('load-more')
+      ?.addEventListener('click', () => {
+        visibleCount += ITEMS_PER_PAGE;
+        applyFilters();
+      });
+
+    applyFilters();
+  });
+</script>
+
+<style>
+  .writing-page {
+    padding: calc(var(--nav-height) + var(--space-xl)) 0 var(--space-xl);
+  }
+
+  .writing-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+  }
+
+  .writing-header {
+    margin-bottom: var(--space-xl);
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+  }
+
+  .writing-header h1 {
+    font-family: var(--font-display);
+    font-size: var(--text-display);
+  }
+
+  .writing-count {
+    font-family: var(--font-mono);
+    font-size: var(--text-small);
+    color: var(--text-muted);
+  }
+
+  .writing-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+  }
+
+  .filter-group {
+    display: flex;
+    gap: var(--space-xs);
+  }
+
+  .filter-btn {
+    font-family: var(--font-body);
+    font-size: var(--text-small);
+    font-weight: 500;
+    padding: var(--space-xs) var(--space-sm);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: transparent;
+    color: var(--text-muted);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all var(--duration) var(--ease);
+  }
+
+  .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--white);
+  }
+
+  .search-box input {
+    font-family: var(--font-body);
+    font-size: var(--text-small);
+    padding: var(--space-xs) var(--space-sm);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    color: var(--text-body);
+    width: 240px;
+    transition: border-color var(--duration) var(--ease);
+  }
+
+  .search-box input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    padding: var(--space-2xl) 0;
+    font-style: italic;
+  }
+
+  .load-more-btn {
+    display: block;
+    margin: var(--space-xl) auto 0;
+    font-family: var(--font-body);
+    font-size: var(--text-small);
+    font-weight: 500;
+    padding: var(--space-sm) var(--space-lg);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: transparent;
+    color: var(--text-body);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all var(--duration) var(--ease);
+  }
+
+  .load-more-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  @media (max-width: 900px) {
+    .articles-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .articles-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .search-box input {
+      width: 100%;
+    }
+
+    .writing-controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+</style>

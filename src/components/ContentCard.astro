@@ -1,0 +1,276 @@
+---
+import type { Article, ContentType } from '../lib/types';
+
+interface Props {
+  article: Article;
+  featured?: boolean;
+}
+
+const { article, featured = false } = Astro.props;
+
+const type = article.contentType as ContentType;
+const date = new Date(article.createdAt).toLocaleDateString('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+});
+---
+
+{
+  type === 'deep_question' ? (
+    <article class="card card-question reveal" data-type={type}>
+      <blockquote class="question-text">
+        <p>{article.title}</p>
+      </blockquote>
+      <div class="card-meta">
+        <span class="card-date">{date}</span>
+        {article.linkedinUrl && (
+          <a
+            href={article.linkedinUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="card-link"
+            data-en="Read on LinkedIn"
+            data-es="Leer en LinkedIn"
+          >
+            Read on LinkedIn
+          </a>
+        )}
+      </div>
+    </article>
+  ) : type === 'unpopular_take' ? (
+    <article class="card card-take reveal" data-type={type}>
+      <div class="take-content">
+        <h3 class="card-title">{article.title}</h3>
+        <p class="card-teaser">{article.teaser}</p>
+      </div>
+      <div class="card-meta">
+        <span class="card-date">{date}</span>
+        <span class="card-readtime">
+          {article.readTime}{' '}
+          <span data-en="min read" data-es="min de lectura">
+            min read
+          </span>
+        </span>
+        {article.linkedinUrl && (
+          <a
+            href={article.linkedinUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="card-link"
+            data-en="Read on LinkedIn"
+            data-es="Leer en LinkedIn"
+          >
+            Read on LinkedIn
+          </a>
+        )}
+      </div>
+    </article>
+  ) : (
+    <article
+      class:list={[
+        'card',
+        'card-standard',
+        'reveal',
+        { 'card-featured': featured, 'card-has-image': !!article.image },
+      ]}
+      data-type={type}
+    >
+      {article.image && (
+        <div class="card-image">
+          <img
+            src={article.image}
+            alt={article.title}
+            loading={featured ? 'eager' : 'lazy'}
+            decoding="async"
+          />
+          {article.imageAttribution && (
+            <span class="card-attribution">{article.imageAttribution}</span>
+          )}
+        </div>
+      )}
+      <div class="card-body">
+        <div class="card-type-dot" aria-hidden="true" />
+        <h3 class="card-title">{article.title}</h3>
+        <p class="card-teaser">{article.teaser}</p>
+        <div class="card-meta">
+          <span class="card-date">{date}</span>
+          <span class="card-readtime">
+            {article.readTime}{' '}
+            <span data-en="min read" data-es="min de lectura">
+              min read
+            </span>
+          </span>
+          {article.linkedinUrl && (
+            <a
+              href={article.linkedinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="card-link"
+              data-en="Read on LinkedIn"
+              data-es="Leer en LinkedIn"
+            >
+              Read on LinkedIn
+            </a>
+          )}
+        </div>
+      </div>
+    </article>
+  )
+}
+
+<style>
+  .card {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    overflow: hidden;
+    transition:
+      transform var(--duration) var(--ease),
+      box-shadow var(--duration) var(--ease);
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Standard card */
+  .card-standard .card-body {
+    padding: var(--space-md);
+  }
+
+  .card-image {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease);
+  }
+
+  .card:hover .card-image img {
+    transform: scale(1.03);
+  }
+
+  .card-attribution {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    font-size: var(--text-xs);
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(0, 0, 0, 0.4);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .card-type-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-bottom: var(--space-sm);
+  }
+
+  .card-title {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+  }
+
+  .card-teaser {
+    font-size: var(--text-small);
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: var(--space-sm);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+  }
+
+  .card-link {
+    margin-left: auto;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  /* Featured card */
+  .card-featured {
+    grid-column: span 2;
+  }
+
+  .card-featured .card-image {
+    aspect-ratio: 2 / 1;
+  }
+
+  .card-featured .card-title {
+    font-size: 1.375rem;
+  }
+
+  /* Question card — pull-quote style */
+  .card-question {
+    background: transparent;
+    border: none;
+    padding: var(--space-lg) 0;
+  }
+
+  .card-question:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .question-text {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-style: italic;
+    line-height: 1.3;
+    color: var(--text-primary);
+    border-left: 3px solid var(--accent);
+    padding-left: var(--space-md);
+    margin-bottom: var(--space-sm);
+  }
+
+  .card-question .card-meta {
+    padding-left: calc(3px + var(--space-md));
+  }
+
+  /* Take card — accent border */
+  .card-take {
+    border-left: 3px solid var(--accent);
+    background: var(--bg-secondary);
+    border-radius: 0 12px 12px 0;
+  }
+
+  .take-content {
+    padding: var(--space-md);
+  }
+
+  .card-take .card-meta {
+    padding: 0 var(--space-md) var(--space-md);
+  }
+
+  @media (max-width: 640px) {
+    .card-featured {
+      grid-column: span 1;
+    }
+
+    .card-featured .card-image {
+      aspect-ratio: 16 / 10;
+    }
+  }
+</style>

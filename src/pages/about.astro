@@ -1,0 +1,197 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="About"
+  description="Fabien builds custom AI and automation systems for small teams in Dallas, TX."
+>
+  <section class="about-page">
+    <div class="about-inner">
+      <header class="about-header">
+        <h1 data-en="About" data-es="Acerca">About</h1>
+      </header>
+
+      <div class="about-content">
+        <div class="founder-section">
+          <div class="founder-photo-placeholder" aria-label="Founder photo">
+            <span class="photo-initials">F</span>
+          </div>
+          <div class="founder-text">
+            <h2 class="founder-name">Fabien</h2>
+            <p
+              class="founder-role"
+              data-en="Founder, JufipAI"
+              data-es="Fundador, JufipAI"
+            >
+              Founder, JufipAI
+            </p>
+          </div>
+        </div>
+
+        <div class="about-body">
+          <div class="about-section">
+            <p>
+              I started building automations because I got tired of watching
+              smart people do dumb work. Copy this row. Paste it there. Send
+              that email. Check the spreadsheet. Every single day.
+            </p>
+            <p>
+              The first time I automated a 47-tab spreadsheet monster into a
+              single dashboard, the office manager looked at me like I had
+              performed a magic trick. It was just a Google Apps Script and
+              some common sense. But it saved her 6 hours a week.
+            </p>
+            <p>
+              That's what I do. I find the repetitive, soul-crushing processes
+              that nobody talks about because "that's just how we do things"
+              &mdash; and I make them disappear.
+            </p>
+          </div>
+
+          <div class="about-section">
+            <h2 data-en="What JufipAI does" data-es="Que hace JufipAI">
+              What JufipAI does
+            </h2>
+            <p>
+              We build custom automation systems. Not the drag-and-drop kind
+              where you connect two apps and call it a day. Real systems that
+              understand your business logic, handle edge cases, and actually
+              work when you're not babysitting them.
+            </p>
+            <p>
+              We use Claude for the parts that need thinking, Google Apps
+              Script for the spreadsheet parts, and Cloud Functions when
+              things need to talk to each other. No Zapier, no Make, no
+              monthly subscription that costs more than the person it
+              replaced.
+            </p>
+          </div>
+
+          <div class="about-section">
+            <h2 data-en="Who we work with" data-es="Con quien trabajamos">
+              Who we work with
+            </h2>
+            <p>
+              Most of our clients come from industries where there's a lot of
+              paperwork and not enough time: staffing agencies drowning in
+              applications, construction companies tracking injuries across 30
+              sites, property managers juggling maintenance requests from 200
+              units.
+            </p>
+            <p>
+              We're based in Dallas but the automations work from anywhere. If
+              your team is spending more time on data entry than actual work,
+              we should talk.
+            </p>
+          </div>
+
+          <div class="about-section">
+            <h2
+              data-en="Bilingual support"
+              data-es="Soporte bilingue"
+            >
+              Bilingual support
+            </h2>
+            <p
+              data-en="We serve English and Spanish-speaking teams. Because in Dallas, that's not optional &mdash; that's just Tuesday."
+              data-es="Servimos equipos en ingles y espanol. Porque en Dallas, eso no es opcional &mdash; es simplemente un martes."
+            >
+              We serve English and Spanish-speaking teams. Because in Dallas,
+              that's not optional &mdash; that's just Tuesday.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .about-page {
+    padding: calc(var(--nav-height) + var(--space-xl)) 0 var(--space-xl);
+  }
+
+  .about-inner {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+  }
+
+  .about-header {
+    margin-bottom: var(--space-xl);
+  }
+
+  .about-header h1 {
+    font-family: var(--font-display);
+    font-size: var(--text-display);
+  }
+
+  .founder-section {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-xl);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .founder-photo-placeholder {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .photo-initials {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    color: var(--text-muted);
+  }
+
+  .founder-name {
+    font-family: var(--font-display);
+    font-size: var(--text-section);
+    margin-bottom: 0.25rem;
+  }
+
+  .founder-role {
+    font-family: var(--font-mono);
+    font-size: var(--text-small);
+    color: var(--text-muted);
+  }
+
+  .about-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .about-section h2 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+  }
+
+  .about-section p {
+    margin-bottom: var(--space-md);
+    line-height: 1.8;
+  }
+
+  .about-section p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 640px) {
+    .founder-section {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>

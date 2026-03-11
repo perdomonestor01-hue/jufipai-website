@@ -1,0 +1,111 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title,
+  description = 'Custom AI and automation for small teams. Real systems, not drag-and-drop toys.',
+  image,
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title} | JufipAI</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={`${title} | JufipAI`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    {image && <meta property="og:image" content={image} />}
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} | JufipAI`} />
+    <meta name="twitter:description" content={description} />
+
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'JufipAI',
+        url: 'https://jufipai.com',
+        description: description,
+        foundingLocation: { '@type': 'Place', name: 'Dallas, TX' },
+      })}
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap"
+      rel="stylesheet"
+    />
+
+    <ClientRouter />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      function initLang() {
+        const lang = localStorage.getItem('jufipai-lang') || 'en';
+        document.documentElement.lang = lang;
+
+        document.querySelectorAll('[data-en][data-es]').forEach((el) => {
+          const text = el.getAttribute(`data-${lang}`);
+          if (text) el.textContent = text;
+        });
+
+        document
+          .querySelectorAll('[data-en-placeholder][data-es-placeholder]')
+          .forEach((el) => {
+            const text = el.getAttribute(`data-${lang}-placeholder`);
+            if (text && (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement)) {
+              el.placeholder = text;
+            }
+          });
+
+        document.querySelectorAll('.lang-toggle button').forEach((btn) => {
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+        });
+      }
+
+      initLang();
+      document.addEventListener('astro:after-swap', initLang);
+
+      document.addEventListener('click', (e) => {
+        const btn = (e.target as HTMLElement).closest('[data-lang]');
+        if (btn && btn.closest('.lang-toggle')) {
+          const lang = btn.getAttribute('data-lang');
+          if (lang) {
+            localStorage.setItem('jufipai-lang', lang);
+            initLang();
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

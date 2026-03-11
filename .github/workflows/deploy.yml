@@ -1,121 +1,46 @@
 name: Deploy JufipAI Website
 
-# Trigger deployment on push to main branch
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
-
-  # Allow manual deployment from Actions tab
+    branches: [main]
   workflow_dispatch:
-
-  # NEW: Trigger from LinkedIn Poster webhook when new article is posted
   repository_dispatch:
     types: [new_article]
 
-# Set permissions for GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Build job
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Build with Vite
+      - name: Log webhook trigger
+        if: github.event_name == 'repository_dispatch'
         run: |
-          echo "Building JufipAI website with Vite..."
-          npm run build
-          echo "Vite build complete!"
+          echo "Triggered by LinkedIn Poster webhook"
+          echo "Article ID: ${{ github.event.client_payload.article_id }}"
+          echo "Triggered at: ${{ github.event.client_payload.triggered_at }}"
 
-          # Log build info
-          echo "Trigger: ${{ github.event_name }}"
+      - name: Install, build, and upload
+        uses: withastro/action@v5
 
-          # Log webhook payload if triggered by LinkedIn Poster
-          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-            echo "═══════════════════════════════════════════════════════════"
-            echo "  Triggered by LinkedIn Poster webhook"
-            echo "  Article ID: ${{ github.event.client_payload.article_id }}"
-            echo "  Triggered at: ${{ github.event.client_payload.triggered_at }}"
-            echo "═══════════════════════════════════════════════════════════"
-          fi
-
-      - name: Fetch articles from API
-        run: |
-          echo "═══════════════════════════════════════════════════════════"
-          echo "  Fetching articles from LinkedIn Poster API"
-          echo "═══════════════════════════════════════════════════════════"
-
-          mkdir -p dist/data
-
-          # Fetch with retry logic (3 attempts)
-          for i in 1 2 3; do
-            echo "Attempt $i: Fetching articles..."
-            if curl -f -s --max-time 30 \
-              "https://jposter-production.up.railway.app/articles" \
-              -o dist/data/articles.json; then
-              echo "✓ Successfully fetched articles (attempt $i)"
-              break
-            else
-              echo "✗ Fetch failed (attempt $i)"
-              if [ $i -lt 3 ]; then
-                echo "  Retrying in 5 seconds..."
-                sleep 5
-              fi
-            fi
-          done
-
-          # Validate JSON and fallback to empty array if needed
-          if [ -f "dist/data/articles.json" ]; then
-            if python3 -c "import json; json.load(open('dist/data/articles.json'))" 2>/dev/null; then
-              ARTICLE_COUNT=$(python3 -c "import json; print(len(json.load(open('dist/data/articles.json'))))")
-              echo "✓ Articles JSON is valid - $ARTICLE_COUNT articles loaded"
-            else
-              echo "✗ Invalid JSON, using empty array"
-              echo "[]" > dist/data/articles.json
-            fi
-          else
-            echo "✗ No articles fetched, using empty array"
-            echo "[]" > dist/data/articles.json
-          fi
-
-          echo "═══════════════════════════════════════════════════════════"
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: 'dist'
-
-  # Deployment job
   deploy:
+    needs: build
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

@@ -1,0 +1,174 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import ContentCard from '../components/ContentCard.astro';
+import { fetchArticles } from '../lib/api';
+
+const articles = await fetchArticles();
+const latestArticles = articles.slice(0, 9);
+
+const industries = [
+  { en: 'Staffing & Recruiting', es: 'Reclutamiento y Personal' },
+  { en: 'Construction Safety', es: 'Seguridad en Construccion' },
+  { en: 'Property Management', es: 'Administracion de Propiedades' },
+  { en: 'Real Estate', es: 'Bienes Raices' },
+  { en: 'Professional Services', es: 'Servicios Profesionales' },
+];
+---
+
+<Base
+  title="Home"
+  description="Custom AI and automation for small teams. Real systems, not drag-and-drop toys."
+>
+  <Hero />
+
+  {
+    latestArticles.length > 0 && (
+      <section class="content-feed">
+        <div class="feed-inner">
+          <div class="bento-grid">
+            {latestArticles.map((article, i) => (
+              <ContentCard
+                article={article}
+                featured={i === 0 && article.contentType === 'article'}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="industries reveal">
+    <div class="industries-inner">
+      <h2
+        class="industries-label"
+        data-en="Industries we work with"
+        data-es="Industrias con las que trabajamos"
+      >
+        Industries we work with
+      </h2>
+      <div class="industries-list">
+        {
+          industries.map((ind) => (
+            <span class="industry-tag" data-en={ind.en} data-es={ind.es}>
+              {ind.en}
+            </span>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bottom-cta reveal">
+    <div class="cta-inner">
+      <p
+        data-en="Need automation that works?"
+        data-es="Necesitas automatizacion que funcione?"
+      >
+        Need automation that works?
+      </p>
+      <a
+        href="mailto:fabien@jufipai.com"
+        data-en="Email me"
+        data-es="Escribeme">Email me</a
+      >
+    </div>
+  </section>
+</Base>
+
+<style>
+  .content-feed {
+    padding: var(--space-xl) 0;
+  }
+
+  .feed-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+  }
+
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+  }
+
+  .industries {
+    padding: var(--space-xl) 0;
+  }
+
+  .industries-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+  }
+
+  .industries-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: var(--space-md);
+  }
+
+  .industries-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .industry-tag {
+    font-size: var(--text-small);
+    color: var(--text-body);
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--bg-secondary);
+    border-radius: 100px;
+  }
+
+  .bottom-cta {
+    padding: var(--space-2xl) 0;
+  }
+
+  .cta-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-sm);
+  }
+
+  .cta-inner p {
+    font-family: var(--font-display);
+    font-size: var(--text-section);
+    color: var(--text-primary);
+  }
+
+  .cta-inner a {
+    font-size: var(--text-section);
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  @media (max-width: 900px) {
+    .bento-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .bento-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cta-inner {
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+  }
+</style>

@@ -1,0 +1,76 @@
+import type { Language } from './types';
+
+const translations: Record<Language, Record<string, string>> = {
+  en: {
+    'site.name': 'JufipAI',
+    'nav.writing': 'Writing',
+    'nav.about': 'About',
+    'nav.contact': 'Contact',
+    'hero.headline': 'automation for people who hate spreadsheets',
+    'hero.sub': 'Custom AI and automation for small teams. Real systems, not drag-and-drop toys.',
+    'hero.cta': 'Read the latest',
+    'home.industries': 'Industries we work with',
+    'home.cta': 'Need automation that works?',
+    'home.cta.link': 'Email me',
+    'writing.title': 'Writing',
+    'writing.search': 'Search articles...',
+    'writing.filter.all': 'All',
+    'writing.filter.articles': 'Articles',
+    'writing.filter.questions': 'Questions',
+    'writing.filter.takes': 'Takes',
+    'writing.empty': 'No articles found.',
+    'writing.load-more': 'Load more',
+    'about.title': 'About',
+    'contact.title': 'Contact',
+    'contact.sub': 'Have a process that needs fixing? Let\'s talk.',
+    'contact.name': 'Name',
+    'contact.email': 'Email',
+    'contact.message': 'Message',
+    'contact.send': 'Let\'s talk',
+    'contact.book': 'Book a call',
+    'contact.calendly': 'Schedule on Calendly',
+    'footer.built': 'Built in Dallas, TX',
+    'content.readtime': 'min read',
+    'content.linkedin': 'Read on LinkedIn',
+  },
+  es: {
+    'site.name': 'JufipAI',
+    'nav.writing': 'Escritos',
+    'nav.about': 'Acerca',
+    'nav.contact': 'Contacto',
+    'hero.headline': 'automatizacion para gente que odia las hojas de calculo',
+    'hero.sub': 'IA y automatizacion para equipos pequenos. Sistemas reales, no juguetes.',
+    'hero.cta': 'Lee lo ultimo',
+    'home.industries': 'Industrias con las que trabajamos',
+    'home.cta': 'Necesitas automatizacion que funcione?',
+    'home.cta.link': 'Escribeme',
+    'writing.title': 'Escritos',
+    'writing.search': 'Buscar articulos...',
+    'writing.filter.all': 'Todos',
+    'writing.filter.articles': 'Articulos',
+    'writing.filter.questions': 'Preguntas',
+    'writing.filter.takes': 'Opiniones',
+    'writing.empty': 'No se encontraron articulos.',
+    'writing.load-more': 'Cargar mas',
+    'about.title': 'Acerca',
+    'contact.title': 'Contacto',
+    'contact.sub': 'Tienes un proceso que necesita arreglarse? Hablemos.',
+    'contact.name': 'Nombre',
+    'contact.email': 'Correo',
+    'contact.message': 'Mensaje',
+    'contact.send': 'Hablemos',
+    'contact.book': 'Agenda una llamada',
+    'contact.calendly': 'Agenda en Calendly',
+    'footer.built': 'Hecho en Dallas, TX',
+    'content.readtime': 'min de lectura',
+    'content.linkedin': 'Leer en LinkedIn',
+  },
+};
+
+export function t(key: string, lang: Language = 'en'): string {
+  return translations[lang]?.[key] || translations.en[key] || key;
+}
+
+export function getAllTranslations(lang: Language = 'en'): Record<string, string> {
+  return { ...translations.en, ...translations[lang] };
+}

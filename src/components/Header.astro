@@ -1,0 +1,147 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="logo" aria-label="JufipAI Home">
+      <span class="logo-text">JufipAI</span>
+    </a>
+
+    <nav class="site-nav" aria-label="Main navigation">
+      <a
+        href="/writing"
+        class:list={[{ active: currentPath.startsWith('/writing') }]}
+        data-en="Writing"
+        data-es="Escritos">Writing</a
+      >
+      <a
+        href="/about"
+        class:list={[{ active: currentPath.startsWith('/about') }]}
+        data-en="About"
+        data-es="Acerca">About</a
+      >
+      <a
+        href="/contact"
+        class:list={[{ active: currentPath.startsWith('/contact') }]}
+        data-en="Contact"
+        data-es="Contacto">Contact</a
+      >
+    </nav>
+
+    <div class="lang-toggle" aria-label="Language selector">
+      <button data-lang="en" class="active" aria-label="English">EN</button>
+      <button data-lang="es" aria-label="Español">ES</button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(250, 250, 248, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    height: var(--nav-height);
+  }
+
+  .header-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+  }
+
+  .logo {
+    text-decoration: none;
+    color: var(--text-primary);
+  }
+
+  .logo-text {
+    font-family: var(--font-mono);
+    font-size: var(--text-small);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .site-nav {
+    display: flex;
+    gap: var(--space-lg);
+  }
+
+  .site-nav a {
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color var(--duration) var(--ease);
+    position: relative;
+  }
+
+  .site-nav a:hover,
+  .site-nav a.active {
+    color: var(--text-primary);
+  }
+
+  .site-nav a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background: var(--accent);
+  }
+
+  .lang-toggle {
+    display: flex;
+    gap: 2px;
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    padding: 2px;
+  }
+
+  .lang-toggle button {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    padding: 4px 8px;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all var(--duration) var(--ease);
+  }
+
+  .lang-toggle button.active {
+    background: var(--white);
+    color: var(--text-primary);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+
+  @media (max-width: 640px) {
+    .header-inner {
+      flex-wrap: wrap;
+      height: auto;
+      padding: var(--space-sm) var(--space-md);
+      gap: var(--space-sm);
+    }
+
+    .site-nav {
+      order: 3;
+      width: 100%;
+      justify-content: center;
+      gap: var(--space-md);
+    }
+  }
+</style>

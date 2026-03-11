@@ -26,6 +26,7 @@ logs/
 _site/
 dist/
 build/
+.astro/
 
 # Backup directories
 *-backup-*/
