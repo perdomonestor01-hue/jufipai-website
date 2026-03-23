@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jufipai.com/sitemap-index.xml
