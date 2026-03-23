@@ -27,10 +27,13 @@ jobs:
 
       - name: Log webhook trigger
         if: github.event_name == 'repository_dispatch'
+        env:
+          ARTICLE_ID: ${{ github.event.client_payload.article_id }}
+          TRIGGERED_AT: ${{ github.event.client_payload.triggered_at }}
         run: |
           echo "Triggered by LinkedIn Poster webhook"
-          echo "Article ID: ${{ github.event.client_payload.article_id }}"
-          echo "Triggered at: ${{ github.event.client_payload.triggered_at }}"
+          echo "Article ID: $ARTICLE_ID"
+          echo "Triggered at: $TRIGGERED_AT"
 
       - name: Install, build, and upload
         uses: withastro/action@v5

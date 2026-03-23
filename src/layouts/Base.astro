@@ -25,7 +25,8 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://images.unsplash.com data:; connect-src 'self' https://api.web3forms.com; frame-ancestors 'none'; base-uri 'self';" />
 
     <title>{title} | JufipAI</title>
     <meta name="description" content={description} />
@@ -71,7 +72,9 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 
     <script>
       function initLang() {
-        const lang = localStorage.getItem('jufipai-lang') || 'en';
+        const VALID_LANGS = ['en', 'es'];
+        const stored = localStorage.getItem('jufipai-lang');
+        const lang = stored && VALID_LANGS.includes(stored) ? stored : 'en';
         document.documentElement.lang = lang;
 
         document.querySelectorAll('[data-en][data-es]').forEach((el) => {
