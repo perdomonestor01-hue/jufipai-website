@@ -75,6 +75,15 @@ img {
   border: 0;
 }
 
+/* Section dividers */
+.section-rule {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+  height: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
 /* Scroll-driven fade-in reveals */
 @supports (animation-timeline: view()) {
   .reveal {

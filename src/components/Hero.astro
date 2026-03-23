@@ -28,9 +28,14 @@ const {
     <p class="hero-sub" data-en={sub} data-es={subEs}>
       {sub}
     </p>
-    <a href={ctaHref} class="hero-cta" data-en={ctaText} data-es={ctaTextEs}>
-      {ctaText} <span class="arrow">&rarr;</span>
-    </a>
+    <div class="hero-actions">
+      <a href={ctaHref} class="hero-cta" data-en={ctaText} data-es={ctaTextEs}>
+        {ctaText} <span class="arrow">&rarr;</span>
+      </a>
+      <a href="/contact" class="hero-pill" data-en="Get in touch" data-es="Escribenos">
+        Get in touch
+      </a>
+    </div>
   </div>
 </section>
 
@@ -43,6 +48,8 @@ const {
     max-width: var(--max-width);
     margin: 0 auto;
     padding: 0 var(--space-md);
+    border-left: 3px solid var(--accent);
+    padding-left: var(--space-md);
   }
 
   .hero-headline {
@@ -86,5 +93,33 @@ const {
 
   .hero-cta:hover .arrow {
     transform: translateX(2px);
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .hero-pill {
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 0.5rem 1.25rem;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: background var(--duration) var(--ease), color var(--duration) var(--ease);
+  }
+
+  .hero-pill:hover {
+    background: var(--accent);
+    color: var(--white);
+  }
+
+  @media (max-width: 640px) {
+    .hero-actions {
+      flex-wrap: wrap;
+    }
   }
 </style>
