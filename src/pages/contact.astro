@@ -24,10 +24,9 @@ import Base from '../layouts/Base.astro';
 
       <div class="contact-grid">
         <form class="contact-form" id="contact-form" novalidate>
-          <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE" />
-          <input type="hidden" name="from_name" value="JufipAI Contact Form" />
-          <input type="hidden" name="subject" value="New inquiry from jufipai.com" />
-          <input type="checkbox" name="botcheck" class="sr-only" tabindex="-1" autocomplete="off" />
+          <div class="hp-field" aria-hidden="true" tabindex="-1">
+            <input type="text" name="website" autocomplete="off" tabindex="-1" />
+          </div>
 
           <div class="form-field reveal-field" style="--field-delay: 0;">
             <label for="name">
@@ -263,14 +262,30 @@ import Base from '../layouts/Base.astro';
 
       try {
         const formData = new FormData(form);
-        const response = await fetch('https://api.web3forms.com/submit', {
+
+        // Honeypot check — bots fill the hidden field
+        if (formData.get('website')) return;
+
+        const payload = {
+          name: formData.get('name'),
+          email: formData.get('email'),
+          phone: formData.get('phone') || '',
+          topic: formData.get('topic'),
+          message: formData.get('message'),
+          submitted: new Date().toISOString(),
+        };
+
+        const SHEET_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL';
+        const response = await fetch(SHEET_URL, {
           method: 'POST',
-          body: formData,
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(payload),
         });
 
-        const data = await response.json();
-
-        if (data.success) {
+        // Google Apps Script with no-cors returns opaque response (status 0)
+        // We treat any non-error as success
+        if (response.type === 'opaque' || response.ok) {
           form.classList.add('is-success');
           formResult.classList.add('show-success');
           form.reset();
@@ -297,6 +312,17 @@ import Base from '../layouts/Base.astro';
 </script>
 
 <style>
+  /* ── Honeypot (invisible to humans, bots fill it) ── */
+  .hp-field {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    opacity: 0;
+    height: 0;
+    width: 0;
+    overflow: hidden;
+  }
+
   /* ── Page layout ── */
   .contact-page {
     padding: calc(var(--nav-height) + var(--space-xl)) 0 var(--space-2xl);
