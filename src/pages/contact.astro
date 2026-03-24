@@ -63,38 +63,6 @@ import Base from '../layouts/Base.astro';
           </div>
 
           <div class="form-field reveal-field" style="--field-delay: 2;">
-            <label for="phone">
-              <span data-en="Phone (optional)" data-es="Telefono (opcional)">Phone (optional)</span>
-              <span class="field-status" aria-hidden="true"></span>
-            </label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              autocomplete="tel"
-              placeholder="+1 (555) 000-0000"
-            />
-          </div>
-
-          <div class="form-field reveal-field" style="--field-delay: 3;">
-            <label for="topic">
-              <span data-en="What can we help with?" data-es="En que podemos ayudarte?">What can we help with?</span>
-            </label>
-            <div class="select-wrap">
-              <select id="topic" name="topic" required>
-                <option value="" disabled selected data-en="Select a topic" data-es="Selecciona un tema">Select a topic</option>
-                <option value="Automation" data-en="Automation" data-es="Automatizacion">Automation</option>
-                <option value="AI Integration" data-en="AI Integration" data-es="Integracion de IA">AI Integration</option>
-                <option value="Consulting" data-en="Consulting" data-es="Consultoria">Consulting</option>
-                <option value="Other" data-en="Other" data-es="Otro">Other</option>
-              </select>
-              <span class="select-chevron" aria-hidden="true">
-                <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </div>
-          </div>
-
-          <div class="form-field reveal-field" style="--field-delay: 4;">
             <label for="message">
               <span data-en="Message" data-es="Mensaje">Message</span>
               <span class="field-status" aria-hidden="true"></span>
@@ -111,7 +79,7 @@ import Base from '../layouts/Base.astro';
             <span class="field-error" data-en="Please enter a message" data-es="Por favor ingresa un mensaje"></span>
           </div>
 
-          <div class="form-actions reveal-field" style="--field-delay: 5;">
+          <div class="form-actions reveal-field" style="--field-delay: 3;">
             <button type="submit" class="submit-btn" id="submit-btn">
               <span class="btn-text" data-en="Send message" data-es="Enviar mensaje">Send message</span>
               <span class="btn-arrow" aria-hidden="true">&rarr;</span>
@@ -128,9 +96,26 @@ import Base from '../layouts/Base.astro';
               <span class="result-check" aria-hidden="true">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </span>
-              <p data-en="Message sent. We'll be in touch soon." data-es="Mensaje enviado. Estaremos en contacto pronto.">
-                Message sent. We'll be in touch soon.
-              </p>
+              <div class="success-content">
+                <p class="success-headline"
+                  data-en="Thank you for reaching out."
+                  data-es="Gracias por contactarnos.">
+                  Thank you for reaching out.
+                </p>
+                <p class="success-body"
+                  data-en="Your inquiry has been received. A member of our team will review your project details and reach out within 24 hours."
+                  data-es="Su consulta ha sido recibida. Un miembro de nuestro equipo revisara los detalles de su proyecto y se comunicara dentro de 24 horas.">
+                  Your inquiry has been received. A member of our team will review your project details and reach out within 24 hours.
+                </p>
+                <a
+                  href="https://calendly.com/contact-jufipai/30min"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="success-cta"
+                  data-en="Schedule a consultation now"
+                  data-es="Agende una consulta ahora"
+                >Schedule a consultation now <span aria-hidden="true">&rarr;</span></a>
+              </div>
             </div>
             <div class="result-error" id="result-error">
               <p data-en="Something went wrong. Please try again." data-es="Algo salio mal. Por favor intenta de nuevo.">
@@ -227,21 +212,6 @@ import Base from '../layouts/Base.astro';
       return valid;
     }
 
-    // i18n for select options
-    function updateSelectLang() {
-      const lang = document.documentElement.lang || 'en';
-      form.querySelectorAll('select option[data-en][data-es]').forEach((opt) => {
-        const text = opt.getAttribute(`data-${lang}`);
-        if (text) opt.textContent = text;
-      });
-    }
-    updateSelectLang();
-    document.addEventListener('astro:after-swap', updateSelectLang);
-
-    // Watch for language changes
-    const langObserver = new MutationObserver(() => updateSelectLang());
-    langObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
-
     // Submit handler
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -269,13 +239,10 @@ import Base from '../layouts/Base.astro';
         const payload = {
           name: formData.get('name'),
           email: formData.get('email'),
-          phone: formData.get('phone') || '',
-          topic: formData.get('topic'),
           message: formData.get('message'),
-          submitted: new Date().toISOString(),
         };
 
-        const SHEET_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL';
+        const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwKbu9Id6vxv5vxXNT73AdOKyUE7RNVmHUPaadPZw3W0epDOErrjfpGiVpW7r4AO-Ag/exec';
         const response = await fetch(SHEET_URL, {
           method: 'POST',
           mode: 'no-cors',
@@ -507,28 +474,6 @@ import Base from '../layouts/Base.astro';
     transform: translateY(0);
   }
 
-  /* ── Select dropdown ── */
-  .select-wrap {
-    position: relative;
-  }
-
-  .select-wrap select {
-    appearance: none;
-    -webkit-appearance: none;
-    cursor: pointer;
-    padding-right: 2.5rem;
-  }
-
-  .select-chevron {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-muted);
-    pointer-events: none;
-    transition: transform 0.2s var(--ease);
-  }
-
   /* ── Submit button ── */
   .form-actions {
     margin-top: var(--space-sm);
@@ -629,19 +574,56 @@ import Base from '../layouts/Base.astro';
 
   .show-success .result-success {
     display: flex;
-    background: rgba(20, 184, 166, 0.06);
-    border: 1.5px solid rgba(20, 184, 166, 0.15);
-  }
-
-  .show-success .result-success p {
-    color: var(--accent-dark);
-    font-weight: 500;
-    font-size: var(--text-small);
+    align-items: flex-start;
+    background: rgba(20, 184, 166, 0.04);
+    border: 1.5px solid rgba(20, 184, 166, 0.12);
+    padding: 1.5rem;
   }
 
   .result-check {
     color: var(--accent);
     flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .success-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .success-headline {
+    font-weight: 600;
+    font-size: var(--text-body-size);
+    color: var(--text-primary);
+  }
+
+  .success-body {
+    font-size: var(--text-small);
+    color: var(--text-body);
+    line-height: 1.6;
+  }
+
+  .success-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: var(--text-small);
+    font-weight: 600;
+    color: var(--white);
+    background: var(--accent);
+    padding: 0.625rem 1.25rem;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-top: 0.25rem;
+    transition: background 0.25s var(--ease), transform 0.15s var(--ease);
+    width: fit-content;
+  }
+
+  .success-cta:hover {
+    background: var(--accent-dark);
+    color: var(--white);
+    transform: translateY(-1px);
   }
 
   .show-error .result-error {

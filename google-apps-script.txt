@@ -1,0 +1,162 @@
+// ============================================================
+// JufipAI Contact Form — Google Apps Script
+// ============================================================
+// Deploy: Extensions > Apps Script > Deploy > Web app
+// Execute as: Me | Access: Anyone
+// Paste the deployment URL into contact.astro (SHEET_URL)
+// After updating: Deploy > Manage deployments > Edit > New version > Deploy
+// ============================================================
+
+function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data = JSON.parse(e.postData.contents);
+    var name = data.name || '';
+    var email = data.email || '';
+    var message = data.message || '';
+
+    // Write to sheet
+    sheet.appendRow([name, email, message, new Date()]);
+
+    // Send welcome email
+    if (email) {
+      sendWelcomeEmail(name, email);
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ result: 'success' }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ result: 'error', error: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function sendWelcomeEmail(name, email) {
+  var firstName = name.split(' ')[0] || 'there';
+
+  var htmlBody = '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#e8e8e8;">'
+    + '<div style="max-width:620px;margin:0 auto;padding:20px 0;">'
+
+    // Top accent bar
+    + '<div style="height:4px;background:linear-gradient(90deg,#14B8A6 0%,#0F8A7E 100%);border-radius:4px 4px 0 0;"></div>'
+
+    // Main container
+    + '<div style="background:#ffffff;font-family:Georgia,\'Times New Roman\',serif;">'
+
+    // Header
+    + '<div style="padding:36px 48px 28px;text-align:center;">'
+    + '<span style="font-family:\'Courier New\',monospace;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;color:#1A1A1A;font-weight:bold;">JufipAI</span>'
+    + '<div style="width:40px;height:2px;background:#14B8A6;margin:12px auto 0;"></div>'
+    + '</div>'
+
+    // Hero
+    + '<div style="padding:0 48px 32px;text-align:center;">'
+    + '<h1 style="font-family:Georgia,serif;font-size:26px;font-weight:400;color:#1A1A1A;margin:0 0 12px;line-height:1.3;">We received your inquiry.</h1>'
+    + '<p style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:15px;color:#8C8C8C;margin:0;">Here\'s what happens next.</p>'
+    + '</div>'
+
+    // Divider
+    + '<div style="margin:0 48px;height:1px;background:#f0f0f0;"></div>'
+
+    // Body
+    + '<div style="padding:32px 48px;">'
+    + '<p style="font-size:16px;color:#3D3D3D;line-height:1.8;margin:0 0 20px;">Hi ' + firstName + ', thank you for reaching out. A member of our team will review your project details and respond within 24 hours.</p>'
+    + '<p style="font-size:16px;color:#3D3D3D;line-height:1.8;margin:0 0 28px;">If you\'d like to move faster, you can schedule a 30-minute consultation directly on our calendar:</p>'
+
+    // Primary CTA
+    + '<div style="text-align:center;margin:0 0 36px;">'
+    + '<a href="https://calendly.com/contact-jufipai/30min" target="_blank" style="display:inline-block;background:#14B8A6;color:#ffffff;font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:16px;font-weight:600;text-decoration:none;padding:16px 44px;border-radius:8px;letter-spacing:0.02em;">Schedule Your Free Consultation</a>'
+    + '<p style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:12px;color:#8C8C8C;margin:10px 0 0;">30 minutes &middot; No commitment &middot; 100% free</p>'
+    + '</div>'
+    + '</div>'
+
+    // Divider
+    + '<div style="margin:0 48px;height:1px;background:#f0f0f0;"></div>'
+
+    // While you wait section
+    + '<div style="padding:32px 48px;">'
+    + '<p style="font-family:\'Courier New\',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#14B8A6;margin:0 0 16px;">While you wait</p>'
+
+    // Blog cards
+    + '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 28px;">'
+    + '<tr>'
+    + '<td width="48%" valign="top" style="padding-right:12px;">'
+    + '<div style="background:#FAFAF8;border-radius:8px;padding:20px;">'
+    + '<p style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#14B8A6;margin:0 0 8px;">Latest Articles</p>'
+    + '<p style="font-family:Georgia,serif;font-size:15px;color:#1A1A1A;line-height:1.4;margin:0 0 12px;">How AI is replacing spreadsheet chaos in 2026.</p>'
+    + '<a href="https://jufipai.com/writing" style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:13px;color:#14B8A6;text-decoration:none;font-weight:500;">Read our blog &rarr;</a>'
+    + '</div>'
+    + '</td>'
+    + '<td width="48%" valign="top" style="padding-left:12px;">'
+    + '<div style="background:#FAFAF8;border-radius:8px;padding:20px;">'
+    + '<p style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#14B8A6;margin:0 0 8px;">Our Work</p>'
+    + '<p style="font-family:Georgia,serif;font-size:15px;color:#1A1A1A;line-height:1.4;margin:0 0 12px;">Real automation systems for staffing, construction &amp; property.</p>'
+    + '<a href="https://jufipai.com/about" style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:13px;color:#14B8A6;text-decoration:none;font-weight:500;">Learn about us &rarr;</a>'
+    + '</div>'
+    + '</td>'
+    + '</tr>'
+    + '</table>'
+
+    // LinkedIn follow
+    + '<div style="text-align:center;padding:8px 0 0;">'
+    + '<p style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14px;color:#3D3D3D;margin:0 0 14px;">Follow us for automation tips and industry insights:</p>'
+    + '<a href="https://www.linkedin.com/company/jufipai" target="_blank" style="display:inline-block;font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14px;font-weight:500;color:#14B8A6;text-decoration:none;border:1.5px solid #14B8A6;padding:10px 28px;border-radius:100px;">Follow JufipAI on LinkedIn</a>'
+    + '</div>'
+    + '</div>'
+
+    // Divider
+    + '<div style="margin:0 48px;height:1px;background:#f0f0f0;"></div>'
+
+    // Signature
+    + '<div style="padding:28px 48px;">'
+    + '<table cellpadding="0" cellspacing="0" border="0"><tr>'
+    + '<td style="padding-right:16px;vertical-align:top;">'
+    + '<div style="width:48px;height:48px;border-radius:50%;background:#FAFAF8;text-align:center;line-height:48px;font-family:Georgia,serif;font-size:22px;color:#8C8C8C;">F</div>'
+    + '</td>'
+    + '<td style="vertical-align:top;">'
+    + '<p style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:15px;font-weight:600;color:#1A1A1A;margin:0 0 2px;">Fabien Perdomo</p>'
+    + '<p style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:13px;color:#8C8C8C;margin:0;">Founder, JufipAI &middot; Dallas, TX</p>'
+    + '</td>'
+    + '</tr></table>'
+    + '</div>'
+
+    // Footer
+    + '<div style="padding:20px 48px 28px;background:#FAFAF8;border-top:1px solid #f0f0f0;">'
+    + '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>'
+    + '<td>'
+    + '<p style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:12px;color:#8C8C8C;margin:0;line-height:1.6;">'
+    + 'Custom AI and automation for small teams.<br>'
+    + '<a href="https://jufipai.com" style="color:#14B8A6;text-decoration:none;">jufipai.com</a>'
+    + ' &middot; <a href="https://www.linkedin.com/company/jufipai" style="color:#14B8A6;text-decoration:none;">LinkedIn</a>'
+    + ' &middot; <a href="https://jufipai.com/writing" style="color:#14B8A6;text-decoration:none;">Blog</a>'
+    + '</p>'
+    + '</td>'
+    + '<td style="text-align:right;">'
+    + '<p style="font-family:\'Courier New\',monospace;font-size:11px;color:#CCCCCC;margin:0;letter-spacing:0.05em;">JUFIPAI</p>'
+    + '</td>'
+    + '</tr></table>'
+    + '</div>'
+
+    // End main container
+    + '</div>'
+
+    // Bottom accent bar
+    + '<div style="height:4px;background:linear-gradient(90deg,#0F8A7E 0%,#14B8A6 100%);border-radius:0 0 4px 4px;"></div>'
+    + '</div>'
+    + '</body></html>';
+
+  MailApp.sendEmail({
+    to: email,
+    subject: 'JufipAI — We received your inquiry',
+    htmlBody: htmlBody,
+    name: 'Fabien Perdomo | JufipAI'
+  });
+}
+
+// ============================================================
+// Sheet headers (Row 1):
+// A: Full Name | B: Email Address | C: Project Description | D: Timestamp
+// ============================================================
