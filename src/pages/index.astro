@@ -28,10 +28,12 @@ const industries = [
         <div class="feed-inner">
           <div class="bento-grid">
             {latestArticles.map((article, i) => (
-              <ContentCard
-                article={article}
-                featured={i === 0 && article.contentType === 'article'}
-              />
+              <div style={`--card-index: ${i}`}>
+                <ContentCard
+                  article={article}
+                  featured={i === 0 && article.contentType === 'article'}
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -105,12 +107,12 @@ const industries = [
   }
 
   .industries-label {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    font-weight: 400;
-    letter-spacing: 0.1em;
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--accent-text);
     margin-bottom: var(--space-md);
   }
 
@@ -124,12 +126,20 @@ const industries = [
     font-size: var(--text-small);
     color: var(--text-body);
     padding: var(--space-xs) var(--space-sm);
-    background: var(--bg-secondary);
+    background: var(--white);
+    border: 1px solid var(--border-subtle);
     border-radius: 100px;
+    transition: border-color var(--duration) var(--ease), color var(--duration) var(--ease);
+  }
+
+  .industry-tag:hover {
+    border-color: var(--accent);
+    color: var(--accent-text);
   }
 
   .bottom-cta {
     padding: var(--space-2xl) 0;
+    background: var(--bg-dark);
   }
 
   .cta-inner {
@@ -144,7 +154,7 @@ const industries = [
   .cta-inner p {
     font-family: var(--font-display);
     font-size: var(--text-section);
-    color: var(--text-primary);
+    color: var(--text-on-dark);
   }
 
   .cta-inner a {

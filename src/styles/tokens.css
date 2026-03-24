@@ -1,18 +1,28 @@
 :root {
-  /* Colors */
-  --bg-primary: #FAFAF8;
-  --bg-secondary: #F7F7F5;
-  --bg-dark: #1A1A1A;
-  --text-primary: #1A1A1A;
-  --text-body: #3D3D3D;
-  --text-muted: #8C8C8C;
-  --accent: #14B8A6;
-  --accent-dark: #0F8A7E;
+  /* Colors — CWS Corporate */
+  --bg-primary: #FAFBFC;
+  --bg-secondary: #FFFFFF;
+  --bg-dark: #0F1419;
+  --bg-dark-elevated: #1A2332;
+  --text-primary: #0F1419;
+  --text-body: #334155;
+  --text-muted: #64748B;
+  --text-on-dark: #F1F5F9;
+  --text-on-dark-muted: #94A3B8;
+  --accent: #5B9BD5;
+  --accent-text: #2563EB;
+  --accent-dark: #1D4ED8;
+  --accent-subtle: rgba(91, 155, 213, 0.08);
   --white: #FFFFFF;
+  --border-subtle: #E2E8F0;
+  --border-accent: #5B9BD5;
+  --status-success: #34D399;
+  --status-warning: #FBBF24;
+  --status-error: #F87171;
 
-  /* Typography */
-  --font-display: 'Instrument Serif', Georgia, serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Typography — Cabin + Lato */
+  --font-display: 'Cabin', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   --text-display: clamp(2rem, 5vw, 3.5rem);
@@ -34,7 +44,11 @@
   --content-width: 48rem;
   --nav-height: 4rem;
 
-  /* Transitions */
+  /* Transitions — CWS timing */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --duration: 0.3s;
+  --duration-fast: 0.15s;
+  --duration-snap: 0.08s;
+  --stagger: 0.07s;
 }
