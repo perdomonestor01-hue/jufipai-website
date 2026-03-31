@@ -5,7 +5,41 @@ import ContentCard from '../components/ContentCard.astro';
 import { fetchArticles } from '../lib/api';
 
 const articles = await fetchArticles();
-const latestArticles = articles.slice(0, 9);
+const featuredArticle = articles.find(a => a.image) || articles[0];
+const remainingArticles = articles.filter(a => a.id !== featuredArticle?.id).slice(0, 8);
+
+const services = [
+  {
+    title: 'Staffing Automation',
+    titleEs: 'Automatizacion de Personal',
+    desc: 'Time tracking, injury reports, onboarding flows. Less paperwork, more people.',
+    descEs: 'Control de horas, reportes de lesiones, procesos de incorporacion. Menos papeleo, mas personas.',
+    stat: '10+ hr/week saved',
+    statEs: '10+ hr/semana ahorradas',
+  },
+  {
+    title: 'Property Management',
+    titleEs: 'Administracion de Propiedades',
+    desc: 'Work orders, tenant communications, cost tracking. All in one place.',
+    descEs: 'Ordenes de trabajo, comunicacion con inquilinos, seguimiento de costos. Todo en un solo lugar.',
+    stat: '200+ units managed',
+    statEs: '200+ unidades administradas',
+  },
+  {
+    title: 'Safety & Compliance',
+    titleEs: 'Seguridad y Cumplimiento',
+    desc: 'OSHA reports, workers comp claims, incident tracking. Clean records when inspectors show up.',
+    descEs: 'Reportes OSHA, reclamos de compensacion, seguimiento de incidentes. Registros limpios cuando llegan inspectores.',
+    stat: '5 min audit prep',
+    statEs: '5 min prep de auditoria',
+  },
+];
+
+const stats = [
+  { number: '40+', label: 'Automations built', labelEs: 'Automatizaciones creadas' },
+  { number: '10k+', label: 'Hours saved yearly', labelEs: 'Horas ahorradas al ano' },
+  { number: '< 2hr', label: 'Avg setup time', labelEs: 'Tiempo promedio de setup' },
+];
 
 const industries = [
   { en: 'Staffing & Recruiting', es: 'Reclutamiento y Personal' },
@@ -22,25 +56,79 @@ const industries = [
 >
   <Hero />
 
-  {
-    latestArticles.length > 0 && (
-      <section class="content-feed">
-        <div class="feed-inner">
-          <div class="bento-grid">
-            {latestArticles.map((article, i) => (
-              <div style={`--card-index: ${i}`}>
-                <ContentCard
-                  article={article}
-                  featured={i === 0 && article.contentType === 'article'}
-                />
-              </div>
-            ))}
-          </div>
+  <!-- Stats bar -->
+  <section class="stats-bar">
+    <div class="stats-inner">
+      {stats.map(s => (
+        <div class="stat-item">
+          <span class="stat-number">{s.number}</span>
+          <span class="stat-label" data-en={s.label} data-es={s.labelEs}>{s.label}</span>
         </div>
-      </section>
-    )
-  }
+      ))}
+    </div>
+  </section>
 
+  <!-- Featured post -->
+  {featuredArticle && (
+    <section class="featured-section">
+      <div class="featured-inner">
+        <span class="section-label label-style" data-en="Latest" data-es="Reciente">Latest</span>
+        <a href={featuredArticle.linkedinUrl || '/writing'} target={featuredArticle.linkedinUrl ? '_blank' : '_self'} rel="noopener noreferrer" class="featured-card reveal">
+          {featuredArticle.image && (
+            <div class="featured-image">
+              <img src={featuredArticle.image} alt={featuredArticle.title} loading="eager" decoding="async" />
+            </div>
+          )}
+          <div class="featured-body">
+            <h2 class="featured-title">{featuredArticle.title}</h2>
+            <p class="featured-teaser">{featuredArticle.teaser}</p>
+            <div class="featured-meta">
+              <span>{new Date(featuredArticle.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+              <span>{featuredArticle.readTime} min read</span>
+              <span class="featured-cta" data-en="Read on LinkedIn" data-es="Leer en LinkedIn">Read on LinkedIn <span aria-hidden="true">&rarr;</span></span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+  )}
+
+  <!-- Services -->
+  <section class="services-section">
+    <div class="services-inner">
+      <span class="section-label label-style" data-en="What we build" data-es="Lo que construimos">What we build</span>
+      <div class="services-grid">
+        {services.map(s => (
+          <div class="service-card reveal">
+            <h3 data-en={s.title} data-es={s.titleEs}>{s.title}</h3>
+            <p data-en={s.desc} data-es={s.descEs}>{s.desc}</p>
+            <span class="service-stat" data-en={s.stat} data-es={s.statEs}>{s.stat}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Content feed -->
+  {remainingArticles.length > 0 && (
+    <section class="content-feed">
+      <div class="feed-inner">
+        <div class="feed-header">
+          <span class="section-label label-style" data-en="More from JufipAI" data-es="Mas de JufipAI">More from JufipAI</span>
+          <a href="/writing" class="feed-all" data-en="View all" data-es="Ver todo">View all <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <div class="bento-grid">
+          {remainingArticles.map((article, i) => (
+            <div style={`--card-index: ${i}`}>
+              <ContentCard article={article} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Industries -->
   <section class="industries reveal">
     <div class="industries-inner">
       <h2
@@ -51,35 +139,218 @@ const industries = [
         Industries we work with
       </h2>
       <div class="industries-list">
-        {
-          industries.map((ind) => (
-            <span class="industry-tag" data-en={ind.en} data-es={ind.es}>
-              {ind.en}
-            </span>
-          ))
-        }
+        {industries.map(ind => (
+          <span class="industry-tag" data-en={ind.en} data-es={ind.es}>{ind.en}</span>
+        ))}
       </div>
     </div>
   </section>
 
+  <!-- CTA -->
   <section class="bottom-cta reveal">
     <div class="cta-inner">
-      <p
-        data-en="Need automation that works?"
-        data-es="Necesitas automatizacion que funcione?"
-      >
-        Need automation that works?
-      </p>
-      <a
-        href="/contact"
-        data-en="Let's talk"
-        data-es="Hablemos">Let's talk</a
-      >
+      <div class="cta-text">
+        <p class="cta-headline" data-en="Stop doing the boring stuff." data-es="Deja de hacer lo aburrido.">
+          Stop doing the boring stuff.
+        </p>
+        <p class="cta-sub" data-en="Tell us the process. We make it disappear." data-es="Cuentanos el proceso. Lo hacemos desaparecer.">
+          Tell us the process. We make it disappear.
+        </p>
+      </div>
+      <div class="cta-actions">
+        <a href="/contact" class="cta-btn" data-en="Let's talk" data-es="Hablemos">Let's talk</a>
+        <a href="https://calendly.com/contact-jufipai/30min" target="_blank" rel="noopener noreferrer" class="cta-link" data-en="Book a call" data-es="Agendar llamada">Book a call <span aria-hidden="true">&nearr;</span></a>
+      </div>
     </div>
   </section>
 </Base>
 
 <style>
+  /* Stats bar */
+  .stats-bar {
+    background: var(--bg-dark);
+    border-bottom: 1px solid rgba(91, 155, 213, 0.1);
+    margin-top: -1px;
+  }
+
+  .stats-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--space-lg) var(--space-md);
+    display: flex;
+    justify-content: center;
+    gap: var(--space-2xl);
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .stat-number {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-size: var(--text-xs);
+    color: var(--text-on-dark-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Section label */
+  .section-label {
+    display: block;
+    margin-bottom: var(--space-md);
+  }
+
+  /* Featured post */
+  .featured-section {
+    padding: var(--space-xl) 0;
+  }
+
+  .featured-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+  }
+
+  .featured-card {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    background: var(--white);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+  }
+
+  .featured-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(15, 20, 25, 0.1);
+    color: inherit;
+  }
+
+  .featured-image {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+
+  .featured-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease);
+  }
+
+  .featured-card:hover .featured-image img {
+    transform: scale(1.04);
+  }
+
+  .featured-body {
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .featured-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.5vw, 1.625rem);
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+  }
+
+  .featured-teaser {
+    font-size: var(--text-small);
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: var(--space-md);
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .featured-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+  }
+
+  .featured-cta {
+    margin-left: auto;
+    color: var(--accent-text);
+    font-weight: 500;
+  }
+
+  /* Services */
+  .services-section {
+    padding: var(--space-xl) 0;
+    background: var(--bg-primary);
+  }
+
+  .services-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+  }
+
+  .service-card {
+    background: var(--white);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: var(--space-lg);
+    transition: transform var(--duration) var(--ease), border-color var(--duration) var(--ease);
+  }
+
+  .service-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+  }
+
+  .service-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: var(--space-xs);
+    color: var(--text-primary);
+  }
+
+  .service-card p {
+    font-size: var(--text-small);
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: var(--space-md);
+  }
+
+  .service-stat {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--accent-text);
+    background: var(--accent-subtle);
+    padding: 0.25rem 0.625rem;
+    border-radius: 100px;
+  }
+
+  /* Content feed */
   .content-feed {
     padding: var(--space-xl) 0;
   }
@@ -90,12 +361,30 @@ const industries = [
     padding: 0 var(--space-md);
   }
 
+  .feed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-md);
+  }
+
+  .feed-header .section-label {
+    margin-bottom: 0;
+  }
+
+  .feed-all {
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--accent-text);
+  }
+
   .bento-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-md);
   }
 
+  /* Industries */
   .industries {
     padding: var(--space-xl) 0;
   }
@@ -137,6 +426,7 @@ const industries = [
     color: var(--accent-text);
   }
 
+  /* CTA */
   .bottom-cta {
     padding: var(--space-2xl) 0;
     background: var(--bg-dark);
@@ -147,38 +437,66 @@ const industries = [
     margin: 0 auto;
     padding: 0 var(--space-md);
     display: flex;
-    align-items: baseline;
-    gap: var(--space-sm);
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
   }
 
-  .cta-inner p {
+  .cta-headline {
     font-family: var(--font-display);
     font-size: var(--text-section);
     color: var(--text-on-dark);
+    margin-bottom: 0.25rem;
   }
 
-  .cta-inner a {
-    font-size: var(--text-section);
+  .cta-sub {
+    font-size: var(--text-small);
+    color: var(--text-on-dark-muted);
+  }
+
+  .cta-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-shrink: 0;
+  }
+
+  .cta-btn {
+    font-size: var(--text-small);
+    font-weight: 600;
+    color: var(--white);
+    background: var(--accent-text);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background var(--duration) var(--ease), transform 0.15s var(--ease);
+  }
+
+  .cta-btn:hover {
+    background: var(--accent-dark);
+    color: var(--white);
+    transform: translateY(-1px);
+  }
+
+  .cta-link {
+    font-size: var(--text-small);
     font-weight: 500;
     color: var(--accent);
-    text-decoration: underline;
-    text-underline-offset: 4px;
   }
 
+  /* Responsive */
   @media (max-width: 900px) {
-    .bento-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+    .bento-grid { grid-template-columns: repeat(2, 1fr); }
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .featured-card { grid-template-columns: 1fr; }
   }
 
   @media (max-width: 640px) {
-    .bento-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .cta-inner {
-      flex-direction: column;
-      gap: var(--space-xs);
-    }
+    .bento-grid { grid-template-columns: 1fr; }
+    .services-grid { grid-template-columns: 1fr; }
+    .stats-inner { gap: var(--space-lg); }
+    .cta-inner { flex-direction: column; text-align: center; }
+    .cta-actions { flex-direction: column; width: 100%; }
+    .cta-btn { width: 100%; text-align: center; }
   }
 </style>

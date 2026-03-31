@@ -12,6 +12,6 @@ export interface Article {
   imageAttribution: string | null;
 }
 
-export type ContentType = 'article' | 'deep_question' | 'unpopular_take' | 'shuffle' | 'creative';
+export type ContentType = 'article' | 'deep_question' | 'unpopular_take' | 'creative' | 'image_quote' | 'riddle' | 'tip';
 
 export type Language = 'en' | 'es';
