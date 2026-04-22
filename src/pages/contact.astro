@@ -242,7 +242,7 @@ import Base from '../layouts/Base.astro';
           message: formData.get('message'),
         };
 
-        const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwKbu9Id6vxv5vxXNT73AdOKyUE7RNVmHUPaadPZw3W0epDOErrjfpGiVpW7r4AO-Ag/exec';
+        const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxJo9lyHS2-qwIF1f8OPh5nli51jP3ZzagZ0MInGnk-7g69iSqQw8T0QHpDiBbkUVFt/exec';
         const response = await fetch(SHEET_URL, {
           method: 'POST',
           mode: 'no-cors',
