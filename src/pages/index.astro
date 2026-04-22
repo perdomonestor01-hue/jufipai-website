@@ -10,28 +10,52 @@ const remainingArticles = articles.filter(a => a.id !== featuredArticle?.id).sli
 
 const services = [
   {
-    title: 'Staffing Automation',
-    titleEs: 'Automatizacion de Personal',
-    desc: 'Time tracking, injury reports, onboarding flows. Less paperwork, more people.',
-    descEs: 'Control de horas, reportes de lesiones, procesos de incorporacion. Menos papeleo, mas personas.',
-    stat: '10+ hr/week saved',
-    statEs: '10+ hr/semana ahorradas',
+    title: 'Marketing Campaign Automation',
+    titleEs: 'Automatizacion de Campanas',
+    desc: 'Multi-channel campaigns that run themselves. Scheduling, content, and analytics — connected end to end.',
+    descEs: 'Campanas multicanal que se ejecutan solas. Agenda, contenido y analisis — conectados de principio a fin.',
+    stat: 'Always-on reach',
+    statEs: 'Alcance continuo',
   },
   {
-    title: 'Property Management',
-    titleEs: 'Administracion de Propiedades',
-    desc: 'Work orders, tenant communications, cost tracking. All in one place.',
-    descEs: 'Ordenes de trabajo, comunicacion con inquilinos, seguimiento de costos. Todo en un solo lugar.',
-    stat: '200+ units managed',
-    statEs: '200+ unidades administradas',
+    title: 'Digital Time Clocks',
+    titleEs: 'Relojes Digitales',
+    desc: 'Kiosk or mobile clock-in systems. Accurate hours, instant audit trails, payroll-ready exports.',
+    descEs: 'Sistemas de entrada por kiosko o movil. Horas precisas, auditoria instantanea, listos para nomina.',
+    stat: 'Zero paper timesheets',
+    statEs: 'Cero hojas en papel',
   },
   {
-    title: 'Safety & Compliance',
-    titleEs: 'Seguridad y Cumplimiento',
-    desc: 'OSHA reports, workers comp claims, incident tracking. Clean records when inspectors show up.',
-    descEs: 'Reportes OSHA, reclamos de compensacion, seguimiento de incidentes. Registros limpios cuando llegan inspectores.',
-    stat: '5 min audit prep',
-    statEs: '5 min prep de auditoria',
+    title: 'Job Portals',
+    titleEs: 'Portales de Empleo',
+    desc: 'Branded job boards with automated posting, applicant tracking, and candidate communication.',
+    descEs: 'Portales de empleo personalizados con publicacion automatica, seguimiento y comunicacion.',
+    stat: 'One-click posting',
+    statEs: 'Publicacion en un clic',
+  },
+  {
+    title: 'Application Process',
+    titleEs: 'Procesos de Aplicacion',
+    desc: 'End-to-end applicant flows. Forms, screens, notifications, and handoffs run without you watching.',
+    descEs: 'Flujos completos de aplicacion. Formularios, filtros, notificaciones y transferencias automaticas.',
+    stat: 'Hours to minutes',
+    statEs: 'De horas a minutos',
+  },
+  {
+    title: 'ID & Background Screening',
+    titleEs: 'Verificacion y Antecedentes',
+    desc: 'Automated identity verification and background check pipelines. Compliance built in from day one.',
+    descEs: 'Verificacion automatica de identidad y antecedentes. Cumplimiento integrado desde el primer dia.',
+    stat: 'Same-day clearance',
+    statEs: 'Aprobacion el mismo dia',
+  },
+  {
+    title: 'AI Resume Analyzer',
+    titleEs: 'Analizador de CV con IA',
+    desc: 'Score, rank, and shortlist resumes instantly. Your criteria, your format, consistent every time.',
+    descEs: 'Evalua, clasifica y selecciona CVs al instante. Tu criterio, tu formato, consistente cada vez.',
+    stat: 'Seconds per resume',
+    statEs: 'Segundos por CV',
   },
 ];
 
@@ -96,7 +120,9 @@ const industries = [
   <!-- Services -->
   <section class="services-section">
     <div class="services-inner">
-      <span class="section-label label-style" data-en="What we build" data-es="Lo que construimos">What we build</span>
+      <span class="section-label label-style" data-en="Catalog" data-es="Catalogo">Catalog</span>
+      <h2 class="services-headline" data-en="More with less. Stop wasting time." data-es="Mas con menos. Deja de perder tiempo.">More with less. Stop wasting time.</h2>
+      <p class="services-intro" data-en="Six systems we build and operate. Pick the one that maps to your bottleneck — or combine them." data-es="Seis sistemas que construimos y operamos. Elige el que corresponda a tu cuello de botella — o combinalos.">Six systems we build and operate. Pick the one that maps to your bottleneck — or combine them.</p>
       <div class="services-grid">
         {services.map(s => (
           <div class="service-card reveal">
@@ -305,6 +331,26 @@ const industries = [
     max-width: var(--max-width);
     margin: 0 auto;
     padding: 0 var(--space-md);
+  }
+
+  .services-headline {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--text-primary);
+    margin: var(--space-sm) 0 var(--space-xs);
+    max-width: 38rem;
+    letter-spacing: -0.01em;
+  }
+
+  .services-intro {
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--text-secondary, #6B7280);
+    margin: 0 0 var(--space-lg);
+    max-width: 40rem;
   }
 
   .services-grid {
