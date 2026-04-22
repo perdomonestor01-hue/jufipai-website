@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
 import ContentCard from '../components/ContentCard.astro';
+import EmailCapture from '../components/EmailCapture.astro';
 import { fetchArticles } from '../lib/api';
 
 const articles = await fetchArticles();
@@ -153,6 +154,9 @@ const industries = [
       </div>
     </section>
   )}
+
+  <!-- Email capture -->
+  <EmailCapture />
 
   <!-- Industries -->
   <section class="industries reveal">
