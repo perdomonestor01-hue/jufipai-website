@@ -1,0 +1,534 @@
+---
+// NewsletterModal — site-wide newsletter capture.
+// Triggers: scroll-40% (first cross), exit-intent (desktop only), header button click.
+// Gating: localStorage 'jufipai_nl_modal_v1' with status:dismissed/snoozed/subscribed + ISO timestamp.
+// Posts to the same Apps Script endpoint as EmailCapture; type: 'subscribe', source: 'newsletter_modal'.
+---
+
+<dialog
+  id="jufipai-nl-modal"
+  class="nl-modal"
+  aria-labelledby="nl-modal-headline"
+  aria-describedby="nl-modal-subhead"
+>
+  <button
+    type="button"
+    class="nl-modal-close"
+    aria-label="Cerrar"
+    data-en="Close"
+    data-es="Cerrar"
+    id="nl-modal-close"
+  >
+    &times;
+  </button>
+
+  <div class="nl-modal-body">
+    <span class="nl-modal-eyebrow" data-en="Newsletter" data-es="Boletín">Boletín</span>
+
+    <h2 id="nl-modal-headline" class="nl-modal-headline-es" data-en-hidden>
+      <span data-es="Recibe el próximo sistema antes que nadie." data-en="Get the next system before everyone else.">
+        Recibe el próximo sistema antes que nadie.
+      </span>
+    </h2>
+    <p class="nl-modal-headline-en">
+      <span data-es="Get the next system before everyone else." data-en="Recibe el próximo sistema antes que nadie.">
+        Get the next system before everyone else.
+      </span>
+    </p>
+
+    <p id="nl-modal-subhead" class="nl-modal-subhead">
+      <span data-es="Un correo cuando publicamos algo que vale tu tiempo. Sin spam, sin calendarios, sin relleno." data-en="One email when we publish something worth your time. No spam, no schedules, no filler.">
+        Un correo cuando publicamos algo que vale tu tiempo. Sin spam, sin calendarios, sin relleno.
+      </span>
+    </p>
+
+    <form id="nl-modal-form" class="nl-modal-form" novalidate>
+      <label class="sr-only" for="nl-modal-email" data-en="Email address" data-es="Correo electrónico">Correo electrónico</label>
+      <input
+        type="email"
+        id="nl-modal-email"
+        name="email"
+        class="nl-modal-input"
+        placeholder="tu@empresa.com"
+        data-en-placeholder="you@company.com"
+        data-es-placeholder="tu@empresa.com"
+        autocomplete="email"
+        required
+      />
+      <!-- Honeypot — must stay empty -->
+      <input type="text" name="website" class="nl-modal-honeypot" tabindex="-1" aria-hidden="true" autocomplete="off" />
+      <button type="submit" class="nl-modal-submit">
+        <span data-es="Suscribirme" data-en="Subscribe">Suscribirme</span>
+        <span aria-hidden="true" class="nl-modal-arrow">&rarr;</span>
+      </button>
+      <p class="nl-modal-status" id="nl-modal-status" role="status" aria-live="polite"></p>
+    </form>
+
+    <button
+      type="button"
+      class="nl-modal-snooze"
+      id="nl-modal-snooze"
+      data-en="Maybe later"
+      data-es="Tal vez después"
+    >
+      Tal vez después
+    </button>
+  </div>
+</dialog>
+
+<style>
+  .nl-modal {
+    border: none;
+    border-radius: var(--radius-modal);
+    padding: 0;
+    background: var(--color-surface);
+    color: var(--color-ink);
+    width: min(440px, calc(100vw - 2rem));
+    max-width: 440px;
+    box-shadow: 0 24px 64px rgba(31, 36, 33, 0.18), 0 2px 8px rgba(31, 36, 33, 0.06);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+  }
+
+  .nl-modal::backdrop {
+    background: rgba(31, 36, 33, 0.50);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .nl-modal[open] {
+    animation: nlModalIn 0.32s var(--ease-spring);
+  }
+
+  @keyframes nlModalIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .nl-modal-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: transparent;
+    border: none;
+    color: var(--color-ink-secondary);
+    font-size: 1.5rem;
+    line-height: 1;
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition: background var(--duration-base) var(--ease-spring), color var(--duration-base) var(--ease-spring);
+    z-index: 2;
+  }
+
+  .nl-modal-close:hover {
+    background: var(--color-arena);
+    color: var(--color-carbon);
+  }
+
+  .nl-modal-body {
+    padding: 2.5rem 2rem 1.75rem;
+    position: relative;
+  }
+
+  .nl-modal-eyebrow {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--color-jade-deep);
+    background: var(--color-jade-soft);
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    margin-bottom: 1rem;
+  }
+
+  .nl-modal-headline-es,
+  .nl-modal-headline-en {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 0;
+    color: var(--color-carbon);
+  }
+
+  .nl-modal-headline-es {
+    font-size: 1.625rem;
+    font-style: normal;
+  }
+
+  .nl-modal-headline-en {
+    font-size: 1.125rem;
+    font-style: italic;
+    color: var(--color-carbon-soft);
+    opacity: 0.85;
+    margin: 0.5rem 0 1.25rem;
+    font-weight: 500;
+  }
+
+  .nl-modal-subhead {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-carbon-soft);
+    margin: 0 0 1.5rem;
+  }
+
+  .nl-modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .nl-modal-input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-carbon);
+    background: var(--color-surface);
+    border: 1.5px solid var(--color-arena);
+    border-radius: 12px;
+    outline: none;
+    transition: border-color var(--duration-base) var(--ease-spring), box-shadow var(--duration-base) var(--ease-spring);
+  }
+
+  .nl-modal-input::placeholder {
+    color: var(--color-carbon-soft);
+    opacity: 0.6;
+  }
+
+  .nl-modal-input:focus {
+    border-color: var(--color-jade);
+    box-shadow: 0 0 0 3px rgba(14, 124, 102, 0.15);
+  }
+
+  .nl-modal-submit {
+    width: 100%;
+    padding: 0.9rem 1.25rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    color: #FFFFFF;
+    background: var(--color-jade);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: background var(--duration-base) var(--ease-spring), transform var(--duration-base) var(--ease-spring), gap var(--duration-base) var(--ease-spring);
+  }
+
+  .nl-modal-submit:hover:not(:disabled) {
+    background: var(--color-jade-deep);
+    transform: translateY(-1px);
+    gap: 0.75rem;
+  }
+
+  .nl-modal-submit:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+
+  .nl-modal-status {
+    margin: 0.25rem 0 0;
+    font-size: 0.8125rem;
+    min-height: 1.1rem;
+    color: var(--color-carbon-soft);
+    text-align: center;
+  }
+
+  .nl-modal-status.success { color: var(--color-jade-deep); }
+  .nl-modal-status.error   { color: #C84B3B; }
+  .nl-modal-status.pending { color: var(--color-carbon-soft); }
+
+  .nl-modal-snooze {
+    display: block;
+    margin: 1rem auto 0;
+    background: transparent;
+    border: none;
+    color: var(--color-carbon-soft);
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: text-decoration-color var(--duration-base) var(--ease-spring), color var(--duration-base) var(--ease-spring);
+  }
+
+  .nl-modal-snooze:hover {
+    color: var(--color-carbon);
+    text-decoration-color: var(--color-carbon-soft);
+  }
+
+  .nl-modal-honeypot {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+
+<script>
+  // Newsletter modal controller — Astro-native, vanilla TS.
+  const STORAGE_KEY = 'jufipai_nl_modal_v1';
+  const SHEET_URL =
+    'https://script.google.com/macros/s/AKfycbxJo9lyHS2-qwIF1f8OPh5nli51jP3ZzagZ0MInGnk-7g69iSqQw8T0QHpDiBbkUVFt/exec';
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const SCROLL_TRIGGER_PCT = 0.40;
+  const DISMISS_DAYS = 7;
+  const SNOOZE_DAYS = 30;
+
+  type NlState = {
+    status: 'dismissed' | 'snoozed' | 'subscribed';
+    at: string; // ISO
+  };
+
+  function getLang(): 'es' | 'en' {
+    return document.documentElement.lang === 'es' ? 'es' : 'en';
+  }
+
+  function t(en: string, es: string): string {
+    return getLang() === 'es' ? es : en;
+  }
+
+  function readState(): NlState | null {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object' && parsed.status && parsed.at) {
+        return parsed as NlState;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  }
+
+  function writeState(state: NlState) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch {
+      // Storage disabled — silently degrade
+    }
+  }
+
+  function shouldShow(): boolean {
+    const state = readState();
+    if (!state) return true;
+    if (state.status === 'subscribed') return false;
+    const ageMs = Date.now() - new Date(state.at).getTime();
+    const ageDays = ageMs / (1000 * 60 * 60 * 24);
+    if (state.status === 'dismissed' && ageDays < DISMISS_DAYS) return false;
+    if (state.status === 'snoozed' && ageDays < SNOOZE_DAYS) return false;
+    return true;
+  }
+
+  let modalEl: HTMLDialogElement | null = null;
+  let scrollArmed = false;
+  let exitArmed = false;
+
+  function openModal() {
+    if (!modalEl) return;
+    if (modalEl.hasAttribute('open')) return;
+    modalEl.showModal();
+    disarmTriggers();
+  }
+
+  function closeModal() {
+    if (!modalEl) return;
+    if (modalEl.hasAttribute('open')) modalEl.close();
+  }
+
+  function disarmTriggers() {
+    scrollArmed = false;
+    exitArmed = false;
+    window.removeEventListener('scroll', onScroll);
+    document.removeEventListener('mouseleave', onExitIntent);
+  }
+
+  let scrollTicking = false;
+  function onScroll() {
+    if (!scrollArmed) return;
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(() => {
+      const doc = document.documentElement;
+      const scrollTop = window.scrollY || doc.scrollTop;
+      const total = (doc.scrollHeight - doc.clientHeight) || 1;
+      const pct = scrollTop / total;
+      if (pct >= SCROLL_TRIGGER_PCT) {
+        openModal();
+      }
+      scrollTicking = false;
+    });
+  }
+
+  function onExitIntent(e: MouseEvent) {
+    if (!exitArmed) return;
+    // Only trigger when mouse leaves through top of viewport
+    if (e.clientY <= 0) {
+      openModal();
+    }
+  }
+
+  function armTriggers() {
+    if (!shouldShow()) return;
+    scrollArmed = true;
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Exit-intent: desktop only
+    if (window.matchMedia('(min-width: 1024px)').matches) {
+      exitArmed = true;
+      document.addEventListener('mouseleave', onExitIntent);
+    }
+  }
+
+  function setupTranslations() {
+    // Reuse Base layout's data-en/data-es swap on initLang. Force a refresh here so
+    // first-paint inside the dialog reflects the chosen locale.
+    const lang = getLang();
+    modalEl?.querySelectorAll('[data-en][data-es]').forEach((el) => {
+      const text = el.getAttribute(`data-${lang}`);
+      if (text) el.textContent = text;
+    });
+    modalEl
+      ?.querySelectorAll('[data-en-placeholder][data-es-placeholder]')
+      .forEach((el) => {
+        const text = el.getAttribute(`data-${lang}-placeholder`);
+        if (text && el instanceof HTMLInputElement) {
+          el.placeholder = text;
+        }
+      });
+  }
+
+  function init() {
+    modalEl = document.getElementById('jufipai-nl-modal') as HTMLDialogElement | null;
+    if (!modalEl) return;
+
+    const closeBtn = document.getElementById('nl-modal-close');
+    const snoozeBtn = document.getElementById('nl-modal-snooze');
+    const form = document.getElementById('nl-modal-form') as HTMLFormElement | null;
+    const input = document.getElementById('nl-modal-email') as HTMLInputElement | null;
+    const status = document.getElementById('nl-modal-status');
+    const submitBtn = form?.querySelector<HTMLButtonElement>('button[type="submit"]') ?? null;
+
+    closeBtn?.addEventListener('click', () => {
+      writeState({ status: 'dismissed', at: new Date().toISOString() });
+      closeModal();
+    });
+
+    snoozeBtn?.addEventListener('click', () => {
+      writeState({ status: 'snoozed', at: new Date().toISOString() });
+      closeModal();
+    });
+
+    // Backdrop click → snooze (less harsh than dismiss)
+    modalEl.addEventListener('click', (e) => {
+      if (e.target === modalEl) {
+        writeState({ status: 'snoozed', at: new Date().toISOString() });
+        closeModal();
+      }
+    });
+
+    // ESC also snoozes
+    modalEl.addEventListener('cancel', (e) => {
+      e.preventDefault();
+      writeState({ status: 'snoozed', at: new Date().toISOString() });
+      closeModal();
+    });
+
+    if (form && input && status && submitBtn) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = input.value.trim();
+        const honeypot = (form.querySelector('input[name="website"]') as HTMLInputElement | null)?.value || '';
+
+        if (honeypot) {
+          // Silent for bots — show success but don't POST
+          status.textContent = t("You're in. Talk soon.", 'Listo. Hablamos pronto.');
+          status.className = 'nl-modal-status success';
+          writeState({ status: 'subscribed', at: new Date().toISOString() });
+          input.value = '';
+          setTimeout(closeModal, 1500);
+          return;
+        }
+
+        if (!EMAIL_REGEX.test(email)) {
+          status.textContent = t('Please enter a valid email.', 'Por favor ingresa un correo válido.');
+          status.className = 'nl-modal-status error';
+          return;
+        }
+
+        status.textContent = t('Adding you to the list…', 'Agregándote a la lista…');
+        status.className = 'nl-modal-status pending';
+        submitBtn.disabled = true;
+
+        try {
+          await fetch(SHEET_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({
+              type: 'subscribe',
+              email,
+              locale: getLang(),
+              source: 'newsletter_modal',
+              userAgent: navigator.userAgent,
+              referrer: document.referrer,
+            }),
+          });
+          status.textContent = t("You're in. Check your inbox.", 'Listo. Revisa tu bandeja.');
+          status.className = 'nl-modal-status success';
+          writeState({ status: 'subscribed', at: new Date().toISOString() });
+          input.value = '';
+          setTimeout(closeModal, 1500);
+        } catch {
+          status.textContent = t('Something went wrong. Try again in a moment.', 'Algo falló. Intenta de nuevo en un momento.');
+          status.className = 'nl-modal-status error';
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+    }
+
+    // Expose programmatic open for Header button
+    (window as unknown as { jufipaiOpenNewsletter?: () => void }).jufipaiOpenNewsletter = () => {
+      setupTranslations();
+      modalEl?.showModal();
+      disarmTriggers();
+    };
+
+    setupTranslations();
+    armTriggers();
+  }
+
+  init();
+  document.addEventListener('astro:after-swap', () => {
+    disarmTriggers();
+    init();
+  });
+</script>

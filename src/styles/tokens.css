@@ -1,37 +1,65 @@
+/* ============================================================
+   Mercado Moderno — design tokens
+   Audience: Hispanic SMB owners. Warm palette beats sterile B2B blue.
+   Ported from jufipai-app (Next.js) to Astro (jufipai.com).
+   ============================================================ */
 :root {
-  /* Colors — CWS Corporate */
-  --bg-primary: #FAFBFC;
-  --bg-secondary: #FFFFFF;
-  --bg-dark: #0F1419;
-  --bg-dark-elevated: #1A2332;
-  --text-primary: #0F1419;
-  --text-body: #334155;
-  --text-muted: #64748B;
-  --text-on-dark: #F1F5F9;
-  --text-on-dark-muted: #94A3B8;
-  --accent: #5B9BD5;
-  --accent-text: #2563EB;
-  --accent-dark: #1D4ED8;
-  --accent-subtle: rgba(91, 155, 213, 0.08);
+  /* ── Mercado Moderno primitives ── */
+  --color-jade: #0E7C66;
+  --color-jade-soft: #D8EDE5;
+  --color-jade-deep: #08503F;
+  --color-terracota: #F4A261;
+  --color-terracota-soft: #FBE3CB;
+  --color-maiz: #F9E07F;
+  --color-arena: #E8E2D5;
+  --color-papel: #FAF7F2;
+  --color-carbon: #1F2421;
+  --color-carbon-soft: #5C6661;
+
+  /* ── Mercado Moderno semantic aliases ── */
+  --color-bg: var(--color-papel);
+  --color-surface: #FFFFFF;
+  --color-ink: var(--color-carbon);
+  --color-ink-secondary: var(--color-carbon-soft);
+  --color-accent: var(--color-jade);
+  --color-accent-warm: var(--color-terracota);
+  --color-highlight: var(--color-maiz);
+  --color-border: var(--color-arena);
+
+  /* ── Legacy CWS variable names re-pointed at Mercado Moderno
+     (keeps every existing component/page rendering without rewrite) ── */
+  --bg-primary: var(--color-papel);
+  --bg-secondary: var(--color-surface);
+  --bg-dark: var(--color-carbon);
+  --bg-dark-elevated: #2A2F2C;
+  --text-primary: var(--color-carbon);
+  --text-body: #3A4541;
+  --text-muted: var(--color-carbon-soft);
+  --text-on-dark: #FAF7F2;
+  --text-on-dark-muted: #C9C2B3;
+  --accent: var(--color-jade);
+  --accent-text: var(--color-jade-deep);    /* WCAG AA on papel */
+  --accent-dark: var(--color-jade-deep);
+  --accent-subtle: rgba(14, 124, 102, 0.10);
   --white: #FFFFFF;
-  --border-subtle: #E2E8F0;
-  --border-accent: #5B9BD5;
-  --status-success: #34D399;
-  --status-warning: #FBBF24;
-  --status-error: #F87171;
+  --border-subtle: var(--color-arena);
+  --border-accent: var(--color-jade);
+  --status-success: var(--color-jade);
+  --status-warning: var(--color-terracota);
+  --status-error: #C84B3B;
 
-  /* Typography — Cabin + Lato */
-  --font-display: 'Cabin', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  /* ── Typography — Fraunces (display) + Inter (body) + JetBrains Mono ── */
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
 
-  --text-display: clamp(2rem, 5vw, 3.5rem);
-  --text-section: clamp(1.25rem, 3vw, 1.75rem);
+  --text-display: clamp(2.5rem, 6vw, 6rem);
+  --text-section: clamp(1.5rem, 3.5vw, 2.25rem);
   --text-body-size: 1.0625rem;
   --text-small: 0.875rem;
   --text-xs: 0.75rem;
 
-  /* Spacing */
+  /* ── Spacing ── */
   --space-xs: 0.5rem;
   --space-sm: 1rem;
   --space-md: 1.5rem;
@@ -39,15 +67,21 @@
   --space-xl: 4rem;
   --space-2xl: 8rem;
 
-  /* Layout */
+  /* ── Layout ── */
   --max-width: 72rem;
   --content-width: 48rem;
   --nav-height: 4rem;
 
-  /* Transitions — CWS timing */
+  /* ── Radii — Mercado Moderno: softer corners ── */
+  --radius-card: 16px;
+  --radius-modal: 20px;
+  --radius-pill: 999px;
+
+  /* ── Motion — kept spring + new base duration ── */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --duration: 0.3s;
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration: 0.28s;
+  --duration-base: 280ms;
   --duration-fast: 0.15s;
   --duration-snap: 0.08s;
   --stagger: 0.07s;

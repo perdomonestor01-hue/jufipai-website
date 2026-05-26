@@ -2,6 +2,7 @@
 import { ClientRouter } from 'astro:transitions';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import NewsletterModal from '../components/NewsletterModal.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -24,7 +25,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#0F1419" />
+    <meta name="theme-color" content="#1F2421" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://images.unsplash.com data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; frame-ancestors 'none'; base-uri 'self';" />
@@ -58,7 +59,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;500;600;700&family=Lato:wght@300;400;700&family=JetBrains+Mono&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap"
       rel="stylesheet"
     />
 
@@ -70,6 +71,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
       <slot />
     </main>
     <Footer />
+    <NewsletterModal />
 
     <script>
       function initLang() {
