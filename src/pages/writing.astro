@@ -282,42 +282,42 @@ const articles = await fetchArticles();
     font-family: var(--font-body);
     font-size: var(--text-small);
     font-weight: 500;
-    padding: var(--space-xs) var(--space-sm);
-    border: 1px solid var(--border-subtle);
+    padding: 0.45rem 1rem;
+    border: 1.5px solid var(--color-arena);
     background: transparent;
-    color: var(--text-muted);
-    border-radius: 100px;
+    color: var(--color-carbon-soft);
+    border-radius: var(--radius-pill);
     cursor: pointer;
-    transition: all var(--duration) var(--ease);
+    transition: background var(--duration-base) var(--ease-spring), border-color var(--duration-base) var(--ease-spring), color var(--duration-base) var(--ease-spring);
   }
 
   .filter-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent-text);
+    border-color: var(--color-jade);
+    color: var(--color-jade-deep);
   }
 
   .filter-btn.active {
-    background: var(--accent-text);
-    border-color: var(--accent-text);
-    color: var(--white);
+    background: var(--color-jade);
+    border-color: var(--color-jade);
+    color: #FFFFFF;
   }
 
   .search-box input {
     font-family: var(--font-body);
     font-size: var(--text-small);
-    padding: var(--space-xs) var(--space-sm);
-    border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    background: var(--white);
-    color: var(--text-body);
+    padding: 0.55rem 0.9rem;
+    border: 1.5px solid var(--color-arena);
+    border-radius: 12px;
+    background: var(--color-surface);
+    color: var(--color-carbon);
     width: 240px;
-    transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+    transition: border-color var(--duration-base) var(--ease-spring), box-shadow var(--duration-base) var(--ease-spring);
   }
 
   .search-box input:focus {
     outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-subtle);
+    border-color: var(--color-jade);
+    box-shadow: 0 0 0 3px rgba(14, 124, 102, 0.15);
   }
 
   .articles-grid {
@@ -328,9 +328,28 @@ const articles = await fetchArticles();
 
   .empty-state {
     text-align: center;
-    color: var(--text-muted);
+    color: var(--color-carbon-soft);
     padding: var(--space-2xl) 0;
+    font-family: var(--font-display);
     font-style: italic;
+    font-size: 1.25rem;
+    position: relative;
+  }
+
+  .empty-state::after {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-pill);
+    background: var(--color-jade);
+    margin: 0.75rem auto 0;
+    animation: emptyPulse 1.6s var(--ease-spring) infinite;
+  }
+
+  @keyframes emptyPulse {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50%      { opacity: 1;   transform: scale(1.3); }
   }
 
   .load-more-btn {
@@ -339,18 +358,19 @@ const articles = await fetchArticles();
     font-family: var(--font-body);
     font-size: var(--text-small);
     font-weight: 500;
-    padding: var(--space-sm) var(--space-lg);
-    border: 1px solid var(--border-subtle);
-    background: transparent;
-    color: var(--text-body);
-    border-radius: 100px;
+    padding: 0.65rem 1.75rem;
+    border: 1.5px solid var(--color-arena);
+    background: var(--color-surface);
+    color: var(--color-carbon);
+    border-radius: var(--radius-pill);
     cursor: pointer;
-    transition: all var(--duration) var(--ease);
+    transition: border-color var(--duration-base) var(--ease-spring), color var(--duration-base) var(--ease-spring), transform var(--duration-base) var(--ease-spring);
   }
 
   .load-more-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent-text);
+    border-color: var(--color-jade);
+    color: var(--color-jade-deep);
+    transform: translateY(-1px);
   }
 
   @media (max-width: 900px) {

@@ -1,142 +1,257 @@
 ---
+// Mercado Moderno hero — asymmetric 7/5 grid, Fraunces display, papel-picado background.
+// Headline: "Guíate por jufipai." with terracota period accent.
+// Right column: italic Fraunces pull-quote + hand-drawn arrow SVG.
 interface Props {
   headline?: string;
   headlineEs?: string;
-  sub?: string;
-  subEs?: string;
-  ctaText?: string;
-  ctaTextEs?: string;
-  ctaHref?: string;
+  pullQuote?: string;
+  pullQuoteEs?: string;
 }
 
 const {
-  headline = 'automation for people who hate spreadsheets',
-  headlineEs = 'automatizacion para gente que odia las hojas de calculo',
-  sub = 'More with less. Stop wasting time on work that should run itself — real systems, not drag-and-drop toys.',
-  subEs = 'Mas con menos. Deja de perder tiempo en trabajo que deberia correr solo — sistemas reales, no juguetes.',
-  ctaText = 'Read the latest',
-  ctaTextEs = 'Lee lo ultimo',
-  ctaHref = '/writing',
+  headline = 'Guide your way with jufipai.',
+  headlineEs = 'Guíate por jufipai.',
+  pullQuote = 'The right advice, at the right moment.',
+  pullQuoteEs = 'El consejo justo, en el momento justo.',
 } = Astro.props;
 ---
 
 <section class="hero">
+  <!-- Papel-picado-inspired background pattern (4% opacity, radial fade) -->
+  <svg
+    class="hero-bg-pattern"
+    aria-hidden="true"
+    viewBox="0 0 800 400"
+    preserveAspectRatio="xMidYMid slice"
+  >
+    <defs>
+      <pattern id="papelPicado" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+        <circle cx="40" cy="40" r="3" fill="var(--color-jade)" />
+        <path d="M20 20 L60 20 L60 60 L20 60 Z" fill="none" stroke="var(--color-jade)" stroke-width="0.5" />
+        <path d="M30 40 L40 30 L50 40 L40 50 Z" fill="var(--color-terracota)" opacity="0.6" />
+        <circle cx="10" cy="10" r="1.5" fill="var(--color-maiz)" />
+        <circle cx="70" cy="70" r="1.5" fill="var(--color-maiz)" />
+      </pattern>
+      <radialGradient id="patternFade" cx="50%" cy="50%" r="55%">
+        <stop offset="0%" stop-color="white" stop-opacity="1" />
+        <stop offset="100%" stop-color="white" stop-opacity="0" />
+      </radialGradient>
+      <mask id="fadeMask">
+        <rect width="800" height="400" fill="url(#patternFade)" />
+      </mask>
+    </defs>
+    <rect width="800" height="400" fill="url(#papelPicado)" mask="url(#fadeMask)" />
+  </svg>
+
   <div class="hero-inner">
-    <h1 class="hero-headline" data-en={headline} data-es={headlineEs}>
-      {headline}
-    </h1>
-    <p class="hero-sub" data-en={sub} data-es={subEs}>
-      {sub}
-    </p>
-    <div class="hero-actions">
-      <a href={ctaHref} class="hero-cta" data-en={ctaText} data-es={ctaTextEs}>
-        {ctaText} <span class="arrow">&rarr;</span>
-      </a>
-      <a href="/contact" class="hero-pill" data-en="Get in touch" data-es="Escribenos">
-        Get in touch
-      </a>
+    <div class="hero-left">
+      <h1 class="hero-headline">
+        <span data-en={headline} data-es={headlineEs}>{headlineEs}</span><span class="hero-period" aria-hidden="true">.</span>
+      </h1>
+    </div>
+
+    <div class="hero-right">
+      <blockquote class="hero-quote">
+        <span data-en={pullQuote} data-es={pullQuoteEs}>{pullQuoteEs}</span>
+      </blockquote>
+      <svg
+        class="hero-arrow"
+        viewBox="0 0 120 60"
+        aria-hidden="true"
+      >
+        <path
+          d="M5 30 Q 30 5, 60 25 T 110 30"
+          fill="none"
+          stroke="var(--color-terracota)"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+        <path
+          d="M110 30 L 100 22 M 110 30 L 100 38"
+          fill="none"
+          stroke="var(--color-terracota)"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+      </svg>
+      <div class="hero-actions">
+        <a href="/writing" class="hero-cta" data-en="Read the latest" data-es="Lee lo último">Lee lo último <span class="arrow" aria-hidden="true">&rarr;</span></a>
+        <a href="/contact" class="hero-pill" data-en="Get in touch" data-es="Escríbenos">Escríbenos</a>
+      </div>
     </div>
   </div>
 </section>
 
 <style>
   .hero {
-    padding: calc(var(--nav-height) + var(--space-2xl)) 0 var(--space-xl);
-    background: var(--bg-dark);
+    padding: calc(var(--nav-height) + var(--space-2xl)) 0 var(--space-2xl);
+    background: var(--color-papel);
     position: relative;
     overflow: hidden;
-    padding-bottom: calc(var(--space-xl) + 80px);
   }
 
-  .hero::after {
-    content: '';
+  .hero-bg-pattern {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 80px;
-    background: linear-gradient(to bottom, var(--bg-dark), var(--bg-primary));
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.04;
     pointer-events: none;
+    z-index: 0;
   }
 
   .hero-inner {
     max-width: var(--max-width);
     margin: 0 auto;
     padding: 0 var(--space-md);
-    border-left: 3px solid var(--accent);
-    padding-left: var(--space-md);
+    display: grid;
+    grid-template-columns: 7fr 5fr;
+    gap: var(--space-xl);
+    align-items: center;
     position: relative;
     z-index: 1;
   }
 
-  .hero-headline {
-    font-family: var(--font-display);
-    font-size: var(--text-display);
-    font-weight: 700;
-    line-height: 1.1;
-    color: var(--text-on-dark);
-    margin-bottom: var(--space-md);
-    max-width: 42rem;
+  .hero-left {
+    min-width: 0;
   }
 
-  .hero-sub {
-    font-size: 1.125rem;
-    color: var(--text-on-dark-muted);
-    line-height: 1.6;
-    margin-bottom: var(--space-lg);
-    max-width: 36rem;
+  .hero-headline {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 8vw, 6rem);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: var(--color-carbon);
+    margin: 0;
+    max-width: 16ch;
+  }
+
+  .hero-period {
+    color: var(--color-terracota);
+    display: inline-block;
+    transform: translateY(-0.05em);
+  }
+
+  .hero-right {
+    position: relative;
+    padding-top: var(--space-sm);
+  }
+
+  .hero-quote {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-carbon-soft);
+    margin: 0 0 var(--space-sm);
+    border: none;
+    padding: 0;
+    quotes: "\201C" "\201D";
+  }
+
+  .hero-quote::before {
+    content: open-quote;
+    color: var(--color-terracota);
+    font-size: 1.5em;
+    line-height: 0;
+    vertical-align: -0.25em;
+    margin-right: 0.1em;
+  }
+
+  .hero-quote::after {
+    content: close-quote;
+    color: var(--color-terracota);
+    font-size: 1.5em;
+    line-height: 0;
+    vertical-align: -0.25em;
+    margin-left: 0.1em;
+  }
+
+  .hero-arrow {
+    width: 120px;
+    height: 60px;
+    display: block;
+    margin: var(--space-sm) 0 var(--space-md);
+    transform: rotate(-8deg);
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
   }
 
   .hero-cta {
     font-family: var(--font-body);
     font-size: var(--text-body-size);
-    font-weight: 500;
-    color: var(--accent);
+    font-weight: 600;
+    color: var(--color-jade-deep);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    transition: color var(--duration) var(--ease), gap var(--duration) var(--ease);
+    transition: color var(--duration-base) var(--ease-spring), gap var(--duration-base) var(--ease-spring);
   }
 
   .hero-cta:hover {
-    color: var(--white);
+    color: var(--color-terracota);
     gap: 0.75rem;
   }
 
   .arrow {
-    transition: transform var(--duration) var(--ease);
+    transition: transform var(--duration-base) var(--ease-spring);
   }
 
   .hero-cta:hover .arrow {
-    transform: translateX(2px);
-  }
-
-  .hero-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
+    transform: translateX(3px);
   }
 
   .hero-pill {
+    font-family: var(--font-body);
     font-size: var(--text-small);
     font-weight: 500;
-    color: var(--accent);
-    border: 1.5px solid var(--accent);
+    color: var(--color-jade-deep);
+    background: transparent;
+    border: 1.5px solid var(--color-jade);
     padding: 0.5rem 1.25rem;
-    border-radius: 100px;
+    border-radius: var(--radius-pill);
     text-decoration: none;
-    transition: background var(--duration) var(--ease), color var(--duration) var(--ease);
+    transition: background var(--duration-base) var(--ease-spring), color var(--duration-base) var(--ease-spring);
   }
 
   .hero-pill:hover {
-    background: var(--accent);
-    color: var(--white);
+    background: var(--color-jade);
+    color: #FFFFFF;
+  }
+
+  @media (max-width: 900px) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+    }
+
+    .hero-arrow {
+      width: 90px;
+      height: 45px;
+    }
   }
 
   @media (max-width: 640px) {
+    .hero {
+      padding: calc(var(--nav-height) + var(--space-xl)) 0 var(--space-xl);
+    }
+
+    .hero-headline {
+      font-size: clamp(2.5rem, 12vw, 3.75rem);
+    }
+
     .hero-actions {
-      flex-wrap: wrap;
+      gap: var(--space-sm);
     }
   }
 </style>

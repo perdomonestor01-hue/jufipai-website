@@ -29,12 +29,36 @@ const currentPath = Astro.url.pathname;
       >
     </nav>
 
-    <div class="lang-toggle" aria-label="Language selector">
-      <button data-lang="en" class="active" aria-label="English">EN</button>
-      <button data-lang="es" aria-label="Espanol">ES</button>
+    <div class="header-right">
+      <button
+        type="button"
+        class="header-subscribe"
+        id="header-subscribe-btn"
+        data-en="Subscribe"
+        data-es="Suscribirme"
+      >
+        Suscribirme
+      </button>
+      <div class="lang-toggle" aria-label="Language selector">
+        <button data-lang="en" class="active" aria-label="English">EN</button>
+        <button data-lang="es" aria-label="Espanol">ES</button>
+      </div>
     </div>
   </div>
 </header>
+
+<script>
+  function wireSubscribeButton() {
+    const btn = document.getElementById('header-subscribe-btn');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      const fn = (window as unknown as { jufipaiOpenNewsletter?: () => void }).jufipaiOpenNewsletter;
+      if (typeof fn === 'function') fn();
+    });
+  }
+  wireSubscribeButton();
+  document.addEventListener('astro:after-swap', wireSubscribeButton);
+</script>
 
 <style>
   .site-header {
@@ -43,11 +67,40 @@ const currentPath = Astro.url.pathname;
     left: 0;
     right: 0;
     z-index: 100;
-    background: rgba(15, 20, 25, 0.95);
+    background: rgba(31, 36, 33, 0.92);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(91, 155, 213, 0.15);
+    border-bottom: 1px solid rgba(14, 124, 102, 0.20);
     height: var(--nav-height);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .header-subscribe {
+    font-family: var(--font-body);
+    font-size: var(--text-small);
+    font-weight: 600;
+    color: #FFFFFF;
+    background: var(--color-jade);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition: background var(--duration) var(--ease), transform var(--duration) var(--ease);
+  }
+
+  .header-subscribe:hover {
+    background: var(--color-jade-deep);
+    transform: translateY(-1px);
+  }
+
+  .header-subscribe:focus-visible {
+    outline: 2px solid var(--color-maiz);
+    outline-offset: 2px;
   }
 
   .header-inner {
@@ -100,7 +153,7 @@ const currentPath = Astro.url.pathname;
     left: 0;
     right: 0;
     height: 1.5px;
-    background: var(--accent);
+    background: var(--color-terracota);
   }
 
   .lang-toggle {
@@ -124,7 +177,7 @@ const currentPath = Astro.url.pathname;
   }
 
   .lang-toggle button.active {
-    background: rgba(91, 155, 213, 0.2);
+    background: rgba(14, 124, 102, 0.25);
     color: var(--text-on-dark);
   }
 
@@ -141,6 +194,11 @@ const currentPath = Astro.url.pathname;
       width: 100%;
       justify-content: center;
       gap: var(--space-md);
+    }
+
+    .header-subscribe {
+      padding: 0.4rem 0.85rem;
+      font-size: var(--text-xs);
     }
   }
 </style>

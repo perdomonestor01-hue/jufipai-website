@@ -24,8 +24,9 @@ body {
 h1, h2, h3, h4 {
   font-family: var(--font-display);
   color: var(--text-primary);
-  line-height: 1.2;
-  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  font-weight: 600;
 }
 
 h1 { font-size: var(--text-display); }
@@ -48,12 +49,12 @@ img {
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--white);
+  background: var(--color-maiz);
+  color: var(--color-carbon);
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--color-jade);
   outline-offset: 2px;
 }
 
@@ -136,7 +137,7 @@ img {
   100% { background-position: 200% 0; }
 }
 .skeleton {
-  background: linear-gradient(90deg, var(--border-subtle) 25%, #F8FAFC 50%, var(--border-subtle) 75%);
+  background: linear-gradient(90deg, var(--color-arena) 25%, var(--color-papel) 50%, var(--color-arena) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 4px;
