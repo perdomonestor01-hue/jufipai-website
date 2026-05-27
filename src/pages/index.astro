@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
 import ContentCard from '../components/ContentCard.astro';
+import IndustryInsightQuiz from '../components/IndustryInsightQuiz.astro';
 import { fetchArticles } from '../lib/api';
 
 const articles = await fetchArticles();
@@ -79,6 +80,8 @@ const industries = [
   description="Custom AI and automation for small teams. Real systems, not drag-and-drop toys."
 >
   <Hero />
+
+  <IndustryInsightQuiz />
 
   <!-- Bento — capability teasers (marketing tiles, not functional routes) -->
   <section class="bento-section">

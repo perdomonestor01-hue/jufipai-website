@@ -1,0 +1,663 @@
+---
+// IndustryInsightQuiz — 5-card single-question-per-screen, auto-advance, ES+EN.
+// Provokes "you're behind" recognition via percentages + dollar amounts.
+// localStorage gate: jufipai_quiz_v1 — skip on revisit within 24h.
+// Final card CTA opens NewsletterModal via window.jufipaiOpenNewsletter().
+---
+
+<section class="quiz-section" id="industry-insight-quiz" aria-label="Industry Insight Quiz">
+  <div class="quiz-shell">
+
+    <span class="quiz-eyebrow" id="quiz-eyebrow"
+      data-en="Question 1 of 5" data-es="Pregunta 1 de 5">
+      Pregunta 1 de 5
+    </span>
+
+    <!-- QUESTION CARD -->
+    <div class="quiz-question" id="quiz-question" role="group" aria-live="polite">
+      <h2 class="quiz-headline" id="quiz-question-text"></h2>
+      <div class="quiz-options" role="radiogroup" id="quiz-options" aria-label="Answer options"></div>
+    </div>
+
+    <!-- REVEAL CARD -->
+    <div class="quiz-reveal" id="quiz-reveal" hidden aria-live="polite">
+      <p class="quiz-reveal-answer" id="quiz-reveal-answer"></p>
+      <p class="quiz-reveal-body" id="quiz-reveal-body"></p>
+      <p class="quiz-reveal-source" id="quiz-reveal-source"></p>
+      <div class="quiz-progress" id="quiz-progress" aria-hidden="true"></div>
+      <button type="button" class="quiz-next" id="quiz-next"
+        data-en="Next" data-es="Siguiente">
+        Siguiente
+      </button>
+    </div>
+
+    <!-- FINAL CARD -->
+    <div class="quiz-final" id="quiz-final" hidden>
+      <h2 class="quiz-final-headline"
+        data-en="Your industry is leaving hours and money on the table."
+        data-es="Tu industria está dejando horas y dinero sobre la mesa.">
+        Tu industria está dejando horas y dinero sobre la mesa.
+      </h2>
+      <p class="quiz-final-sub"
+        data-en="We can help. Get the next system before everyone else."
+        data-es="Podemos ayudarte. Recibe el próximo sistema antes que nadie.">
+        Podemos ayudarte. Recibe el próximo sistema antes que nadie.
+      </p>
+      <button type="button" class="quiz-final-cta" id="quiz-final-cta"
+        data-en="Get the next one"
+        data-es="Recibirlo">
+        Recibirlo
+      </button>
+    </div>
+
+    <button type="button" class="quiz-skip" id="quiz-skip"
+      data-en="Skip" data-es="Saltar"
+      aria-label="Skip quiz">
+      Saltar
+    </button>
+  </div>
+</section>
+
+<style>
+  .quiz-section {
+    padding: var(--space-2xl) var(--space-md);
+    background: var(--color-papel);
+    display: flex;
+    justify-content: center;
+  }
+
+  .quiz-shell {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-arena);
+    border-radius: var(--radius-modal);
+    padding: 3rem 1.5rem 2rem;
+    box-shadow: 0 12px 32px rgba(31, 36, 33, 0.06);
+  }
+
+  @media (min-width: 768px) {
+    .quiz-shell {
+      padding: 3.5rem 3rem 2.5rem;
+    }
+  }
+
+  .quiz-eyebrow {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--color-jade-deep);
+    background: var(--color-jade-soft);
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    margin-bottom: 1.25rem;
+  }
+
+  .quiz-headline {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--color-carbon);
+    margin: 0 0 1.75rem;
+  }
+
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .quiz-option {
+    width: 100%;
+    text-align: left;
+    padding: 1rem 1.25rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-carbon);
+    background: var(--color-surface);
+    border: 1.5px solid var(--color-arena);
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: border-color var(--duration-base) var(--ease-spring),
+                background var(--duration-base) var(--ease-spring),
+                transform var(--duration-base) var(--ease-spring);
+  }
+
+  .quiz-option:hover {
+    border-color: var(--color-jade);
+    background: var(--color-jade-soft);
+    transform: translateX(2px);
+  }
+
+  .quiz-option:focus-visible {
+    outline: 2px solid var(--color-jade);
+    outline-offset: 2px;
+  }
+
+  .quiz-option-key {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-carbon-soft);
+    width: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .quiz-option.is-correct {
+    border-color: var(--color-jade);
+    background: var(--color-jade);
+    color: #FFFFFF;
+  }
+
+  .quiz-option.is-correct .quiz-option-key {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .quiz-option.is-wrong {
+    opacity: 0.55;
+  }
+
+  .quiz-question,
+  .quiz-reveal,
+  .quiz-final {
+    transition: opacity 200ms var(--ease-spring);
+  }
+
+  .quiz-question.is-fading,
+  .quiz-reveal.is-fading,
+  .quiz-final.is-fading {
+    opacity: 0;
+  }
+
+  .quiz-reveal-answer {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-jade-deep);
+    margin: 0 0 1rem;
+  }
+
+  .quiz-reveal-body {
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--color-carbon);
+    margin: 0 0 1rem;
+  }
+
+  .quiz-reveal-source {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1.4;
+    color: var(--color-carbon-soft);
+    margin: 0 0 1.5rem;
+  }
+
+  .quiz-progress {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .quiz-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-pill);
+    background: var(--color-arena);
+    transition: background var(--duration-base) var(--ease-spring);
+  }
+
+  .quiz-dot.is-on {
+    background: var(--color-jade);
+  }
+
+  .quiz-next,
+  .quiz-final-cta {
+    width: 100%;
+    padding: 0.9rem 1.25rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    color: #FFFFFF;
+    background: var(--color-jade);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background var(--duration-base) var(--ease-spring),
+                transform var(--duration-base) var(--ease-spring);
+  }
+
+  .quiz-next:hover,
+  .quiz-final-cta:hover {
+    background: var(--color-jade-deep);
+    transform: translateY(-1px);
+  }
+
+  .quiz-next:focus-visible,
+  .quiz-final-cta:focus-visible {
+    outline: 2px solid var(--color-jade);
+    outline-offset: 2px;
+  }
+
+  .quiz-final-headline {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 1.875rem);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--color-carbon);
+    margin: 0 0 0.75rem;
+  }
+
+  .quiz-final-sub {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--color-carbon-soft);
+    margin: 0 0 1.5rem;
+  }
+
+  .quiz-skip {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    color: var(--color-carbon-soft);
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: text-decoration-color var(--duration-base) var(--ease-spring),
+                color var(--duration-base) var(--ease-spring);
+  }
+
+  .quiz-skip:hover {
+    color: var(--color-carbon);
+    text-decoration-color: var(--color-carbon-soft);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .quiz-question,
+    .quiz-reveal,
+    .quiz-final,
+    .quiz-option,
+    .quiz-next,
+    .quiz-final-cta {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // IndustryInsightQuiz — vanilla TS, no dependencies.
+  const STORAGE_KEY = 'jufipai_quiz_v1';
+  const REVISIT_HOURS = 24;
+  const AUTO_ADVANCE_MS = 5000;
+
+  type QuestionData = {
+    eyebrowEn: string;
+    eyebrowEs: string;
+    questionEn: string;
+    questionEs: string;
+    options: { en: string; es: string }[];
+    correctIdx: number;
+    answerEn: string;
+    answerEs: string;
+    bodyEn: string;
+    bodyEs: string;
+    sourceEn: string;
+    sourceEs: string;
+  };
+
+  const QUESTIONS: QuestionData[] = [
+    {
+      eyebrowEn: 'Question 1 of 5 — Real Estate',
+      eyebrowEs: 'Pregunta 1 de 5 — Bienes Raíces',
+      questionEn: 'How many licensed real estate agents are there in the USA?',
+      questionEs: '¿Cuántos agentes de bienes raíces con licencia hay en Estados Unidos?',
+      options: [
+        { en: '800,000', es: '800.000' },
+        { en: '1.2 million', es: '1,2 millones' },
+        { en: '1.6 million', es: '1,6 millones' },
+      ],
+      correctIdx: 2,
+      answerEn: 'Nearly 1.6 million.',
+      answerEs: 'Casi 1,6 millones.',
+      bodyEn: 'About 70% aren\'t using AI to simplify workflows — losing hours every week.',
+      bodyEs: 'Cerca del 70% no usa IA para simplificar su trabajo — pierde horas cada semana.',
+      sourceEn: 'Source: NAR Member Profile 2024 + NAR Tech Survey 2024',
+      sourceEs: 'Fuente: NAR Member Profile 2024 + NAR Tech Survey 2024',
+    },
+    {
+      eyebrowEn: 'Question 2 of 5 — Staffing',
+      eyebrowEs: 'Pregunta 2 de 5 — Reclutamiento',
+      questionEn: 'How many staffing agencies operate in Texas?',
+      questionEs: '¿Cuántas agencias de reclutamiento operan en Texas?',
+      options: [
+        { en: '800', es: '800' },
+        { en: '1,500', es: '1.500' },
+        { en: '2,500+', es: '2.500+' },
+      ],
+      correctIdx: 2,
+      answerEn: 'Over 2,500.',
+      answerEs: 'Más de 2.500.',
+      bodyEn: 'Most fail to handle PII according to strict guidelines — leaving candidate data at risk.',
+      bodyEs: 'La mayoría no maneja los datos personales según normas estrictas — dejando la información del candidato en riesgo.',
+      sourceEn: 'Source: American Staffing Association directory 2024 (TX)',
+      sourceEs: 'Fuente: American Staffing Association directory 2024 (TX)',
+    },
+    {
+      eyebrowEn: 'Question 3 of 5 — Legal',
+      eyebrowEs: 'Pregunta 3 de 5 — Legal',
+      questionEn: 'How much billable revenue does the average solo/small-firm lawyer lose to admin work each year?',
+      questionEs: '¿Cuánto pierde al año en ingresos facturables el abogado típico de despacho pequeño por trabajo administrativo?',
+      options: [
+        { en: '$80,000', es: '$80.000' },
+        { en: '$150,000', es: '$150.000' },
+        { en: '$250,000+', es: '$250.000+' },
+      ],
+      correctIdx: 2,
+      answerEn: '$250,000 or more.',
+      answerEs: '$250.000 o más.',
+      bodyEn: '30% of an attorney\'s week is admin — email, intake, invoicing — not legal work.',
+      bodyEs: 'El 30% de la semana de un abogado es trabajo administrativo — correos, recepción de casos, facturación — no trabajo legal.',
+      sourceEn: 'Source: ABA Legal Technology Survey 2024 + Clio Legal Trends 2024',
+      sourceEs: 'Fuente: ABA Legal Technology Survey 2024 + Clio Legal Trends 2024',
+    },
+    {
+      eyebrowEn: 'Question 4 of 5 — Property Management',
+      eyebrowEs: 'Pregunta 4 de 5 — Administración de Propiedades',
+      questionEn: 'What share of independent property managers in the U.S. still collect rent by check or cash?',
+      questionEs: '¿Qué porcentaje de administradores de propiedades independientes en EE. UU. todavía cobra la renta en cheque o efectivo?',
+      options: [
+        { en: '22%', es: '22%' },
+        { en: '41%', es: '41%' },
+        { en: '67%', es: '67%' },
+      ],
+      correctIdx: 1,
+      answerEn: '41%.',
+      answerEs: '41%.',
+      bodyEn: 'More than 4 in 10 managers process rent payments by hand every month. Each one is a late-payment risk and a lost-time charge.',
+      bodyEs: 'Más de 4 de cada 10 administradores procesan los pagos de renta a mano cada mes. Cada uno es un riesgo de pago tardío y un costo de tiempo perdido.',
+      sourceEn: 'Source: Buildium 2026 Property Management Industry Report',
+      sourceEs: 'Fuente: Buildium 2026 Property Management Industry Report',
+    },
+    {
+      eyebrowEn: 'Question 5 of 5 — Small Business',
+      eyebrowEs: 'Pregunta 5 de 5 — Pequeña Empresa',
+      questionEn: 'How long does the average small business take to respond to a new lead inquiry by email?',
+      questionEs: '¿Cuánto tarda la pequeña empresa típica en responder por correo a un nuevo cliente potencial?',
+      options: [
+        { en: 'Under 1 hour', es: 'Menos de 1 hora' },
+        { en: '5 hours', es: '5 horas' },
+        { en: 'Over 24 hours', es: 'Más de 24 horas' },
+      ],
+      correctIdx: 2,
+      answerEn: 'Over 24 hours.',
+      answerEs: 'Más de 24 horas.',
+      bodyEn: 'After the first hour, qualification odds drop 10×. The inbox is where warm leads go to die.',
+      bodyEs: 'Después de la primera hora, las probabilidades de calificar caen 10×. La bandeja de entrada es donde los clientes interesados se enfrían.',
+      sourceEn: 'Source: HBR "Short Life of Online Sales Leads" + Velocify Lead Mgmt Study',
+      sourceEs: 'Fuente: HBR "Short Life of Online Sales Leads" + Velocify Lead Mgmt Study',
+    },
+  ];
+
+  type QuizPhase = 'question' | 'reveal' | 'final';
+
+  type QuizState = {
+    idx: number;
+    phase: QuizPhase;
+    selected: number | null;
+  };
+
+  function getLang(): 'es' | 'en' {
+    return document.documentElement.lang === 'es' ? 'es' : 'en';
+  }
+
+  function prefersReducedMotion(): boolean {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function shouldSkipQuiz(): boolean {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return false;
+      const parsed = JSON.parse(raw);
+      if (!parsed || !parsed.at) return false;
+      const ageMs = Date.now() - new Date(parsed.at).getTime();
+      const ageHours = ageMs / (1000 * 60 * 60);
+      return ageHours < REVISIT_HOURS;
+    } catch {
+      return false;
+    }
+  }
+
+  function markCompleted() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ at: new Date().toISOString() }));
+    } catch {
+      // Storage disabled — silently degrade
+    }
+  }
+
+  function initQuiz() {
+    const section = document.getElementById('industry-insight-quiz');
+    if (!section) return;
+
+    if (shouldSkipQuiz()) {
+      section.hidden = true;
+      return;
+    }
+
+    const eyebrowEl = document.getElementById('quiz-eyebrow') as HTMLElement | null;
+    const questionEl = document.getElementById('quiz-question') as HTMLElement | null;
+    const questionTextEl = document.getElementById('quiz-question-text') as HTMLElement | null;
+    const optionsEl = document.getElementById('quiz-options') as HTMLElement | null;
+    const revealEl = document.getElementById('quiz-reveal') as HTMLElement | null;
+    const revealAnswerEl = document.getElementById('quiz-reveal-answer') as HTMLElement | null;
+    const revealBodyEl = document.getElementById('quiz-reveal-body') as HTMLElement | null;
+    const revealSourceEl = document.getElementById('quiz-reveal-source') as HTMLElement | null;
+    const progressEl = document.getElementById('quiz-progress') as HTMLElement | null;
+    const nextBtn = document.getElementById('quiz-next') as HTMLButtonElement | null;
+    const finalEl = document.getElementById('quiz-final') as HTMLElement | null;
+    const finalCtaBtn = document.getElementById('quiz-final-cta') as HTMLButtonElement | null;
+    const skipBtn = document.getElementById('quiz-skip') as HTMLButtonElement | null;
+
+    if (!eyebrowEl || !questionEl || !questionTextEl || !optionsEl || !revealEl
+      || !revealAnswerEl || !revealBodyEl || !revealSourceEl || !progressEl
+      || !nextBtn || !finalEl || !finalCtaBtn || !skipBtn) {
+      return;
+    }
+
+    const state: QuizState = { idx: 0, phase: 'question', selected: null };
+    let autoAdvanceTimer: number | null = null;
+
+    function clearAutoAdvance() {
+      if (autoAdvanceTimer !== null) {
+        window.clearTimeout(autoAdvanceTimer);
+        autoAdvanceTimer = null;
+      }
+    }
+
+    function renderQuestion() {
+      const q = QUESTIONS[state.idx];
+      const lang = getLang();
+
+      eyebrowEl!.textContent = lang === 'es' ? q.eyebrowEs : q.eyebrowEn;
+      questionTextEl!.textContent = lang === 'es' ? q.questionEs : q.questionEn;
+
+      optionsEl!.innerHTML = '';
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'quiz-option';
+        btn.setAttribute('role', 'radio');
+        btn.setAttribute('aria-checked', 'false');
+        btn.dataset.idx = String(i);
+
+        const key = document.createElement('span');
+        key.className = 'quiz-option-key';
+        key.textContent = String(i + 1);
+        btn.appendChild(key);
+
+        const label = document.createElement('span');
+        label.textContent = lang === 'es' ? opt.es : opt.en;
+        btn.appendChild(label);
+
+        btn.addEventListener('click', () => handleSelect(i));
+        optionsEl!.appendChild(btn);
+      });
+
+      questionEl!.hidden = false;
+      revealEl!.hidden = true;
+      finalEl!.hidden = true;
+    }
+
+    function renderReveal() {
+      const q = QUESTIONS[state.idx];
+      const lang = getLang();
+
+      revealAnswerEl!.textContent = lang === 'es' ? q.answerEs : q.answerEn;
+      revealBodyEl!.textContent = lang === 'es' ? q.bodyEs : q.bodyEn;
+      revealSourceEl!.textContent = lang === 'es' ? q.sourceEs : q.sourceEn;
+
+      // Progress dots
+      progressEl!.innerHTML = '';
+      for (let i = 0; i < QUESTIONS.length; i++) {
+        const dot = document.createElement('span');
+        dot.className = 'quiz-dot' + (i <= state.idx ? ' is-on' : '');
+        progressEl!.appendChild(dot);
+      }
+
+      // Mark options as correct/wrong
+      const optionEls = optionsEl!.querySelectorAll<HTMLButtonElement>('.quiz-option');
+      optionEls.forEach((el, i) => {
+        if (i === q.correctIdx) el.classList.add('is-correct');
+        else el.classList.add('is-wrong');
+        el.setAttribute('aria-checked', i === state.selected ? 'true' : 'false');
+        el.disabled = true;
+      });
+
+      questionEl!.hidden = true;
+      revealEl!.hidden = false;
+      finalEl!.hidden = true;
+
+      // Auto-advance unless reduced motion
+      if (!prefersReducedMotion()) {
+        clearAutoAdvance();
+        autoAdvanceTimer = window.setTimeout(() => {
+          advance();
+        }, AUTO_ADVANCE_MS);
+      }
+    }
+
+    function renderFinal() {
+      const lang = getLang();
+      finalEl!.querySelectorAll('[data-en][data-es]').forEach((el) => {
+        const text = el.getAttribute(`data-${lang}`);
+        if (text) el.textContent = text;
+      });
+      questionEl!.hidden = true;
+      revealEl!.hidden = true;
+      finalEl!.hidden = false;
+      eyebrowEl!.textContent = lang === 'es' ? 'Listo' : 'Done';
+      markCompleted();
+    }
+
+    function fadeSwap(callback: () => void) {
+      if (prefersReducedMotion()) {
+        callback();
+        return;
+      }
+      const active = !questionEl!.hidden ? questionEl!
+        : !revealEl!.hidden ? revealEl!
+        : finalEl!;
+      active.classList.add('is-fading');
+      window.setTimeout(() => {
+        callback();
+        active.classList.remove('is-fading');
+      }, 200);
+    }
+
+    function handleSelect(i: number) {
+      if (state.phase !== 'question') return;
+      state.selected = i;
+      state.phase = 'reveal';
+      fadeSwap(renderReveal);
+    }
+
+    function advance() {
+      clearAutoAdvance();
+      if (state.idx < QUESTIONS.length - 1) {
+        state.idx += 1;
+        state.phase = 'question';
+        state.selected = null;
+        fadeSwap(renderQuestion);
+      } else {
+        state.phase = 'final';
+        fadeSwap(renderFinal);
+      }
+    }
+
+    function skipQuiz() {
+      clearAutoAdvance();
+      markCompleted();
+      section!.hidden = true;
+    }
+
+    // Wire static buttons
+    nextBtn.addEventListener('click', () => {
+      if (state.phase === 'reveal') advance();
+    });
+
+    finalCtaBtn.addEventListener('click', () => {
+      const fn = (window as unknown as { jufipaiOpenNewsletter?: () => void }).jufipaiOpenNewsletter;
+      if (typeof fn === 'function') fn();
+    });
+
+    skipBtn.addEventListener('click', skipQuiz);
+
+    // Keyboard handling: 1/2/3 to pick, Enter/Space to advance, Esc to skip
+    document.addEventListener('keydown', (e) => {
+      if (section!.hidden) return;
+      const rect = section!.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight && rect.bottom > 0;
+      if (!inView) return;
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        skipQuiz();
+        return;
+      }
+
+      if (state.phase === 'question') {
+        if (e.key === '1' || e.key === '2' || e.key === '3') {
+          e.preventDefault();
+          handleSelect(parseInt(e.key, 10) - 1);
+        }
+      } else if (state.phase === 'reveal') {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          advance();
+        }
+      }
+    });
+
+    renderQuestion();
+  }
+
+  initQuiz();
+  document.addEventListener('astro:after-swap', initQuiz);
+</script>
