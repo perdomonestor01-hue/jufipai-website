@@ -5,6 +5,22 @@ const currentPath = Astro.url.pathname;
 <header class="site-header">
   <div class="header-inner">
     <a href="/" class="logo" aria-label="JufipAI Home">
+      <svg class="logo-glyph" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true">
+        <defs>
+          <linearGradient id="catGradHeader" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0E7C66"/>
+            <stop offset="100%" stop-color="#08503F"/>
+          </linearGradient>
+        </defs>
+        <path d="M8 12 L8 8 L10 8 L12 10 L20 10 L22 8 L24 8 L24 12 L22 14 L22 22 L20 24 L12 24 L10 22 L10 14 Z" fill="none" stroke="url(#catGradHeader)" stroke-width="1.5"/>
+        <path d="M8 12 L10 8 L12 10" fill="none" stroke="url(#catGradHeader)" stroke-width="1.5"/>
+        <path d="M20 10 L22 8 L24 12" fill="none" stroke="url(#catGradHeader)" stroke-width="1.5"/>
+        <circle cx="13" cy="15" r="1.5" fill="url(#catGradHeader)"/>
+        <circle cx="19" cy="15" r="3" fill="#0E7C66" opacity="0.3"/>
+        <path d="M19 13 L19 17 M17 15 L19 13 L21 15 M17 17 L19 15 L21 17" stroke="url(#catGradHeader)" stroke-width="1" fill="none"/>
+        <path d="M16 18 L15 20 L17 20 Z" fill="url(#catGradHeader)"/>
+        <path d="M16 20 Q14 22 12 21 M16 20 Q18 22 20 21" fill="none" stroke="url(#catGradHeader)" stroke-width="1"/>
+      </svg>
       <span class="logo-text">JufipAI</span>
     </a>
 
@@ -117,6 +133,20 @@ const currentPath = Astro.url.pathname;
   .logo {
     text-decoration: none;
     color: var(--text-on-dark);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .logo-glyph {
+    display: block;
+    flex-shrink: 0;
+    animation: logoEnter 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  @keyframes logoEnter {
+    from { opacity: 0; transform: scale(0.92); }
+    to   { opacity: 1; transform: scale(1); }
   }
 
   .logo-text {
@@ -125,6 +155,10 @@ const currentPath = Astro.url.pathname;
     font-weight: 400;
     letter-spacing: 0.05em;
     text-transform: uppercase;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logo-glyph { animation: none; }
   }
 
   .site-nav {
