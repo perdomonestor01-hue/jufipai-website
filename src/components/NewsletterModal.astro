@@ -15,6 +15,8 @@
     type="button"
     class="nl-modal-close"
     aria-label="Cerrar"
+    data-en-aria-label="Close"
+    data-es-aria-label="Cerrar"
     data-en="Close"
     data-es="Cerrar"
     id="nl-modal-close"
@@ -432,6 +434,12 @@
         if (text && el instanceof HTMLInputElement) {
           el.placeholder = text;
         }
+      });
+    modalEl
+      ?.querySelectorAll('[data-en-aria-label][data-es-aria-label]')
+      .forEach((el) => {
+        const text = el.getAttribute(`data-${lang}-aria-label`);
+        if (text) el.setAttribute('aria-label', text);
       });
   }
 
