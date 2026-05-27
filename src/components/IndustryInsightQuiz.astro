@@ -605,6 +605,19 @@
   }
 
   function shouldSkipQuiz(): boolean {
+    // URL bypasses for testing / debugging the quiz without manually clearing localStorage:
+    //   ?quiz=show  — force the section visible even if the gate is set
+    //   ?quiz=reset — clear the gate entirely (one-time, persists after reload)
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const quizParam = params.get('quiz');
+      if (quizParam === 'reset') {
+        try { localStorage.removeItem(STORAGE_KEY); } catch { /* storage off */ }
+        return false;
+      }
+      if (quizParam === 'show') return false;
+    } catch { /* SSR-safe */ }
+
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return false;
