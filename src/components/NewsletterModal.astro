@@ -27,16 +27,11 @@
   <div class="nl-modal-body">
     <span class="nl-modal-eyebrow" data-en="Newsletter" data-es="Boletín">Boletín</span>
 
-    <h2 id="nl-modal-headline" class="nl-modal-headline-es" data-en-hidden>
+    <h2 id="nl-modal-headline" class="nl-modal-headline">
       <span data-es="Recibe el próximo sistema antes que nadie." data-en="Get the next system before everyone else.">
         Recibe el próximo sistema antes que nadie.
       </span>
     </h2>
-    <p class="nl-modal-headline-en">
-      <span data-es="Get the next system before everyone else." data-en="Recibe el próximo sistema antes que nadie.">
-        Get the next system before everyone else.
-      </span>
-    </p>
 
     <p id="nl-modal-subhead" class="nl-modal-subhead">
       <span data-es="Un correo cuando publicamos algo que vale tu tiempo. Sin spam, sin calendarios, sin relleno." data-en="One email when we publish something worth your time. No spam, no schedules, no filler.">
@@ -158,28 +153,14 @@
     margin-bottom: 1rem;
   }
 
-  .nl-modal-headline-es,
-  .nl-modal-headline-en {
+  .nl-modal-headline {
     font-family: var(--font-display);
     font-weight: 600;
+    font-size: 1.625rem;
     line-height: 1.1;
     letter-spacing: -0.015em;
-    margin: 0;
+    margin: 0 0 1.25rem;
     color: var(--color-carbon);
-  }
-
-  .nl-modal-headline-es {
-    font-size: 1.625rem;
-    font-style: normal;
-  }
-
-  .nl-modal-headline-en {
-    font-size: 1.125rem;
-    font-style: italic;
-    color: var(--color-carbon-soft);
-    opacity: 0.85;
-    margin: 0.5rem 0 1.25rem;
-    font-weight: 500;
   }
 
   .nl-modal-subhead {

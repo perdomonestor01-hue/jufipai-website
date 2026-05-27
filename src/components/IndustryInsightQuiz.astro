@@ -387,7 +387,9 @@
   // IndustryInsightQuiz — vanilla TS, no dependencies.
   const STORAGE_KEY = 'jufipai_quiz_v1';
   const REVISIT_HOURS = 24;
-  const AUTO_ADVANCE_MS = 5000;
+  const AUTO_ADVANCE_MS = 12000;
+  const COUNTER_DURATION_MS = 1200;
+  const REVEAL_DELAY_MS = 320;
 
   type CounterShape = 'count' | 'currency' | 'percent' | 'hours' | 'multiplier';
 
@@ -760,15 +762,22 @@
 
       // Cross-fade in + start counter
       staggerTimers.push(window.setTimeout(() => {
-        animateCounter(realityValueEl!, 0, correctOpt.value, 800, q.barShape, lang);
+        animateCounter(realityValueEl!, 0, correctOpt.value, COUNTER_DURATION_MS, q.barShape, lang);
         revealBodyEl!.classList.add('is-in');
         revealSourceEl!.classList.add('is-in');
         progressEl!.classList.add('is-in');
         nextBtn!.classList.add('is-in');
-      }, 200));
+      }, REVEAL_DELAY_MS));
 
-      // Auto-advance unless reduced motion
+      // Auto-advance unless reduced motion. Pauses if the tab loses focus mid-read,
+      // then re-arms with a fresh full duration on tab return — never auto-advances
+      // while the user is looking at another tab.
+      armAutoAdvance();
+    }
+
+    function armAutoAdvance() {
       clearAutoAdvance();
+      if (document.visibilityState === 'hidden') return;
       autoAdvanceTimer = window.setTimeout(() => {
         advance();
       }, AUTO_ADVANCE_MS);
@@ -841,6 +850,18 @@
     });
 
     skipBtn.addEventListener('click', skipQuiz);
+
+    // Pause auto-advance when the tab loses focus. Re-arm with a fresh full
+    // duration on return — so the user never comes back to a quiz that already
+    // advanced past the reveal they were trying to read.
+    document.addEventListener('visibilitychange', () => {
+      if (state.phase !== 'reveal') return;
+      if (document.visibilityState === 'hidden') {
+        clearAutoAdvance();
+      } else {
+        armAutoAdvance();
+      }
+    });
 
     // Keyboard handling: 1/2/3 to pick, Enter/Space to advance, Esc to skip.
     // Scoped: ignore when focus is in an input/textarea/contenteditable OR inside the newsletter modal
