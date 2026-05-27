@@ -21,7 +21,17 @@
 
     <!-- REVEAL CARD -->
     <div class="quiz-reveal" id="quiz-reveal" hidden>
-      <div class="quiz-bars" id="quiz-bars"></div>
+      <div class="quiz-reveal-card">
+        <div class="quiz-guess" id="quiz-guess">
+          <span class="quiz-mini-label" id="quiz-guess-label" data-en="YOU GUESSED" data-es="TÚ DIJISTE">TÚ DIJISTE</span>
+          <p class="quiz-guess-value" id="quiz-guess-value"></p>
+        </div>
+        <div class="quiz-divider" aria-hidden="true"></div>
+        <div class="quiz-reality" id="quiz-reality">
+          <span class="quiz-mini-label quiz-mini-label--jade" data-en="REALITY" data-es="LA REALIDAD">LA REALIDAD</span>
+          <p class="quiz-reality-value" id="quiz-reality-value"></p>
+        </div>
+      </div>
       <p class="quiz-reveal-body" id="quiz-reveal-body" aria-live="polite"></p>
       <p class="quiz-reveal-source" id="quiz-reveal-source"></p>
       <div class="quiz-progress" id="quiz-progress" aria-hidden="true"></div>
@@ -177,158 +187,68 @@
     opacity: 0;
   }
 
-  .quiz-bars {
+  .quiz-reveal-card {
     display: flex;
     flex-direction: column;
-    gap: 0.85rem;
+    gap: 1.25rem;
     margin: 0 0 1.5rem;
   }
-
-  .quiz-bar-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto auto;
-    column-gap: 0.75rem;
-    row-gap: 0.3rem;
-    align-items: center;
-    padding: 0.35rem 0.5rem;
-    border-radius: 8px;
-    cursor: pointer;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 280ms var(--ease-spring),
-                transform 280ms var(--ease-spring),
-                background 200ms var(--ease-spring),
-                box-shadow 200ms var(--ease-spring);
+  .quiz-guess, .quiz-reality {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
   }
-
-  .quiz-bar-row.is-in {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .quiz-bar-row:hover,
-  .quiz-bar-row:focus-visible {
-    background: rgba(14, 124, 102, 0.04);
-    outline: none;
-  }
-
-  .quiz-bar-row:focus-visible {
-    box-shadow: 0 0 0 2px var(--color-jade);
-  }
-
-  .quiz-bar-label {
-    grid-column: 1;
-    grid-row: 1;
+  .quiz-mini-label {
     font-family: var(--font-mono);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 1.2px;
     text-transform: uppercase;
     color: var(--color-carbon-soft);
+    word-break: break-word;
+    overflow-wrap: anywhere;
   }
-
-  .quiz-bar-row.is-correct .quiz-bar-label {
-    color: var(--color-jade-deep);
-  }
-
-  .quiz-bar-value {
-    grid-column: 2;
-    grid-row: 1;
-    font-family: var(--font-mono);
-    font-size: 0.95rem;
-    font-weight: 600;
+  .quiz-mini-label--jade { color: var(--color-jade-deep); }
+  .quiz-guess-value {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
     color: var(--color-carbon-soft);
-    font-variant-numeric: tabular-nums;
+    opacity: 0.65;
+    margin: 0;
+    line-height: 1.15;
+    word-break: break-word;
   }
-
-  .quiz-bar-row.is-correct .quiz-bar-value {
+  .quiz-guess.is-nailed .quiz-guess-value {
     color: var(--color-jade-deep);
-    font-size: 1rem;
+    opacity: 1;
   }
-
-  .quiz-bar-track {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    height: 12px;
-    width: 100%;
+  .quiz-divider {
+    height: 1px;
     background: var(--color-arena);
-    border-radius: var(--radius-pill);
-    overflow: hidden;
+    width: 100%;
   }
-
-  .quiz-bar-fill {
-    --bar-target: 0%;
-    width: 0;
-    height: 100%;
-    border-radius: var(--radius-pill);
-    transition: width 700ms cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  .quiz-bar-row.is-fill .quiz-bar-fill {
-    width: var(--bar-target);
-  }
-
-  .quiz-bar-row.is-correct .quiz-bar-fill {
-    background: var(--color-jade);
-  }
-
-  .quiz-bar-row.is-user .quiz-bar-fill {
-    background: var(--color-jade-soft);
-    border: 1px solid var(--color-jade);
-    box-sizing: border-box;
-  }
-
-  .quiz-bar-row.is-other .quiz-bar-fill {
-    background: var(--color-carbon-soft);
-    opacity: 0.45;
-  }
-
-  .quiz-bar-row.is-pulsing {
-    animation: quizBarPulse 600ms ease-out;
-  }
-
-  @keyframes quizBarPulse {
-    0%   { box-shadow: 0 0 0 0 rgba(14, 124, 102, 0.4); }
-    100% { box-shadow: 0 0 0 14px rgba(14, 124, 102, 0); }
-  }
-
-  @media (max-width: 640px) {
-    .quiz-bar-track { height: 10px; }
-    .quiz-bar-value { font-size: 0.85rem; }
-    .quiz-bar-row.is-correct .quiz-bar-value { font-size: 0.95rem; }
+  .quiz-reality-value {
+    font-family: var(--font-mono);
+    font-size: clamp(2.5rem, 9vw, 4rem);
+    font-weight: 700;
+    color: var(--color-jade);
+    margin: 0;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    word-break: break-word;
   }
 
   .quiz-reveal-body {
-    position: relative;
     font-family: var(--font-body);
     font-size: 1.0625rem;
     line-height: 1.55;
     color: var(--color-carbon);
     margin: 0 0 1rem;
-    padding-left: 0.85rem;
     opacity: 0;
     transition: opacity 240ms var(--ease-spring);
-  }
-
-  .quiz-reveal-body::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 3px;
-    height: 0;
-    background: var(--color-jade);
-    border-radius: 2px;
-    transition: height 220ms var(--ease-spring);
-  }
-
-  .quiz-reveal-body.is-in {
-    opacity: 1;
-  }
-
-  .quiz-reveal-body.is-in::before {
-    height: 100%;
   }
 
   .quiz-reveal-source {
@@ -341,8 +261,6 @@
     transition: opacity 240ms var(--ease-spring);
   }
 
-  .quiz-reveal-source.is-in { opacity: 1; }
-
   .quiz-progress,
   .quiz-next {
     opacity: 0;
@@ -351,8 +269,12 @@
                 transform var(--duration-base) var(--ease-spring);
   }
 
+  .quiz-reveal-body.is-in,
+  .quiz-reveal-source.is-in,
   .quiz-progress.is-in,
-  .quiz-next.is-in { opacity: 1; }
+  .quiz-next.is-in {
+    opacity: 1;
+  }
 
   .quiz-progress {
     display: flex;
@@ -448,21 +370,16 @@
     .quiz-option,
     .quiz-next,
     .quiz-final-cta,
-    .quiz-bar-row,
-    .quiz-bar-fill,
     .quiz-reveal-body,
     .quiz-reveal-source,
     .quiz-progress {
       transition: none !important;
       animation: none !important;
     }
-    .quiz-bar-row { opacity: 1; transform: none; }
-    .quiz-bar-fill { width: var(--bar-target); }
     .quiz-reveal-body,
     .quiz-reveal-source,
     .quiz-progress,
     .quiz-next { opacity: 1; }
-    .quiz-reveal-body::before { height: 100%; }
   }
 </style>
 
@@ -472,7 +389,7 @@
   const REVISIT_HOURS = 24;
   const AUTO_ADVANCE_MS = 5000;
 
-  type CounterShape = 'count' | 'currency' | 'percent' | 'hours';
+  type CounterShape = 'count' | 'currency' | 'percent' | 'hours' | 'multiplier';
 
   type QuestionData = {
     eyebrowEn: string;
@@ -494,59 +411,59 @@
     {
       eyebrowEn: 'Question 1 of 5 — Real Estate',
       eyebrowEs: 'Pregunta 1 de 5 — Bienes Raíces',
-      questionEn: 'How many licensed real estate agents are there in the USA?',
-      questionEs: '¿Cuántos agentes de bienes raíces con licencia hay en Estados Unidos?',
+      questionEn: "What share of US real estate agents pay for tech tools they haven't fully mastered?",
+      questionEs: '¿Qué porcentaje de agentes inmobiliarios en EE. UU. paga por herramientas tecnológicas que no domina del todo?',
       options: [
-        { en: '800,000', es: '800.000', value: 800000 },
-        { en: '1.2 million', es: '1,2 millones', value: 1200000 },
-        { en: '1.6 million', es: '1,6 millones', value: 1600000 },
+        { en: '22%', es: '22%', value: 22 },
+        { en: '44%', es: '44%', value: 44 },
+        { en: '66%', es: '66%', value: 66 },
       ],
       correctIdx: 2,
-      barShape: 'count',
-      answerEn: 'Nearly 1.6 million.',
-      answerEs: 'Casi 1,6 millones.',
-      bodyEn: 'About 70% aren\'t using AI to simplify workflows — losing hours every week.',
-      bodyEs: 'Cerca del 70% no usa IA para simplificar su trabajo — pierde horas cada semana.',
-      sourceEn: 'Source: NAR Member Profile 2024 + NAR Tech Survey 2024',
-      sourceEs: 'Fuente: NAR Member Profile 2024 + NAR Tech Survey 2024',
+      barShape: 'percent',
+      answerEn: '66%.',
+      answerEs: '66%.',
+      bodyEn: '66% of agents pay for tech they haven\'t mastered — while buyers wait an average of 44 hours for a callback.',
+      bodyEs: 'El 66% de los agentes paga por tecnología que no domina — mientras los compradores esperan 44 horas en promedio para una respuesta.',
+      sourceEn: 'Source: NAR 2024 Technology Survey + InsideSales Lead Response benchmark',
+      sourceEs: 'Fuente: NAR 2024 Technology Survey + InsideSales Lead Response benchmark',
     },
     {
       eyebrowEn: 'Question 2 of 5 — Staffing',
       eyebrowEs: 'Pregunta 2 de 5 — Reclutamiento',
-      questionEn: 'How many staffing agencies operate in Texas?',
-      questionEs: '¿Cuántas agencias de reclutamiento operan en Texas?',
+      questionEn: 'If a staffing firm responds to a candidate within 5 minutes (vs waiting an hour), how much more likely are they to place that candidate?',
+      questionEs: 'Si una agencia de reclutamiento responde a un candidato en 5 minutos (en vez de esperar 1 hora), ¿cuánto más probable es que lo coloque?',
       options: [
-        { en: '800', es: '800', value: 800 },
-        { en: '1,500', es: '1.500', value: 1500 },
-        { en: '2,500+', es: '2.500+', value: 2500 },
+        { en: '2×', es: '2×', value: 2 },
+        { en: '7×', es: '7×', value: 7 },
+        { en: '21×', es: '21×', value: 21 },
       ],
       correctIdx: 2,
-      barShape: 'count',
-      answerEn: 'Over 2,500.',
-      answerEs: 'Más de 2.500.',
-      bodyEn: 'Most fail to handle PII according to strict guidelines — leaving candidate data at risk.',
-      bodyEs: 'La mayoría no maneja los datos personales según normas estrictas — dejando la información del candidato en riesgo.',
-      sourceEn: 'Source: American Staffing Association directory 2024 (TX)',
-      sourceEs: 'Fuente: American Staffing Association directory 2024 (TX)',
+      barShape: 'multiplier',
+      answerEn: '21×.',
+      answerEs: '21×.',
+      bodyEn: 'Responding within 5 minutes makes you 21× more likely to qualify the lead than waiting one hour. Most agencies wait days.',
+      bodyEs: 'Responder en 5 minutos te hace 21× más probable de calificar al candidato que esperar una hora. La mayoría espera días.',
+      sourceEn: 'Source: LeanData / MIT research, cited Vendasta 2025',
+      sourceEs: 'Fuente: LeanData / MIT research, citado por Vendasta 2025',
     },
     {
       eyebrowEn: 'Question 3 of 5 — Legal',
       eyebrowEs: 'Pregunta 3 de 5 — Legal',
-      questionEn: 'How much billable revenue does the average solo/small-firm lawyer lose to admin work each year?',
-      questionEs: '¿Cuánto pierde al año en ingresos facturables el abogado típico de despacho pequeño por trabajo administrativo?',
+      questionEn: 'Out of an 8-hour day, how many billable hours does the average solo/small-firm lawyer actually log?',
+      questionEs: 'De un día de 8 horas, ¿cuántas horas facturables registra realmente el abogado típico de despacho pequeño?',
       options: [
-        { en: '$80,000', es: '$80.000', value: 80000 },
-        { en: '$150,000', es: '$150.000', value: 150000 },
-        { en: '$250,000+', es: '$250.000+', value: 250000 },
+        { en: '5.5', es: '5,5', value: 5.5 },
+        { en: '4.2', es: '4,2', value: 4.2 },
+        { en: '2.9', es: '2,9', value: 2.9 },
       ],
       correctIdx: 2,
-      barShape: 'currency',
-      answerEn: '$250,000 or more.',
-      answerEs: '$250.000 o más.',
-      bodyEn: '30% of an attorney\'s week is admin — email, intake, invoicing — not legal work.',
-      bodyEs: 'El 30% de la semana de un abogado es trabajo administrativo — correos, recepción de casos, facturación — no trabajo legal.',
-      sourceEn: 'Source: ABA Legal Technology Survey 2024 + Clio Legal Trends 2024',
-      sourceEs: 'Fuente: ABA Legal Technology Survey 2024 + Clio Legal Trends 2024',
+      barShape: 'hours',
+      answerEn: '2.9 hours.',
+      answerEs: '2,9 horas.',
+      bodyEn: 'The other 5+ hours disappear into admin, billing disputes, and chasing paperwork. Tech-forward firms reclaim them.',
+      bodyEs: 'Las otras 5+ horas se pierden en administración, disputas de facturación y trámites. Los despachos con tecnología las recuperan.',
+      sourceEn: 'Source: Clio Legal Trends Report (latest)',
+      sourceEs: 'Fuente: Clio Legal Trends Report (última edición)',
     },
     {
       eyebrowEn: 'Question 4 of 5 — Property Management',
@@ -570,21 +487,21 @@
     {
       eyebrowEn: 'Question 5 of 5 — Small Business',
       eyebrowEs: 'Pregunta 5 de 5 — Pequeña Empresa',
-      questionEn: 'How long does the average small business take to respond to a new lead inquiry by email?',
-      questionEs: '¿Cuánto tarda la pequeña empresa típica en responder por correo a un nuevo cliente potencial?',
+      questionEn: 'What share of small businesses take more than 5 days to respond to a lead inquiry?',
+      questionEs: '¿Qué porcentaje de las pequeñas empresas tarda más de 5 días en responder a una solicitud de cliente?',
       options: [
-        { en: 'Under 1 hour', es: 'Menos de 1 hora', value: 1 },
-        { en: '5 hours', es: '5 horas', value: 5 },
-        { en: 'Over 24 hours', es: 'Más de 24 horas', value: 24 },
+        { en: '20%', es: '20%', value: 20 },
+        { en: '38%', es: '38%', value: 38 },
+        { en: '55%', es: '55%', value: 55 },
       ],
       correctIdx: 2,
-      barShape: 'hours',
-      answerEn: 'Over 24 hours.',
-      answerEs: 'Más de 24 horas.',
-      bodyEn: 'After the first hour, qualification odds drop 10×. Cold inboxes don\'t convert.',
-      bodyEs: 'Después de la primera hora, las probabilidades de calificar caen 10×. Las bandejas frías no convierten.',
-      sourceEn: 'Source: HBR "Short Life of Online Sales Leads" + Velocify Lead Mgmt Study',
-      sourceEs: 'Fuente: HBR "Short Life of Online Sales Leads" + Velocify Lead Mgmt Study',
+      barShape: 'percent',
+      answerEn: '55%.',
+      answerEs: '55%.',
+      bodyEn: 'The first company to respond wins 78% of the time. Yet 55% of small businesses take more than 5 days to reply.',
+      bodyEs: 'La primera empresa en responder gana el 78% de las veces. Sin embargo, el 55% de las pequeñas empresas tarda más de 5 días.',
+      sourceEn: 'Source: LeanData, cited Vendasta August 2025',
+      sourceEs: 'Fuente: LeanData, citado por Vendasta agosto 2025',
     },
   ];
 
@@ -651,8 +568,16 @@
       const n = new Intl.NumberFormat(loc, { maximumFractionDigits: 0 }).format(value);
       return locale === 'es' ? `${n} %` : `${n}%`;
     }
-    if (shape === 'hours') {
+    if (shape === 'multiplier') {
       const n = new Intl.NumberFormat(loc, { maximumFractionDigits: 0 }).format(value);
+      return `${n}×`;
+    }
+    if (shape === 'hours') {
+      const fracDigits = value < 10 ? 1 : 0;
+      const n = new Intl.NumberFormat(loc, {
+        minimumFractionDigits: fracDigits,
+        maximumFractionDigits: fracDigits,
+      }).format(value);
       return locale === 'es' ? `${n} h` : `${n}h`;
     }
     return new Intl.NumberFormat(loc, { maximumFractionDigits: 0 }).format(value);
@@ -670,7 +595,8 @@
     function tick(now: number) {
       const t = Math.min(1, (now - start) / durationMs);
       const eased = easeOutCubic(t);
-      const value = Math.round(from + (to - from) * eased);
+      const raw = from + (to - from) * eased;
+      const value = (shape === 'hours' && to < 10) ? Math.round(raw * 10) / 10 : Math.round(raw);
       el.textContent = formatNumber(value, shape, locale);
       if (t < 1) requestAnimationFrame(tick);
     }
@@ -691,7 +617,10 @@
     const questionTextEl = document.getElementById('quiz-question-text') as HTMLElement | null;
     const optionsEl = document.getElementById('quiz-options') as HTMLElement | null;
     const revealEl = document.getElementById('quiz-reveal') as HTMLElement | null;
-    const barsEl = document.getElementById('quiz-bars') as HTMLElement | null;
+    const guessEl = document.getElementById('quiz-guess') as HTMLElement | null;
+    const guessLabelEl = document.getElementById('quiz-guess-label') as HTMLElement | null;
+    const guessValueEl = document.getElementById('quiz-guess-value') as HTMLElement | null;
+    const realityValueEl = document.getElementById('quiz-reality-value') as HTMLElement | null;
     const revealBodyEl = document.getElementById('quiz-reveal-body') as HTMLElement | null;
     const revealSourceEl = document.getElementById('quiz-reveal-source') as HTMLElement | null;
     const progressEl = document.getElementById('quiz-progress') as HTMLElement | null;
@@ -701,7 +630,8 @@
     const skipBtn = document.getElementById('quiz-skip') as HTMLButtonElement | null;
 
     if (!eyebrowEl || !questionEl || !questionTextEl || !optionsEl || !revealEl
-      || !barsEl || !revealBodyEl || !revealSourceEl || !progressEl
+      || !guessEl || !guessLabelEl || !guessValueEl || !realityValueEl
+      || !revealBodyEl || !revealSourceEl || !progressEl
       || !nextBtn || !finalEl || !finalCtaBtn || !skipBtn) {
       return;
     }
@@ -763,75 +693,39 @@
       const lang = getLang();
       const reduced = prefersReducedMotion();
       const nailed = state.selected === q.correctIdx;
+      const correctOpt = q.options[q.correctIdx];
+      const selectedOpt = state.selected !== null ? q.options[state.selected] : null;
 
-      const labelYouGuessed = lang === 'es' ? 'TÚ DIJISTE' : 'YOU GUESSED';
-      const labelReality = lang === 'es' ? 'LA REALIDAD' : 'REALITY';
-      const labelNailed = lang === 'es' ? 'LE DISTE — LA REALIDAD' : 'YOU NAILED IT — REALITY';
-
-      // Build bars
-      barsEl!.innerHTML = '';
-      const max = Math.max(...q.options.map((o) => o.value));
-      const rowRefs: { row: HTMLDivElement; fill: HTMLDivElement; valueEl: HTMLSpanElement; isCorrect: boolean }[] = [];
-
-      q.options.forEach((opt, i) => {
-        const isCorrect = i === q.correctIdx;
-        const isUser = i === state.selected && !isCorrect;
-        const row = document.createElement('div');
-        row.className = 'quiz-bar-row';
-        if (isCorrect) row.classList.add('is-correct');
-        else if (isUser) row.classList.add('is-user');
-        else row.classList.add('is-other');
-        if (isCorrect && nailed) row.classList.add('is-nailed');
-        // Only the correct bar is interactive (click → pulse). Others are decorative groups.
-        row.setAttribute('role', 'group');
-        if (isCorrect) row.setAttribute('tabindex', '0');
-
-        const labelText = isCorrect
-          ? (nailed ? labelNailed : labelReality)
-          : isUser ? labelYouGuessed : (lang === 'es' ? opt.es : opt.en);
-        const valueText = lang === 'es' ? opt.es : opt.en;
-
-        const label = document.createElement('span');
-        label.className = 'quiz-bar-label';
-        label.textContent = labelText;
-
-        const valueEl = document.createElement('span');
-        valueEl.className = 'quiz-bar-value';
-        // Correct bar starts at 0 for the counter; others show final immediately
-        valueEl.textContent = (isCorrect && !reduced) ? formatNumber(0, q.barShape, lang) : valueText;
-
-        const track = document.createElement('div');
-        track.className = 'quiz-bar-track';
-        const fill = document.createElement('div');
-        fill.className = 'quiz-bar-fill';
-        const pct = max > 0 ? (opt.value / max) * 100 : 0;
-        fill.style.setProperty('--bar-target', `${pct}%`);
-        track.appendChild(fill);
-
-        row.setAttribute('aria-label', `${labelText}: ${valueText}`);
-        row.appendChild(label);
-        row.appendChild(valueEl);
-        row.appendChild(track);
-
-        // Tap correct bar => pulse
-        row.addEventListener('click', () => {
-          if (!row.classList.contains('is-correct')) return;
-          row.classList.remove('is-pulsing');
-          // Force reflow then re-add for repeatable pulse
-          void row.offsetWidth;
-          row.classList.add('is-pulsing');
-        });
-
-        barsEl!.appendChild(row);
-        rowRefs.push({ row, fill, valueEl, isCorrect });
-      });
-
-      revealBodyEl!.textContent = lang === 'es' ? q.bodyEs : q.bodyEn;
-      revealSourceEl!.textContent = lang === 'es' ? q.sourceEs : q.sourceEn;
+      // Reset transient classes
+      guessEl!.classList.remove('is-nailed');
       revealBodyEl!.classList.remove('is-in');
       revealSourceEl!.classList.remove('is-in');
       progressEl!.classList.remove('is-in');
       nextBtn!.classList.remove('is-in');
+
+      // Update mini-label data attributes + text
+      if (nailed) {
+        guessEl!.classList.add('is-nailed');
+        guessLabelEl!.setAttribute('data-en', 'YOU NAILED IT');
+        guessLabelEl!.setAttribute('data-es', 'LO ACERTASTE');
+        guessLabelEl!.textContent = lang === 'es' ? 'LO ACERTASTE' : 'YOU NAILED IT';
+      } else {
+        guessLabelEl!.setAttribute('data-en', 'YOU GUESSED');
+        guessLabelEl!.setAttribute('data-es', 'TÚ DIJISTE');
+        guessLabelEl!.textContent = lang === 'es' ? 'TÚ DIJISTE' : 'YOU GUESSED';
+      }
+
+      // Guess value = the option text the user picked (in current locale)
+      guessValueEl!.textContent = selectedOpt ? (lang === 'es' ? selectedOpt.es : selectedOpt.en) : '';
+
+      // Reality value: final value if reduced motion, else starting "zero" formatted for the shape
+      realityValueEl!.textContent = reduced
+        ? formatNumber(correctOpt.value, q.barShape, lang)
+        : formatNumber(0, q.barShape, lang);
+
+      // Body + source
+      revealBodyEl!.textContent = lang === 'es' ? q.bodyEs : q.bodyEn;
+      revealSourceEl!.textContent = lang === 'es' ? q.sourceEs : q.sourceEn;
 
       // Progress dots
       progressEl!.innerHTML = '';
@@ -841,7 +735,7 @@
         progressEl!.appendChild(dot);
       }
 
-      // Mark options as correct/wrong
+      // Mark options as correct/wrong + disable
       const optionEls = optionsEl!.querySelectorAll<HTMLButtonElement>('.quiz-option');
       optionEls.forEach((el, i) => {
         if (i === q.correctIdx) el.classList.add('is-correct');
@@ -857,14 +751,6 @@
       clearStagger();
 
       if (reduced) {
-        // Render everything at final state immediately
-        rowRefs.forEach(({ row, fill, valueEl, isCorrect }) => {
-          row.classList.add('is-in', 'is-fill');
-          fill.style.width = `var(--bar-target)`;
-          if (isCorrect) {
-            valueEl.textContent = formatNumber(q.options[q.correctIdx].value, q.barShape, lang);
-          }
-        });
         revealBodyEl!.classList.add('is-in');
         revealSourceEl!.classList.add('is-in');
         progressEl!.classList.add('is-in');
@@ -872,30 +758,14 @@
         return;
       }
 
-      // Stagger choreography
-      const rowEnterTimes = [200, 360, 520];
-      const fillStartTimes = [280, 440, 600];
-      rowRefs.forEach((ref, i) => {
-        staggerTimers.push(window.setTimeout(() => ref.row.classList.add('is-in'), rowEnterTimes[i] ?? 200));
-        staggerTimers.push(window.setTimeout(() => ref.row.classList.add('is-fill'), fillStartTimes[i] ?? 280));
-      });
-
-      // Counter on the correct bar — starts ~400ms after correct bar's fill begins
-      const correctRef = rowRefs.find((r) => r.isCorrect);
-      if (correctRef) {
-        const correctIdx = rowRefs.indexOf(correctRef);
-        const fillStart = fillStartTimes[correctIdx] ?? 440;
-        staggerTimers.push(window.setTimeout(() => {
-          animateCounter(correctRef.valueEl, 0, q.options[q.correctIdx].value, 900, q.barShape, lang);
-        }, fillStart + 120));
-      }
-
-      staggerTimers.push(window.setTimeout(() => revealBodyEl!.classList.add('is-in'), 1100));
-      staggerTimers.push(window.setTimeout(() => revealSourceEl!.classList.add('is-in'), 1400));
+      // Cross-fade in + start counter
       staggerTimers.push(window.setTimeout(() => {
+        animateCounter(realityValueEl!, 0, correctOpt.value, 800, q.barShape, lang);
+        revealBodyEl!.classList.add('is-in');
+        revealSourceEl!.classList.add('is-in');
         progressEl!.classList.add('is-in');
         nextBtn!.classList.add('is-in');
-      }, 1500));
+      }, 200));
 
       // Auto-advance unless reduced motion
       clearAutoAdvance();
