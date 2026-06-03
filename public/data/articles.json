@@ -1,5 +1,25 @@
 [
   {
+    "id": "1780512263566",
+    "title": "3 clicks, 2 minutes, 1 problem",
+    "content": "3 clicks, 2 minutes, 1 problem. Thats what my friend had when he tried to use Google Cloud Console for APIs, boom, it wasnt easy. He wanted to build custom automations, but got stuck, isnt that frustrating? So we started talking, and I told him, automation is like having a helper who does the same boring task every day without complaining. We built a solution, and now his team can focus on people, not paperwork. They use Google Cloud Console to connect their tools, and it works like a charm. Now they have more time to talk to customers, and ship their product, etc.",
+    "teaser": "Ever tried to build custom automations with Google tools? It can be tough, but what if you had a helper to make it easy?  #BusinessAutomation #Productivity #GoogleWorkspace...",
+    "category": "productivity",
+    "linkedinUrl": "https://www.linkedin.com/feed/update/urn:li:share:7468009694066978817",
+    "linkedinPostId": "urn:li:share:7468009694066978817",
+    "createdAt": "2026-06-03T18:44:23.566Z",
+    "topic": "our_stack",
+    "readTime": 2,
+    "hasMedia": false,
+    "image": "https://images.unsplash.com/photo-1695556260548-4153939468c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDQwMzJ8MHwxfHNlYXJjaHwxfHxjaXR5JTIwdHJhZmZpYyUyMGNvbnRyb2x8ZW58MHwwfHx8MTc4MDUxMjI1OHww&ixlib=rb-4.1.0&q=80&w=1080",
+    "imageAttribution": "Photo by Adil Edin on Unsplash",
+    "contentType": "article",
+    "angleIndex": 0,
+    "hookFamily": 1,
+    "closingFamily": "invitation",
+    "vertical": "other"
+  },
+  {
     "id": "1780420232555",
     "title": "Near Miss Reporting",
     "content": "I overheard a safety manager say: 'we had 10 near misses last month, but only 2 were reported'. That got me thinking, what if your company is like a ship with holes in it, but nobody tells you where the holes are? You cant fix what you dont know is broken. We worked with a client who had same problem, they were getting hurt because nobody was reporting near misses. So we built a simple system, like a suggestion box, but for near misses. Now everybody can report without fear, and they can fix problems before somebody gets hurt. Boom, now they have 10 times more reports, and they can see where the holes are. They fixed 5 big problems already, and nobody got hurt. What if you could fix problems before they happen, would you do it?",
