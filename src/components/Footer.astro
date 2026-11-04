@@ -1,63 +1,185 @@
 ---
+// Site footer — approved prototype jufipai-relaunch (2026-11-04): navy, inline newsletter
+// (no load-time modal), official lockup, "Built in the USA", neutral (no city or state).
+// The newsletter posts to the same Apps Script endpoint EmailCapture/NewsletterModal used
+// (type: 'subscribe'), so the real subscribe flow keeps working.
+import { CALENDLY_URL, CHROME, type Lang } from '../data/home';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'en' } = Astro.props;
+const t = CHROME[lang];
 const year = new Date().getFullYear();
+
+// Status lines for the form (EN + ES, usted). Read by the client script from data attributes.
+const msg =
+  lang === 'es'
+    ? {
+        invalid: 'Escriba un correo completo, como usted@empresa.com.',
+        pending: 'Enviando…',
+        ok: 'Suscrito. Le llegará un correo cuando lancemos algo nuevo.',
+        fail: 'No se envió. Revise su conexión y suscríbase de nuevo.',
+      }
+    : {
+        invalid: 'Enter a full email address, like you@company.com.',
+        pending: 'Sending…',
+        ok: "Subscribed. You'll get one email when we ship something new.",
+        fail: 'Not sent. Check your connection and subscribe again.',
+      };
 ---
 
 <footer class="site-footer">
+  <div class="nl-inline">
+    <div>
+      <h2>{t.nlH}</h2>
+      <p>{t.nlP}</p>
+    </div>
+    <form
+      class="nl-form"
+      id="nl-form"
+      novalidate
+      data-lang={lang}
+      data-msg-invalid={msg.invalid}
+      data-msg-pending={msg.pending}
+      data-msg-ok={msg.ok}
+      data-msg-fail={msg.fail}
+    >
+      <label for="nl-email">{t.nlL}</label>
+      <input id="nl-email" type="email" name="email" autocomplete="email" placeholder={t.nlPh} required />
+      <!-- Honeypot: must stay empty -->
+      <input type="text" name="website" class="nl-honeypot" tabindex="-1" aria-hidden="true" autocomplete="off" />
+      <button type="submit">{t.nlB}</button>
+    </form>
+    <p class="nl-note" id="nl-status" role="status" aria-live="polite"></p>
+  </div>
+
   <div class="footer-inner">
     <div class="footer-left">
       <span class="footer-logo-wrap">
-        <svg class="footer-glyph" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true">
-          <defs>
-            <linearGradient id="catGradFooter" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#0E7C66"/>
-              <stop offset="100%" stop-color="#08503F"/>
-            </linearGradient>
-          </defs>
-          <path d="M8 12 L8 8 L10 8 L12 10 L20 10 L22 8 L24 8 L24 12 L22 14 L22 22 L20 24 L12 24 L10 22 L10 14 Z" fill="none" stroke="url(#catGradFooter)" stroke-width="1.5"/>
-          <path d="M8 12 L10 8 L12 10" fill="none" stroke="url(#catGradFooter)" stroke-width="1.5"/>
-          <path d="M20 10 L22 8 L24 12" fill="none" stroke="url(#catGradFooter)" stroke-width="1.5"/>
-          <circle cx="13" cy="15" r="1.5" fill="url(#catGradFooter)"/>
-          <circle cx="19" cy="15" r="3" fill="#0E7C66" opacity="0.3"/>
-          <path d="M19 13 L19 17 M17 15 L19 13 L21 15 M17 17 L19 15 L21 17" stroke="url(#catGradFooter)" stroke-width="1" fill="none"/>
-          <path d="M16 18 L15 20 L17 20 Z" fill="url(#catGradFooter)"/>
-          <path d="M16 20 Q14 22 12 21 M16 20 Q18 22 20 21" fill="none" stroke="url(#catGradFooter)" stroke-width="1"/>
-        </svg>
-        <span class="footer-logo">JufipAI</span>
+        <img class="brand-lockup" src="/brand/logo-lockup-dark.svg" width="168" height="32" alt="JufipAI" />
       </span>
-      <span
-        class="footer-location"
-        data-en="Built in Dallas, TX"
-        data-es="Hecho en Dallas, TX">Built in Dallas, TX</span
-      >
+      <span class="footer-location">{t.built}</span>
     </div>
     <div class="footer-right">
-      <a
-        href="https://www.linkedin.com/company/jufipai"
-        target="_blank"
-        rel="noopener noreferrer"
-      >LinkedIn</a>
-      <a
-        href="/contact"
-        data-en="Get in touch"
-        data-es="Contactanos"
-      >Get in touch</a>
+      <a href="https://www.linkedin.com/company/jufipai" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a href={CALENDLY_URL}>{t.touch}</a>
       <span class="footer-copy">&copy; {year}</span>
     </div>
   </div>
 </footer>
 
+<script src="../scripts/newsletter.ts"></script>
+
 <style>
   .site-footer {
     margin-top: var(--space-2xl);
     padding: var(--space-xl) 0;
-    background: var(--bg-dark);
-    border-top: 1px solid rgba(14, 124, 102, 0.20);
+    background: var(--brand-navy);
   }
 
+  /* ---------- inline newsletter (never a load-time modal) ---------- */
+  .nl-inline {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--space-lg) var(--space-md) var(--space-md);
+    display: flex;
+    gap: var(--space-lg);
+    align-items: end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(197, 164, 78, .25);
+  }
+
+  .nl-inline h2 {
+    font-family: var(--font-display);
+    color: var(--text-on-dark);
+    font-size: 1.375rem;
+    margin: 0 0 .25rem;
+  }
+
+  .nl-inline p {
+    margin: 0;
+    color: var(--text-on-dark-muted);
+    font-size: var(--text-small);
+  }
+
+  .nl-form {
+    display: flex;
+    gap: var(--space-xs);
+    flex: 1 1 22rem;
+    max-width: 28rem;
+  }
+
+  .nl-form label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .nl-form input[type='email'] {
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+    font: inherit;
+    font-size: var(--text-small);
+    padding: .6rem 1rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(197, 164, 78, .5);
+    background: var(--bg-dark-elevated);
+    color: var(--text-on-dark);
+  }
+
+  .nl-form input[type='email']::placeholder {
+    color: var(--text-on-dark-muted);
+  }
+
+  .nl-honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  .nl-form button {
+    min-height: 44px;
+    font: inherit;
+    font-size: var(--text-small);
+    font-weight: 600;
+    color: var(--brand-navy);
+    background: var(--brand-gold);
+    border: 0;
+    border-radius: var(--radius-pill);
+    padding: .6rem 1.25rem;
+    cursor: pointer;
+  }
+
+  .nl-form button:hover {
+    color: var(--brand-navy);
+    background: var(--brand-gold-light);
+  }
+
+  .nl-form button:disabled {
+    cursor: default;
+    opacity: .7;
+  }
+
+  .nl-inline .nl-note {
+    flex-basis: 100%;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    min-height: 1.2em;
+  }
+
+  /* ---------- bottom row ---------- */
   .footer-inner {
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: 0 var(--space-md);
+    padding: var(--space-md) var(--space-md) 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -77,17 +199,8 @@ const year = new Date().getFullYear();
     gap: 0.5rem;
   }
 
-  .footer-glyph {
-    display: block;
-    flex-shrink: 0;
-  }
-
-  .footer-logo {
-    font-family: var(--font-mono);
-    font-size: var(--text-small);
-    color: var(--text-on-dark);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+  .footer-logo-wrap .brand-lockup {
+    height: 32px;
   }
 
   .footer-location {
@@ -97,12 +210,15 @@ const year = new Date().getFullYear();
 
   .footer-right a {
     font-size: var(--text-small);
-    color: var(--color-terracota);
+    color: var(--brand-gold);
     transition: color var(--duration) var(--ease);
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
   }
 
   .footer-right a:hover {
-    color: var(--color-maiz);
+    color: var(--brand-gold-light);
   }
 
   .footer-copy {

@@ -1,0 +1,238 @@
+---
+// One system card in the homepage "In production" section.
+// Approved prototype jufipai-relaunch (2026-11-04): `featured` = Property management, full width,
+// image + text side by side on desktop, plus the 6-item "What it does" list. Standard = the other five.
+// Copy arrives already in the page language, as plain text (Astro escapes it).
+
+interface Props {
+  img: string;
+  alt: string;
+  title: string;
+  problemLabel: string;
+  builtLabel: string;
+  resultLabel: string;
+  problem: string;
+  built: string;
+  result: string;
+  featured?: boolean;
+  flag?: string;
+  featuresLabel?: string;
+  features?: [string, string][];
+}
+
+const {
+  img, alt, title, problemLabel, builtLabel, resultLabel, problem, built, result,
+  featured = false, flag, featuresLabel, features = [],
+} = Astro.props;
+
+const resultText = `${resultLabel}: ${result}`;
+---
+
+<article class:list={['case-card', { 'case-featured': featured }]}>
+  <img
+    src={`/brand/systems/${img}.png`}
+    width="1200"
+    height="627"
+    alt={alt}
+    loading={featured ? 'eager' : 'lazy'}
+    decoding="async"
+  />
+  <div class="case-body">
+    {featured && flag && <span class="case-flag">{flag}</span>}
+    <h3>{title}</h3>
+    <p class="case-row"><b>{problemLabel}</b>{problem}</p>
+    <p class="case-row"><b>{builtLabel}</b>{built}</p>
+    {!featured && <p class="case-result">{resultText}</p>}
+  </div>
+  {featured && (
+    <div class="case-feats">
+      <h4 class="feat-h">{featuresLabel}</h4>
+      <ul class="feat-list">
+        {features.map(([t, d]) => (
+          <li><b>{t}</b><span>{d}</span></li>
+        ))}
+      </ul>
+      <p class="case-result">{resultText}</p>
+    </div>
+  )}
+</article>
+
+<style>
+  .case-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-arena);
+    border-radius: var(--radius-card);
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--duration-base) var(--ease-spring), border-color var(--duration-base) var(--ease-spring), box-shadow var(--duration-base) var(--ease-spring);
+  }
+
+  .case-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--brand-gold);
+    box-shadow: 0 12px 28px rgba(27, 54, 93, .1);
+  }
+
+  .case-card > img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1200 / 627;
+    border-bottom: 1px solid var(--color-arena);
+    background: var(--color-papel);
+  }
+
+  .case-body {
+    padding: var(--space-md) var(--space-lg) var(--space-lg);
+  }
+
+  .case-body h3 {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 700;
+    margin: 0 0 var(--space-sm);
+    color: var(--text-primary);
+  }
+
+  .case-row {
+    margin: 0 0 var(--space-xs);
+    font-size: var(--text-small);
+    line-height: 1.6;
+    color: var(--text-body);
+  }
+
+  .case-row b {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent-text);
+    font-weight: 600;
+  }
+
+  .case-result {
+    margin-top: var(--space-sm);
+    padding-top: var(--space-sm);
+    border-top: 1px dashed var(--color-arena);
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: var(--text-small);
+  }
+
+  /* ---------- featured: Property management ---------- */
+  /* full width; border matches the approved screenshots (1px light rule, same as the other cards) */
+  .case-featured {
+    grid-column: 1 / -1;
+  }
+
+  .case-featured .case-body h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .case-flag {
+    display: inline-block;
+    margin: 0 0 .5rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--brand-navy);
+    background: var(--brand-gold-tint);
+    border: 1px solid var(--brand-gold);
+    border-radius: var(--radius-pill);
+    padding: .15rem .65rem;
+  }
+
+  .case-feats {
+    padding: 0 var(--space-lg) var(--space-lg);
+  }
+
+  .feat-h {
+    margin: 0 0 var(--space-sm);
+    font-family: var(--font-body);
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--brand-navy);
+  }
+
+  .feat-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-sm) var(--space-lg);
+  }
+
+  .feat-list li {
+    position: relative;
+    padding-left: 1.6rem;
+  }
+
+  .feat-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: .4rem;
+    width: .7rem;
+    height: .7rem;
+    background: var(--brand-gold);
+    border: 1.5px solid var(--brand-navy);
+    transform: rotate(45deg);
+    border-radius: 2px;
+  }
+
+  .feat-list b {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--brand-navy);
+    line-height: 1.3;
+  }
+
+  .feat-list span {
+    display: block;
+    font-size: .9375rem;
+    line-height: 1.5;
+    color: var(--text-body);
+    margin-top: .15rem;
+  }
+
+  @media (min-width: 901px) {
+    .case-featured {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      grid-template-areas: "img body" "feats feats";
+    }
+
+    .case-featured > img {
+      grid-area: img;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      border-bottom: 0;
+      border-right: 1px solid var(--color-arena);
+    }
+
+    .case-featured > .case-body {
+      grid-area: body;
+      align-self: center;
+    }
+
+    .case-featured > .case-feats {
+      grid-area: feats;
+      border-top: 1px solid var(--color-arena);
+      padding-top: var(--space-md);
+    }
+
+    .feat-list {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>
