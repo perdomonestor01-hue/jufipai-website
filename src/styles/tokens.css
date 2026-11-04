@@ -86,3 +86,39 @@
   --duration-snap: 0.08s;
   --stagger: 0.07s;
 }
+
+/* ============================================================
+   Brand: business-card navy + gold (relaunch 2026-11-04).
+   Source: approved prototype jufipai-relaunch public/brand/tokens.css.
+   Declared AFTER the primitives above, so these values win.
+
+     navy        #1b365d  header, footer, dark bands, dark text
+     deep navy   #142a49  inputs on navy, depth (never near-black)
+     gold        #c5a44e  buttons (navy text), rules, highlights, focus ring
+     light gold  #e8d48b  gradient highlight, hover
+
+   WCAG 2.2 AA: gold on white is ~2.3:1, so gold is NEVER text on a light
+   ground. On light grounds text is navy; gold carries borders, decoration
+   and button fills (navy text on gold ~8.6:1). Gold on navy is fine.
+   ============================================================ */
+:root {
+  --brand-navy: #1b365d;
+  --brand-navy-2: #142a49;
+  --brand-gold: #c5a44e;
+  --brand-gold-light: #e8d48b;
+  --brand-gold-tint: #f5eed8;
+  --brand-gold-line: linear-gradient(90deg, transparent 0%, #c5a44e 25%, #e8d48b 50%, #c5a44e 75%, transparent 100%);
+
+  /* remap: carbon -> navy, jade -> gold, jade-deep -> navy (text-safe), jade-soft -> gold tint */
+  --color-carbon: var(--brand-navy);
+  --color-carbon-soft: #4a5468;
+  --color-jade: var(--brand-gold);
+  --color-jade-deep: var(--brand-navy);
+  --color-jade-soft: var(--brand-gold-tint);
+  --color-terracota: var(--brand-gold);
+  --color-maiz: var(--brand-gold-light);
+  --text-body: #2c3345;
+  --bg-dark-elevated: var(--brand-navy-2);
+  --accent-subtle: rgba(197, 164, 78, .12);
+  --status-success: var(--brand-navy);
+}

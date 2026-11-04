@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 80">
+  <defs>
+    <linearGradient id="tg" x1="0%" y1="20%" x2="100%" y2="80%">
+      <stop offset="0%" stop-color="#2DD4BF"/>
+      <stop offset="100%" stop-color="#14B8A6"/>
+    </linearGradient>
+    <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6EE7B7"/>
+      <stop offset="100%" stop-color="#34D399"/>
+    </linearGradient>
+    <radialGradient id="eg" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#FDE68A"/>
+      <stop offset="100%" stop-color="#FBBF24"/>
+    </radialGradient>
+    <filter id="gl" x="-20%" y="-20%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#14B8A6" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  <!-- Cat+AI hybrid mark (dark variant) -->
+  <g transform="translate(4, 4)" filter="url(#gl)">
+    <path d="M14 30 L10 6 C10 5, 11.5 4.5, 12 5 L22 22 C22 23, 21 26, 20 28 Z" fill="url(#tg)" opacity="0.95"/>
+    <path d="M48 28 L44 22 L49 12 L51 8 L53 10 L54 7 L52 14 L51 30 Z" fill="url(#tg)" opacity="0.92"/>
+    <path d="M14 30 C12 32, 10 38, 10 42 C10 52, 14 60, 20 64 C24 67, 28 68.5, 32 68.5 C36 68.5, 40 67, 44 64 C50 60, 54 52, 54 42 C54 38, 52 32, 50 30 L48 28 C44 26, 40 25, 36 25 C28 25, 22 26, 18 28 Z" fill="url(#tg)"/>
+    <path d="M16 30 L13 12 L21 25 Z" fill="#0FB3A0" opacity="0.35"/>
+    <path d="M49 28 L47 24 L51 13 Z" fill="#0FB3A0" opacity="0.5"/>
+    <line x1="49" y1="16" x2="52" y2="12" stroke="#6EE7B7" stroke-width="1.2" opacity="0.8"/>
+    <circle cx="52" cy="12" r="1.5" fill="#6EE7B7" opacity="0.85"/>
+    <line x1="47" y1="22" x2="44" y2="20" stroke="#6EE7B7" stroke-width="0.8" opacity="0.6"/>
+    <circle cx="44" cy="20" r="1.0" fill="#6EE7B7" opacity="0.7"/>
+    <path d="M32 27 C32 30, 30 33, 28 36" fill="none" stroke="#6EE7B7" stroke-width="1.4" opacity="0.65" stroke-linecap="round"/>
+    <path d="M33 27 C34 31, 36 34, 38 36" fill="none" stroke="#6EE7B7" stroke-width="1.4" opacity="0.6" stroke-linecap="round"/>
+    <path d="M28 36 C26 38, 24 39, 23 40" fill="none" stroke="#6EE7B7" stroke-width="1.2" opacity="0.55" stroke-linecap="round"/>
+    <path d="M38 36 C39 38, 40 39, 41 40" fill="none" stroke="#6EE7B7" stroke-width="1.2" opacity="0.5" stroke-linecap="round"/>
+    <path d="M46 38 C48 42, 48 48, 46 54" fill="none" stroke="#6EE7B7" stroke-width="1.1" opacity="0.45" stroke-linecap="round"/>
+    <path d="M38 28 C42 27, 45 26, 47 25" fill="none" stroke="#6EE7B7" stroke-width="1.0" opacity="0.5" stroke-linecap="round"/>
+    <circle cx="32" cy="27" r="2.2" fill="#6EE7B7" opacity="0.75"/>
+    <circle cx="28" cy="36" r="1.8" fill="#6EE7B7" opacity="0.65"/>
+    <circle cx="38" cy="36" r="1.8" fill="#6EE7B7" opacity="0.6"/>
+    <circle cx="33" cy="27" r="1.5" fill="#6EE7B7" opacity="0.55"/>
+    <circle cx="47" cy="25" r="1.4" fill="#6EE7B7" opacity="0.55"/>
+    <circle cx="50" cy="38" r="1.8" fill="#5EEAD4" opacity="0.6"/>
+    <circle cx="52" cy="40" r="1.4" fill="#5EEAD4" opacity="0.5"/>
+    <circle cx="53" cy="36" r="1.1" fill="#5EEAD4" opacity="0.45"/>
+    <circle cx="51" cy="43" r="1.5" fill="#5EEAD4" opacity="0.42"/>
+    <circle cx="54" cy="39" r="0.9" fill="#5EEAD4" opacity="0.38"/>
+    <ellipse cx="23" cy="43" rx="4.5" ry="5" fill="#0A1A18"/>
+    <ellipse cx="23" cy="43" rx="3.2" ry="3.8" fill="url(#eg)"/>
+    <ellipse cx="22" cy="42" rx="1.8" ry="2.2" fill="#0A1A18"/>
+    <circle cx="24.5" cy="41" r="1" fill="#FFFEF5" opacity="0.95"/>
+    <ellipse cx="41" cy="42.5" rx="4.8" ry="5.2" fill="#0A1A18"/>
+    <ellipse cx="41" cy="42.5" rx="3.4" ry="3.9" fill="url(#eg)"/>
+    <ellipse cx="40.2" cy="41.5" rx="1.9" ry="2.3" fill="#0A1A18"/>
+    <circle cx="42.5" cy="40.5" r="1.1" fill="#FFFEF5" opacity="0.9"/>
+    <circle cx="41" cy="42.5" r="7" fill="none" stroke="#6EE7B7" stroke-width="1.0" opacity="0.55" stroke-dasharray="3 4"/>
+    <circle cx="41" cy="42.5" r="8.5" fill="none" stroke="#6EE7B7" stroke-width="0.6" opacity="0.35" stroke-dasharray="1.5 5"/>
+    <path d="M30.5 52 L33 49 L35.5 52 C35.5 53, 34.5 54, 33 54 C31.5 54, 30.5 53, 30.5 52 Z" fill="#0FB3A0"/>
+    <path d="M33 54 C31 56.5, 27 57, 25 55.5" fill="none" stroke="#0FB3A0" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M33 54 C35 56, 38 56.5, 40 55" fill="none" stroke="#0FB3A0" stroke-width="1.1" stroke-linecap="round"/>
+    <path d="M50 18 C52 15, 54 12, 55 10 L57 6 L58 4" fill="none" stroke="url(#lg)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M51 15 C54 13, 56 14.5, 54 17 C52 18, 50 16.5, 51 15 Z" fill="url(#lg)" opacity="0.85"/>
+    <path d="M55.5 9 C53 6.5, 54 4, 56.5 5 L58 6 C58 8, 56.5 9.5, 55.5 9 Z" fill="url(#lg)" opacity="0.9"/>
+    <circle cx="58" cy="4" r="2.5" fill="#6EE7B7" opacity="0.35"/>
+    <circle cx="58" cy="4" r="1.5" fill="#6EE7B7" opacity="0.95"/>
+    <circle cx="52" cy="13" r="1.3" fill="#6EE7B7" opacity="0.8"/>
+    <circle cx="55" cy="10" r="1.1" fill="#6EE7B7" opacity="0.75"/>
+    <line x1="55" y1="10" x2="57" y2="11" stroke="#6EE7B7" stroke-width="1.0" opacity="0.65" stroke-linecap="round"/>
+    <circle cx="57" cy="11" r="0.8" fill="#6EE7B7" opacity="0.65"/>
+    <line x1="18" y1="50" x2="5" y2="47" stroke="#2DD4BF" stroke-width="0.8" opacity="0.45" stroke-linecap="round"/>
+    <line x1="18" y1="53" x2="4" y2="53.5" stroke="#2DD4BF" stroke-width="0.8" opacity="0.4" stroke-linecap="round"/>
+    <line x1="19" y1="55.5" x2="6" y2="58" stroke="#2DD4BF" stroke-width="0.7" opacity="0.35" stroke-linecap="round"/>
+    <line x1="46" y1="49.5" x2="59" y2="46" stroke="#2DD4BF" stroke-width="1.0" opacity="0.6" stroke-linecap="round"/>
+    <circle cx="59" cy="46" r="1.5" fill="#6EE7B7" opacity="0.75"/>
+    <line x1="46" y1="52.5" x2="60" y2="52" stroke="#2DD4BF" stroke-width="1.0" opacity="0.55" stroke-linecap="round"/>
+    <circle cx="60" cy="52" r="1.3" fill="#6EE7B7" opacity="0.7"/>
+    <line x1="45" y1="55" x2="58" y2="57.5" stroke="#2DD4BF" stroke-width="0.9" opacity="0.5" stroke-linecap="round"/>
+    <circle cx="58" cy="57.5" r="1.1" fill="#6EE7B7" opacity="0.6"/>
+  </g>
+  <!-- Wordmark (dark variant - light text) -->
+  <g transform="translate(88, 12)">
+    <path d="M10 14 L10 42 C10 50, 6 52, 2 50" fill="none" stroke="#E8E6E1" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="10.5" cy="5" r="3.2" fill="#2DD4BF"/>
+    <path d="M24 14 L24 38 C24 45, 28 48, 34 48 C40 48, 44 45, 44 38 L44 14" fill="none" stroke="#E8E6E1" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M56 4 C56 2, 59 0, 62 0 C64 0, 66 1, 66 3" fill="none" stroke="#E8E6E1" stroke-width="5" stroke-linecap="round"/>
+    <path d="M56 4 L56 48" fill="none" stroke="#E8E6E1" stroke-width="5.5" stroke-linecap="round"/>
+    <line x1="49" y1="16" x2="65" y2="16" stroke="#E8E6E1" stroke-width="4" stroke-linecap="round"/>
+    <line x1="78" y1="14" x2="78" y2="48" stroke="#E8E6E1" stroke-width="5.5" stroke-linecap="round"/>
+    <circle cx="78" cy="5" r="3.5" fill="none" stroke="#2DD4BF" stroke-width="2"/>
+    <circle cx="78" cy="5" r="1.2" fill="#2DD4BF"/>
+    <path d="M92 14 L92 58" fill="none" stroke="#E8E6E1" stroke-width="5.5" stroke-linecap="round"/>
+    <path d="M92 14 C92 14, 96 11, 103 11 C110 11, 115 16, 115 24 C115 32, 110 37, 103 37 C96 37, 92 34, 92 34" fill="none" stroke="#E8E6E1" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M138 14 C133 14, 128 17, 128 24 C128 31, 133 34, 138 34 C141 34, 143 33, 145 31" fill="none" stroke="#E8E6E1" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M145 14 L145 48" fill="none" stroke="#E8E6E1" stroke-width="5.5" stroke-linecap="round"/>
+    <path d="M134 22 C136 19, 139 20, 138 23 C137 25, 134 24, 134 22 Z" fill="#2DD4BF" opacity="0.45"/>
+    <line x1="160" y1="14" x2="160" y2="48" stroke="#E8E6E1" stroke-width="5.5" stroke-linecap="round"/>
+    <circle cx="160" cy="4.5" r="2.8" fill="#6EE7B7"/>
+    <path d="M162.5 3.5 C164 2, 165 3, 163.5 4.5" fill="none" stroke="#6EE7B7" stroke-width="1.2" stroke-linecap="round"/>
+  </g>
+  <text x="88" y="75" font-family="Inter, sans-serif" font-size="9" font-weight="400" letter-spacing="0.12em" fill="#6B7280">WE AUTOMATE THE MOST BORING TASKS</text>
+</svg>

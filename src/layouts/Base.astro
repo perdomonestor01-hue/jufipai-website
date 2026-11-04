@@ -1,52 +1,88 @@
 ---
-import { ClientRouter } from 'astro:transitions';
+// Page shell. Relaunch 2026-11-04 (approved prototype jufipai-relaunch):
+//  - lang per page; hreflang en/es pair (+ x-default) when the page has a Spanish twin
+//  - og:image = synthetic 1200x627 brand card; theme-color navy
+//  - JSON-LD Organization: name, url, logo ONLY (no people, no address, no city)
+//  - CSP script-src 'self' (no inline script, no inline handlers): every client script is a
+//    bundled file (astro.config.mjs sets assetsInlineLimit 0 so Vite never inlines one)
+//  - no client router, no language toggle script, no load-time newsletter modal
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import NewsletterModal from '../components/NewsletterModal.astro';
+import type { Lang } from '../data/home';
 import '../styles/global.css';
 
 interface Props {
   title: string;
   description?: string;
   image?: string;
+  lang?: Lang;
+  /** English URL of this page. Defaults to the current path. */
+  enPath?: string;
+  /** Spanish URL of this page, when one exists. Enables hreflang + the ES toggle. */
+  esPath?: string;
 }
 
+const SITE = 'https://jufipai.com';
 const {
   title,
-  description = 'Custom AI and automation for small teams. Real systems, not drag-and-drop toys.',
-  image,
+  description = 'Software that runs property, staffing and safety operations. We build it and we run it, every day.',
+  image = `${SITE}/og/home-1200x627.png`,
+  lang = 'en',
+  enPath = Astro.url.pathname,
+  esPath,
 } = Astro.props;
 
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+// Full titles ("JufipAI · …") pass through; short ones get the brand suffix.
+const fullTitle = title.includes('JufipAI') ? title : `${title} | JufipAI`;
+const canonicalUrl = new URL(lang === 'es' && esPath ? esPath : Astro.url.pathname, Astro.site);
+const enUrl = new URL(enPath, SITE).href;
+const esUrl = esPath ? new URL(esPath, SITE).href : null;
+
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  'font-src https://fonts.gstatic.com',
+  "img-src 'self' https://images.unsplash.com data:",
+  "connect-src 'self' https://script.google.com https://script.googleusercontent.com",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "object-src 'none'",
+].join('; ');
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
-    <!-- Pass-3 iteration: aggressive no-cache while visual is still being tuned. TD: restore default caching when visual locks. -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#1F2421" />
+    <meta name="theme-color" content="#1b365d" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://images.unsplash.com data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; frame-ancestors 'none'; base-uri 'self';" />
+    <meta http-equiv="Content-Security-Policy" content={CSP} />
 
-    <title>{title} | JufipAI</title>
+    <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
+    {esUrl && <link rel="alternate" hreflang="en" href={enUrl} />}
+    {esUrl && <link rel="alternate" hreflang="es" href={esUrl} />}
+    {esUrl && <link rel="alternate" hreflang="x-default" href={enUrl} />}
 
     <meta property="og:type" content="website" />
-    <meta property="og:title" content={`${title} | JufipAI`} />
+    <meta property="og:site_name" content="JufipAI" />
+    <meta property="og:locale" content={lang === 'es' ? 'es_US' : 'en_US'} />
+    <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
-    {image && <meta property="og:image" content={image} />}
+    <meta property="og:image" content={image} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="627" />
+    <meta property="og:image:alt" content="JufipAI" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={`${title} | JufipAI`} />
+    <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
 
     <script
       type="application/ld+json"
@@ -54,9 +90,8 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
         '@context': 'https://schema.org',
         '@type': 'Organization',
         name: 'JufipAI',
-        url: 'https://jufipai.com',
-        description: description,
-        foundingLocation: { '@type': 'Place', name: 'Dallas, TX' },
+        url: SITE,
+        logo: `${SITE}/brand/logo.svg`,
       })}
     />
 
@@ -66,56 +101,12 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap"
       rel="stylesheet"
     />
-
-    <ClientRouter />
   </head>
   <body>
-    <Header />
+    <Header lang={lang} enPath={enPath} esPath={esPath} />
     <main>
       <slot />
     </main>
-    <Footer />
-    <NewsletterModal />
-
-    <script>
-      function initLang() {
-        const VALID_LANGS = ['en', 'es'];
-        const stored = localStorage.getItem('jufipai-lang');
-        const lang = stored && VALID_LANGS.includes(stored) ? stored : 'en';
-        document.documentElement.lang = lang;
-
-        document.querySelectorAll('[data-en][data-es]').forEach((el) => {
-          const text = el.getAttribute(`data-${lang}`);
-          if (text) el.textContent = text;
-        });
-
-        document
-          .querySelectorAll('[data-en-placeholder][data-es-placeholder]')
-          .forEach((el) => {
-            const text = el.getAttribute(`data-${lang}-placeholder`);
-            if (text && (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement)) {
-              el.placeholder = text;
-            }
-          });
-
-        document.querySelectorAll('.lang-toggle button').forEach((btn) => {
-          btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
-        });
-      }
-
-      initLang();
-      document.addEventListener('astro:after-swap', initLang);
-
-      document.addEventListener('click', (e) => {
-        const btn = (e.target as HTMLElement).closest('[data-lang]');
-        if (btn && btn.closest('.lang-toggle')) {
-          const lang = btn.getAttribute('data-lang');
-          if (lang) {
-            localStorage.setItem('jufipai-lang', lang);
-            initLang();
-          }
-        }
-      });
-    </script>
+    <Footer lang={lang} />
   </body>
 </html>

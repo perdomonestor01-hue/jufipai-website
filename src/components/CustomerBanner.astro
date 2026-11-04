@@ -1,0 +1,98 @@
+---
+// "Trusted by" customer banner, directly under the homepage hero (/ and /es/ only).
+// Approved prototype jufipai-relaunch (2026-11-04). The ONLY place a customer is named on the site:
+// the logo's alt text. Built as equal slots so more logos can be added later; today there is one.
+// No fake logos. cws-logo-white-cropped.png = the official white logo cropped to its visible bounds (453x310).
+import type { Lang } from '../data/home';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'en' } = Astro.props;
+
+const CUSTOMERS = [
+  { src: '/brand/customers/cws-logo-white-cropped.png', alt: 'Custom Workforce Solutions LLC', w: 453, h: 310 },
+];
+---
+
+<section class="customers">
+  <h2 class="customers-label">{lang === 'es' ? 'Con la confianza de' : 'Trusted by'}</h2>
+  <ul class="customers-row">
+    {CUSTOMERS.map((c) => (
+      <li class="customers-slot">
+        <img src={c.src} width={c.w} height={c.h} alt={c.alt} loading="eager" decoding="async" />
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  /* navy band, thin gold hairlines top and bottom (business card) */
+  .customers {
+    background: var(--brand-navy);
+    position: relative;
+    padding: var(--space-md) var(--space-md) var(--space-lg);
+    text-align: center;
+  }
+
+  .customers::before,
+  .customers::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--brand-gold-line);
+  }
+
+  .customers::before { top: 0; }
+  .customers::after { bottom: 0; }
+
+  .customers-label {
+    margin: 0 0 var(--space-sm);
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    line-height: 1.7;
+    color: var(--text-on-dark-muted);
+  }
+
+  .customers-row {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: var(--max-width);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-lg);
+  }
+
+  .customers-slot {
+    flex: 0 1 12rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    overflow: visible;
+  }
+
+  .customers-slot img {
+    display: block;
+    height: 80px;
+    width: auto;
+    margin: 0;
+    max-width: 100%;
+    object-fit: contain;
+    filter: grayscale(1);
+    opacity: .92;
+  }
+
+  @media (max-width: 640px) {
+    .customers-slot img { height: 56px; }
+  }
+</style>

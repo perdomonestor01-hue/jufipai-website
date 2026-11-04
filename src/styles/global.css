@@ -48,16 +48,6 @@ img {
   display: block;
 }
 
-::selection {
-  background: var(--color-maiz);
-  color: var(--color-carbon);
-}
-
-:focus-visible {
-  outline: 2px solid var(--color-jade);
-  outline-offset: 2px;
-}
-
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
@@ -171,4 +161,52 @@ img {
 }
 .grid-cross-fade {
   animation: crossFade 0.35s var(--ease) both;
+}
+
+/* =====================================================================
+   Brand (relaunch 2026-11-04) — ported from the approved prototype
+   jufipai-relaunch public/prototype.css. Cross-component rules only;
+   component-specific rules live in each component's <style>.
+   ===================================================================== */
+
+/* focus ring: gold, with a navy halo so it still reaches 3:1 on light grounds */
+:focus-visible {
+  outline: 2px solid var(--brand-gold);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--brand-navy);
+}
+
+::selection {
+  background: var(--brand-gold-light);
+  color: var(--brand-navy);
+}
+
+/* thin gold rule in front of every section label (the card's gold hairlines) */
+.label-style::before {
+  content: "";
+  display: inline-block;
+  width: 1.25rem;
+  height: 1px;
+  background: var(--brand-gold);
+  vertical-align: middle;
+  margin-right: .5rem;
+}
+
+/* official dark-background lockup (cat mark + light lettering) */
+.brand-lockup { display: block; height: 36px; width: auto; flex: 0 0 auto; }
+.brand-mark { display: block; flex: 0 0 auto; width: 34px; height: 34px; }
+
+/* gap fix: when a page ends on the dark CTA band, the footer joins it with a
+   gold hairline instead of showing the light page background between them */
+main:has(> .bottom-cta:last-child) + .site-footer { margin-top: 0; padding-top: 0; }
+main:has(> .bottom-cta:last-child) > .bottom-cta { padding-bottom: var(--space-lg); }
+main:has(> .bottom-cta:last-child) + .site-footer .nl-inline { position: relative; padding-top: var(--space-lg); }
+main:has(> .bottom-cta:last-child) + .site-footer .nl-inline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: var(--space-md);
+  right: var(--space-md);
+  height: 1px;
+  background: var(--brand-gold-line);
 }

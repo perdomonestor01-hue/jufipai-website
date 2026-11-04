@@ -69,7 +69,9 @@ export async function fetchArticles(): Promise<Article[]> {
     if (existsSync(localPath)) {
       const raw = readFileSync(localPath, 'utf-8');
       const data = JSON.parse(raw);
-      if (Array.isArray(data) && data.length > 0) {
+      // An array is authoritative even when empty ([] = "no posts yet"); only a missing or
+      // unreadable file falls back to the API, as documented above.
+      if (Array.isArray(data)) {
         console.log(`[ARTICLES] Loaded ${data.length} from local data file`);
         return data
           .filter((a: any) => a.id && a.title && a.content)

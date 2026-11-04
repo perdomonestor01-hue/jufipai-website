@@ -1,80 +1,66 @@
 ---
+// Site header — approved prototype jufipai-relaunch (2026-11-04): opaque navy, gold hairline,
+// official dark-background lockup, gold "Book a call", EN/ES as real links (/ <-> /es/).
+// No client script: the language is the URL, not localStorage.
+import { CALENDLY_URL, CHROME, type Lang } from '../data/home';
+
+interface Props {
+  lang?: Lang;
+  /** English URL of this page, e.g. "/" */
+  enPath?: string;
+  /** Spanish URL of this page when one exists, e.g. "/es/" */
+  esPath?: string;
+}
+
+const { lang = 'en', enPath = Astro.url.pathname, esPath } = Astro.props;
+const t = CHROME[lang];
 const currentPath = Astro.url.pathname;
+
+// Public nav only. /posts/ in the prototype was a showcase page and is not part of the site.
+const nav: [string, string][] =
+  lang === 'es'
+    ? [['/es/#systems', 'Sistemas']]
+    : [['/#systems', 'Systems'], ['/writing/', 'Writing']];
+const isActive = (href: string) => !href.includes('#') && currentPath.startsWith(href.replace(/\/$/, ''));
 ---
 
 <header class="site-header">
   <div class="header-inner">
-    <a href="/" class="logo" aria-label="JufipAI Home">
-      <svg class="logo-glyph" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true">
-        <defs>
-          <linearGradient id="catGradHeader" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#0E7C66"/>
-            <stop offset="100%" stop-color="#08503F"/>
-          </linearGradient>
-        </defs>
-        <path d="M8 12 L8 8 L10 8 L12 10 L20 10 L22 8 L24 8 L24 12 L22 14 L22 22 L20 24 L12 24 L10 22 L10 14 Z" fill="none" stroke="url(#catGradHeader)" stroke-width="1.5"/>
-        <path d="M8 12 L10 8 L12 10" fill="none" stroke="url(#catGradHeader)" stroke-width="1.5"/>
-        <path d="M20 10 L22 8 L24 12" fill="none" stroke="url(#catGradHeader)" stroke-width="1.5"/>
-        <circle cx="13" cy="15" r="1.5" fill="url(#catGradHeader)"/>
-        <circle cx="19" cy="15" r="3" fill="#0E7C66" opacity="0.3"/>
-        <path d="M19 13 L19 17 M17 15 L19 13 L21 15 M17 17 L19 15 L21 17" stroke="url(#catGradHeader)" stroke-width="1" fill="none"/>
-        <path d="M16 18 L15 20 L17 20 Z" fill="url(#catGradHeader)"/>
-        <path d="M16 20 Q14 22 12 21 M16 20 Q18 22 20 21" fill="none" stroke="url(#catGradHeader)" stroke-width="1"/>
-      </svg>
-      <span class="logo-text">JufipAI</span>
+    <a href={lang === 'es' ? '/es/' : '/'} class="logo" aria-label={t.homeLabel}>
+      <img class="brand-lockup" src="/brand/logo-lockup-dark.svg" width="189" height="36" alt="" />
     </a>
 
-    <nav class="site-nav" aria-label="Main navigation">
-      <a
-        href="/writing"
-        class:list={[{ active: currentPath.startsWith('/writing') }]}
-        data-en="Writing"
-        data-es="Escritos">Writing</a
-      >
-      <a
-        href="/about"
-        class:list={[{ active: currentPath.startsWith('/about') }]}
-        data-en="About"
-        data-es="Acerca">About</a
-      >
-      <a
-        href="/contact"
-        class:list={[{ active: currentPath.startsWith('/contact') }]}
-        data-en="Contact"
-        data-es="Contacto">Contact</a
-      >
+    <nav class="site-nav" aria-label={t.navLabel}>
+      {nav.map(([href, label]) => (
+        <a href={href} class:list={[{ active: isActive(href) }]} aria-current={isActive(href) ? 'page' : undefined}>{label}</a>
+      ))}
     </nav>
 
     <div class="header-right">
-      <button
-        type="button"
-        class="header-subscribe"
-        id="header-subscribe-btn"
-        data-en="Subscribe"
-        data-es="Suscribirme"
-      >
-        Suscribirme
-      </button>
-      <div class="lang-toggle" aria-label="Language selector">
-        <button data-lang="en" class="active" aria-label="English">EN</button>
-        <button data-lang="es" aria-label="Espanol">ES</button>
+      <a class="header-subscribe" href={CALENDLY_URL}>{t.cta}</a>
+      <div class="lang-toggle" role="group" aria-label={t.langLabel}>
+        <a
+          href={enPath}
+          hreflang="en"
+          lang="en"
+          class:list={[{ active: lang === 'en' }]}
+          aria-current={lang === 'en' ? 'true' : undefined}
+          aria-label="English">EN</a
+        >
+        {esPath && (
+          <a
+            href={esPath}
+            hreflang="es"
+            lang="es"
+            class:list={[{ active: lang === 'es' }]}
+            aria-current={lang === 'es' ? 'true' : undefined}
+            aria-label="Español">ES</a
+          >
+        )}
       </div>
     </div>
   </div>
 </header>
-
-<script>
-  function wireSubscribeButton() {
-    const btn = document.getElementById('header-subscribe-btn');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-      const fn = (window as unknown as { jufipaiOpenNewsletter?: () => void }).jufipaiOpenNewsletter;
-      if (typeof fn === 'function') fn();
-    });
-  }
-  wireSubscribeButton();
-  document.addEventListener('astro:after-swap', wireSubscribeButton);
-</script>
 
 <style>
   .site-header {
@@ -83,40 +69,20 @@ const currentPath = Astro.url.pathname;
     left: 0;
     right: 0;
     z-index: 100;
-    background: rgba(31, 36, 33, 0.92);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(14, 124, 102, 0.20);
+    background: var(--brand-navy);
     height: var(--nav-height);
   }
 
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-  }
-
-  .header-subscribe {
-    font-family: var(--font-body);
-    font-size: var(--text-small);
-    font-weight: 600;
-    color: #FFFFFF;
-    background: var(--color-jade);
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-pill);
-    cursor: pointer;
-    transition: background var(--duration) var(--ease), transform var(--duration) var(--ease);
-  }
-
-  .header-subscribe:hover {
-    background: var(--color-jade-deep);
-    transform: translateY(-1px);
-  }
-
-  .header-subscribe:focus-visible {
-    outline: 2px solid var(--color-maiz);
-    outline-offset: 2px;
+  /* thin gold hairline under the header (business card) */
+  .site-header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--brand-gold-line);
+    pointer-events: none;
   }
 
   .header-inner {
@@ -135,30 +101,37 @@ const currentPath = Astro.url.pathname;
     color: var(--text-on-dark);
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: .55rem;
+    min-height: 44px;
   }
 
-  .logo-glyph {
-    display: block;
-    flex-shrink: 0;
-    animation: logoEnter 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
   }
 
-  @keyframes logoEnter {
-    from { opacity: 0; transform: scale(0.92); }
-    to   { opacity: 1; transform: scale(1); }
-  }
-
-  .logo-text {
-    font-family: var(--font-mono);
+  /* gold fill, NAVY text (white on gold fails AA). Hover = light gold. */
+  .header-subscribe {
+    font-family: var(--font-body);
     font-size: var(--text-small);
-    font-weight: 400;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--brand-navy);
+    background: var(--brand-gold);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    box-sizing: border-box;
+    transition: background var(--duration) var(--ease), transform var(--duration) var(--ease);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .logo-glyph { animation: none; }
+  .header-subscribe:hover {
+    color: var(--brand-navy);
+    background: var(--brand-gold-light);
+    transform: translateY(-1px);
   }
 
   .site-nav {
@@ -173,6 +146,9 @@ const currentPath = Astro.url.pathname;
     text-decoration: none;
     transition: color var(--duration) var(--ease);
     position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
   }
 
   .site-nav a:hover,
@@ -183,39 +159,47 @@ const currentPath = Astro.url.pathname;
   .site-nav a.active::after {
     content: '';
     position: absolute;
-    bottom: -2px;
+    bottom: 8px;
     left: 0;
     right: 0;
     height: 1.5px;
-    background: var(--color-terracota);
+    background: var(--brand-gold);
   }
 
   .lang-toggle {
-    display: flex;
+    display: inline-flex;
+    align-items: center;
     gap: 2px;
     background: rgba(255, 255, 255, 0.08);
     border-radius: 6px;
     padding: 2px;
   }
 
-  .lang-toggle button {
+  .lang-toggle a {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     padding: 4px 8px;
-    border: none;
-    background: none;
     color: var(--text-on-dark-muted);
-    cursor: pointer;
+    text-decoration: none;
     border-radius: 4px;
-    transition: all var(--duration) var(--ease);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 32px;
+    box-sizing: border-box;
   }
 
-  .lang-toggle button.active {
-    background: rgba(14, 124, 102, 0.25);
+  .lang-toggle a.active {
+    background: rgba(197, 164, 78, .28);
     color: var(--text-on-dark);
   }
 
   @media (max-width: 640px) {
+    .site-header {
+      height: auto;
+    }
+
     .header-inner {
       flex-wrap: wrap;
       height: auto;
@@ -234,5 +218,9 @@ const currentPath = Astro.url.pathname;
       padding: 0.4rem 0.85rem;
       font-size: var(--text-xs);
     }
+  }
+
+  @media (max-width: 400px) {
+    .brand-lockup { height: 32px; }
   }
 </style>

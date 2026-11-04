@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
+  <defs>
+    <linearGradient id="tg" x1="0%" y1="20%" x2="100%" y2="80%">
+      <stop offset="0%" stop-color="#14B8A6"/>
+      <stop offset="100%" stop-color="#0D9488"/>
+    </linearGradient>
+    <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#14B8A6"/>
+    </linearGradient>
+    <radialGradient id="eg" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#FBBF24"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </radialGradient>
+  </defs>
+  <g transform="translate(3, 0)">
+    <!-- Left ear: organic -->
+    <path d="M16 32 L12 8 C12 7, 13.5 6.5, 14 7 L24 24 C24 25, 23 28, 22 30 Z" fill="url(#tg)" opacity="0.95"/>
+    <!-- Right ear: angular AI -->
+    <path d="M48 30 L44 24 L49 14 L51 10 L53 12 L54 9 L52 16 L51 32 Z" fill="url(#tg)" opacity="0.92"/>
+    <!-- Head -->
+    <path d="M16 32 C14 34, 12 40, 12 44 C12 54, 16 62, 22 66 C26 69, 30 70, 34 70 C38 70, 42 69, 46 66 C52 62, 56 54, 56 44 C56 40, 54 34, 52 32 L50 30 C46 28, 42 27, 38 27 C30 27, 24 28, 20 30 Z" fill="url(#tg)"/>
+    <!-- Inner ears -->
+    <path d="M18 32 L15 14 L23 27 Z" fill="#0F9C8C" opacity="0.5"/>
+    <path d="M49 30 L47 26 L52 15 Z" fill="#0F9C8C" opacity="0.5"/>
+    <line x1="49" y1="18" x2="52" y2="14" stroke="#34D399" stroke-width="1.2" opacity="0.7"/>
+    <circle cx="52" cy="14" r="1.5" fill="#34D399" opacity="0.8"/>
+    <line x1="47" y1="24" x2="44" y2="22" stroke="#34D399" stroke-width="0.8" opacity="0.5"/>
+    <circle cx="44" cy="22" r="1.0" fill="#34D399" opacity="0.6"/>
+    <!-- Neural circuit paths -->
+    <path d="M34 29 C34 32, 32 35, 30 38" fill="none" stroke="#34D399" stroke-width="1.4" opacity="0.6" stroke-linecap="round"/>
+    <path d="M35 29 C36 33, 38 36, 40 38" fill="none" stroke="#34D399" stroke-width="1.4" opacity="0.55" stroke-linecap="round"/>
+    <path d="M30 38 C28 40, 26 41, 25 42" fill="none" stroke="#34D399" stroke-width="1.2" opacity="0.5" stroke-linecap="round"/>
+    <path d="M40 38 C41 40, 42 41, 43 42" fill="none" stroke="#34D399" stroke-width="1.2" opacity="0.45" stroke-linecap="round"/>
+    <path d="M40 30 C44 29, 47 28, 49 27" fill="none" stroke="#34D399" stroke-width="1.0" opacity="0.45" stroke-linecap="round"/>
+    <circle cx="34" cy="29" r="2.2" fill="#34D399" opacity="0.7"/>
+    <circle cx="30" cy="38" r="1.8" fill="#34D399" opacity="0.6"/>
+    <circle cx="40" cy="38" r="1.8" fill="#34D399" opacity="0.55"/>
+    <circle cx="49" cy="27" r="1.4" fill="#34D399" opacity="0.5"/>
+    <!-- Digital dissolution - right cheek -->
+    <circle cx="52" cy="40" r="1.8" fill="#5EEAD4" opacity="0.55"/>
+    <circle cx="54" cy="42" r="1.4" fill="#5EEAD4" opacity="0.45"/>
+    <circle cx="55" cy="39" r="1.1" fill="#5EEAD4" opacity="0.4"/>
+    <circle cx="53" cy="44" r="1.5" fill="#5EEAD4" opacity="0.38"/>
+    <circle cx="56" cy="41" r="0.9" fill="#5EEAD4" opacity="0.3"/>
+    <circle cx="57" cy="38" r="0.6" fill="#5EEAD4" opacity="0.22"/>
+    <!-- Left eye -->
+    <ellipse cx="25" cy="45" rx="4.5" ry="5" fill="#134E4A"/>
+    <ellipse cx="25" cy="45" rx="3.2" ry="3.8" fill="url(#eg)"/>
+    <ellipse cx="24" cy="44" rx="1.8" ry="2.2" fill="#134E4A"/>
+    <circle cx="26.5" cy="43" r="1" fill="#FFFEF5" opacity="0.9"/>
+    <!-- Right eye with circuit ring -->
+    <ellipse cx="43" cy="44.5" rx="4.8" ry="5.2" fill="#134E4A"/>
+    <ellipse cx="43" cy="44.5" rx="3.4" ry="3.9" fill="url(#eg)"/>
+    <ellipse cx="42.2" cy="43.5" rx="1.9" ry="2.3" fill="#134E4A"/>
+    <circle cx="44.5" cy="42.5" r="1.1" fill="#FFFEF5" opacity="0.85"/>
+    <circle cx="43" cy="44.5" r="7" fill="none" stroke="#34D399" stroke-width="1.0" opacity="0.5" stroke-dasharray="3 4"/>
+    <circle cx="43" cy="44.5" r="8.5" fill="none" stroke="#34D399" stroke-width="0.6" opacity="0.3" stroke-dasharray="1.5 5"/>
+    <!-- Nose -->
+    <path d="M32.5 54 L35 51 L37.5 54 C37.5 55, 36.5 56, 35 56 C33.5 56, 32.5 55, 32.5 54 Z" fill="#0A7E72"/>
+    <!-- Mouth -->
+    <path d="M35 56 C33 58.5, 29 59, 27 57.5" fill="none" stroke="#0A7E72" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M35 56 C37 58, 40 58.5, 42 57" fill="none" stroke="#0A7E72" stroke-width="1.1" stroke-linecap="round"/>
+    <!-- Growth+circuit hybrid vine -->
+    <path d="M52 20 C54 17, 56 14, 57 12 L59 8 L60 6" fill="none" stroke="url(#lg)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M53 17 C56 15, 58 16.5, 56 19 C54 20, 52 18.5, 53 17 Z" fill="url(#lg)" opacity="0.85"/>
+    <path d="M57.5 11 C55 8.5, 56 6, 58.5 7 L60 8 C60 10, 58.5 11.5, 57.5 11 Z" fill="url(#lg)" opacity="0.9"/>
+    <circle cx="60" cy="6" r="2.5" fill="#34D399" opacity="0.3"/>
+    <circle cx="60" cy="6" r="1.5" fill="#34D399" opacity="0.9"/>
+    <circle cx="54" cy="15" r="1.3" fill="#34D399" opacity="0.75"/>
+    <circle cx="57" cy="12" r="1.1" fill="#34D399" opacity="0.7"/>
+    <line x1="57" y1="12" x2="59" y2="13" stroke="#34D399" stroke-width="1.0" opacity="0.6" stroke-linecap="round"/>
+    <circle cx="59" cy="13" r="0.8" fill="#34D399" opacity="0.6"/>
+    <!-- Whiskers - left organic -->
+    <line x1="20" y1="52" x2="7" y2="49" stroke="#0D9488" stroke-width="0.9" opacity="0.5" stroke-linecap="round"/>
+    <line x1="20" y1="55" x2="6" y2="55.5" stroke="#0D9488" stroke-width="0.9" opacity="0.45" stroke-linecap="round"/>
+    <line x1="21" y1="57.5" x2="8" y2="60" stroke="#0D9488" stroke-width="0.8" opacity="0.4" stroke-linecap="round"/>
+    <!-- Whiskers - right data-flow with terminal nodes -->
+    <line x1="48" y1="51.5" x2="62" y2="48" stroke="#0D9488" stroke-width="1.0" opacity="0.6" stroke-linecap="round"/>
+    <circle cx="62" cy="48" r="1.5" fill="#34D399" opacity="0.7"/>
+    <line x1="48" y1="54.5" x2="63" y2="54" stroke="#0D9488" stroke-width="1.0" opacity="0.55" stroke-linecap="round"/>
+    <circle cx="63" cy="54" r="1.3" fill="#34D399" opacity="0.65"/>
+    <line x1="47" y1="57" x2="61" y2="59.5" stroke="#0D9488" stroke-width="0.9" opacity="0.5" stroke-linecap="round"/>
+    <circle cx="61" cy="59.5" r="1.1" fill="#34D399" opacity="0.55"/>
+  </g>
+</svg>

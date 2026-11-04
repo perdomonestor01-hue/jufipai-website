@@ -4,6 +4,8 @@ import ContentCard from '../components/ContentCard.astro';
 import { fetchArticles } from '../lib/api';
 
 const articles = await fetchArticles();
+// No posts yet ([] in public/data/articles.json): show one line instead of filters, search and an empty grid.
+const hasPosts = articles.length > 0;
 ---
 
 <Base
@@ -13,69 +15,60 @@ const articles = await fetchArticles();
   <section class="writing-page">
     <div class="writing-inner">
       <header class="writing-header">
-        <h1 data-en="Writing" data-es="Escritos">Writing</h1>
-        <span class="writing-count">{articles.length} posts</span>
+        <h1>Writing</h1>
+        {hasPosts && <span class="writing-count">{articles.length} posts</span>}
       </header>
 
+      {!hasPosts && <p class="first-post">First article coming this week.</p>}
+
+      {hasPosts && (<Fragment>
       <div class="writing-controls">
         <div
           class="filter-group"
-          role="tablist"
+          role="group"
           aria-label="Filter by content type"
         >
           <button
             class="filter-btn active"
             data-filter="all"
             data-filter-index="0"
-            role="tab"
-            aria-selected="true"
-            data-en="All"
-            data-es="Todos">All</button
+            type="button"
+            aria-pressed="true">All</button
           >
           <button
             class="filter-btn"
             data-filter="article"
             data-filter-index="1"
-            role="tab"
-            aria-selected="false"
-            data-en="Articles"
-            data-es="Articulos">Articles</button
+            type="button"
+            aria-pressed="false">Articles</button
           >
           <button
             class="filter-btn"
             data-filter="deep_question"
             data-filter-index="2"
-            role="tab"
-            aria-selected="false"
-            data-en="Questions"
-            data-es="Preguntas">Questions</button
+            type="button"
+            aria-pressed="false">Questions</button
           >
           <button
             class="filter-btn"
             data-filter="unpopular_take"
             data-filter-index="3"
-            role="tab"
-            aria-selected="false"
-            data-en="Takes"
-            data-es="Opiniones">Takes</button
+            type="button"
+            aria-pressed="false">Takes</button
           >
           <button
             class="filter-btn"
             data-filter="image_quote"
             data-filter-index="4"
-            role="tab"
-            aria-selected="false"
-            data-en="Thoughts"
-            data-es="Pensamientos">Thoughts</button
+            type="button"
+            aria-pressed="false">Thoughts</button
           >
           <button
             class="filter-btn"
             data-filter="tip"
             data-filter-index="5"
-            role="tab"
-            aria-selected="false"
-            data-en="Tips"
-            data-es="Consejos">Tips</button
+            type="button"
+            aria-pressed="false">Tips</button
           >
         </div>
 
@@ -83,10 +76,8 @@ const articles = await fetchArticles();
           <input
             type="search"
             id="article-search"
-            aria-label="Search articles"
-            placeholder="Search articles..."
-            data-en-placeholder="Search articles..."
-            data-es-placeholder="Buscar articulos..."
+            aria-label="Search posts"
+            placeholder="Search posts..."
             autocomplete="off"
           />
         </div>
@@ -112,25 +103,24 @@ const articles = await fetchArticles();
       <p
         class="empty-state"
         id="empty-state"
+        role="status"
         hidden
-        data-en="No articles found."
-        data-es="No se encontraron articulos."
       >
-        No articles found.
+        No posts match.
       </p>
 
       <button
+        type="button"
         class="load-more-btn"
-        id="load-more"
-        data-en="Load more"
-        data-es="Cargar mas">Load more</button
+        id="load-more">Load more</button
       >
+      </Fragment>)}
     </div>
   </section>
 </Base>
 
 <script>
-  document.addEventListener('astro:page-load', () => {
+  function initWriting(): void {
     const grid = document.getElementById('articles-grid');
     if (!grid) return;
 
@@ -198,10 +188,10 @@ const articles = await fetchArticles();
         const newIndex = parseInt((btn as HTMLElement).dataset.filterIndex || '0', 10);
         document.querySelectorAll('.filter-btn').forEach((b) => {
           b.classList.remove('active');
-          b.setAttribute('aria-selected', 'false');
+          b.setAttribute('aria-pressed', 'false');
         });
         btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
+        btn.setAttribute('aria-pressed', 'true');
         activeFilter =
           (btn as HTMLElement).dataset.filter || 'all';
         visibleCount = ITEMS_PER_PAGE;
@@ -232,7 +222,9 @@ const articles = await fetchArticles();
       });
 
     applyFilters();
-  });
+  }
+
+  initWriting();
 </script>
 
 <style>
@@ -249,6 +241,7 @@ const articles = await fetchArticles();
   .writing-header {
     margin-bottom: var(--space-xl);
     display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
     gap: var(--space-md);
   }
@@ -256,6 +249,9 @@ const articles = await fetchArticles();
   .writing-header h1 {
     font-family: var(--font-display);
     font-size: var(--text-display);
+    margin: 0;
+    line-height: 1;
+    color: var(--brand-navy);
   }
 
   .writing-count {
@@ -273,8 +269,10 @@ const articles = await fetchArticles();
     flex-wrap: wrap;
   }
 
+  /* filters wrap on a phone; every button is a 44px target */
   .filter-group {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--space-xs);
   }
 
@@ -283,30 +281,34 @@ const articles = await fetchArticles();
     font-size: var(--text-small);
     font-weight: 500;
     padding: 0.45rem 1rem;
-    border: 1.5px solid var(--color-arena);
+    min-height: 44px;
+    border: 1.5px solid #8a8f9c;
     background: transparent;
-    color: var(--color-carbon-soft);
+    color: var(--brand-navy);
     border-radius: var(--radius-pill);
     cursor: pointer;
     transition: background var(--duration-base) var(--ease-spring), border-color var(--duration-base) var(--ease-spring), color var(--duration-base) var(--ease-spring);
   }
 
   .filter-btn:hover {
-    border-color: var(--color-jade);
-    color: var(--color-jade-deep);
+    border-color: var(--brand-navy);
+    color: var(--brand-navy);
   }
 
+  /* active filter = gold fill, navy text (white on gold fails AA) */
   .filter-btn.active {
-    background: var(--color-jade);
-    border-color: var(--color-jade);
-    color: #FFFFFF;
+    background: var(--brand-gold);
+    border-color: var(--brand-gold);
+    color: var(--brand-navy);
   }
 
   .search-box input {
     font-family: var(--font-body);
     font-size: var(--text-small);
     padding: 0.55rem 0.9rem;
-    border: 1.5px solid var(--color-arena);
+    min-height: 44px;
+    box-sizing: border-box;
+    border: 1.5px solid #8a8f9c;
     border-radius: 12px;
     background: var(--color-surface);
     color: var(--color-carbon);
@@ -315,9 +317,26 @@ const articles = await fetchArticles();
   }
 
   .search-box input:focus {
-    outline: none;
-    border-color: var(--color-jade);
-    box-shadow: 0 0 0 3px rgba(14, 124, 102, 0.15);
+    border-color: var(--brand-navy);
+    box-shadow: 0 0 0 3px rgba(197, 164, 78, .45);
+  }
+
+  /* cards render at full opacity, as in the approved screenshots (no scroll-driven fade) */
+  .articles-grid :global(.card) {
+    animation: none;
+  }
+
+  /* empty state: one line in the card-area styling */
+  .first-post {
+    background: var(--color-surface);
+    border: 1px solid var(--color-arena);
+    border-radius: var(--radius-card);
+    padding: var(--space-lg);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--brand-navy);
+    max-width: 40rem;
   }
 
   .articles-grid {
@@ -342,7 +361,7 @@ const articles = await fetchArticles();
     width: 8px;
     height: 8px;
     border-radius: var(--radius-pill);
-    background: var(--color-jade);
+    background: var(--brand-gold);
     margin: 0.75rem auto 0;
     animation: emptyPulse 1.6s var(--ease-spring) infinite;
   }
@@ -359,7 +378,8 @@ const articles = await fetchArticles();
     font-size: var(--text-small);
     font-weight: 500;
     padding: 0.65rem 1.75rem;
-    border: 1.5px solid var(--color-arena);
+    min-height: 44px;
+    border: 1.5px solid #8a8f9c;
     background: var(--color-surface);
     color: var(--color-carbon);
     border-radius: var(--radius-pill);
@@ -368,8 +388,8 @@ const articles = await fetchArticles();
   }
 
   .load-more-btn:hover {
-    border-color: var(--color-jade);
-    color: var(--color-jade-deep);
+    border-color: var(--brand-navy);
+    color: var(--brand-navy);
     transform: translateY(-1px);
   }
 
@@ -380,6 +400,11 @@ const articles = await fetchArticles();
   }
 
   @media (max-width: 640px) {
+    /* phone header wraps to two rows (lockup + CTA/EN, then nav): ~140px measured */
+    .writing-page {
+      padding-top: calc(140px + var(--space-lg));
+    }
+
     .articles-grid {
       grid-template-columns: 1fr;
     }
