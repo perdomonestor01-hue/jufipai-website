@@ -46,7 +46,7 @@ const label = typeLabels[type] || typeLabels.article;
             data-en="Read on LinkedIn"
             data-es="Leer en LinkedIn"
           >
-            Read on LinkedIn
+            Read on LinkedIn<span class="sr-only">: {article.title} (opens in a new tab)</span>
           </a>
         )}
       </div>
@@ -66,7 +66,7 @@ const label = typeLabels[type] || typeLabels.article;
       )}
       <div class="take-content">
         <span class="card-badge card-badge--take" data-en={label.en} data-es={label.es}>{label.en}</span>
-        <h3 class="card-title">{article.title}</h3>
+        <h2 class="card-title">{article.title}</h2>
         <p class="card-teaser">{article.teaser}</p>
       </div>
       <div class="card-meta">
@@ -86,7 +86,7 @@ const label = typeLabels[type] || typeLabels.article;
             data-en="Read on LinkedIn"
             data-es="Leer en LinkedIn"
           >
-            Read on LinkedIn
+            Read on LinkedIn<span class="sr-only">: {article.title} (opens in a new tab)</span>
           </a>
         )}
       </div>
@@ -111,7 +111,7 @@ const label = typeLabels[type] || typeLabels.article;
         </span>
         {article.linkedinUrl && (
           <a href={article.linkedinUrl} target="_blank" rel="noopener noreferrer" class="card-link" data-en="Read on LinkedIn" data-es="Leer en LinkedIn">
-            Read on LinkedIn
+            Read on LinkedIn<span class="sr-only">: {article.title} (opens in a new tab)</span>
           </a>
         )}
       </div>
@@ -120,9 +120,9 @@ const label = typeLabels[type] || typeLabels.article;
     <article class="card card-tip reveal" data-type={type}>
       <div class="tip-content">
         <span class="card-badge card-badge--tip" data-en={label.en} data-es={label.es}>{label.en}</span>
-        <h3 class="card-title tip-title">
+        <h2 class="card-title tip-title">
           <span class="tip-number" aria-hidden="true">#</span>{article.title}
-        </h3>
+        </h2>
         <p class="card-teaser">{article.teaser}</p>
       </div>
       <div class="card-meta">
@@ -133,7 +133,7 @@ const label = typeLabels[type] || typeLabels.article;
         </span>
         {article.linkedinUrl && (
           <a href={article.linkedinUrl} target="_blank" rel="noopener noreferrer" class="card-link" data-en="Read on LinkedIn" data-es="Leer en LinkedIn">
-            Read on LinkedIn
+            Read on LinkedIn<span class="sr-only">: {article.title} (opens in a new tab)</span>
           </a>
         )}
       </div>
@@ -150,7 +150,7 @@ const label = typeLabels[type] || typeLabels.article;
       )}
       <div class="card-body">
         <span class="card-badge card-badge--creative" data-en={label.en} data-es={label.es}>{label.en}</span>
-        <h3 class="card-title">{article.title}</h3>
+        <h2 class="card-title">{article.title}</h2>
         <p class="card-teaser card-teaser--creative">{article.teaser}</p>
         <div class="card-meta">
           <span class="card-date">{date}</span>
@@ -160,7 +160,7 @@ const label = typeLabels[type] || typeLabels.article;
           </span>
           {article.linkedinUrl && (
             <a href={article.linkedinUrl} target="_blank" rel="noopener noreferrer" class="card-link" data-en="Read on LinkedIn" data-es="Leer en LinkedIn">
-              Read on LinkedIn
+              Read on LinkedIn<span class="sr-only">: {article.title} (opens in a new tab)</span>
             </a>
           )}
         </div>
@@ -191,7 +191,7 @@ const label = typeLabels[type] || typeLabels.article;
       )}
       <div class="card-body">
         <span class="card-badge card-badge--article" data-en={label.en} data-es={label.es}>{label.en}</span>
-        <h3 class="card-title">{article.title}</h3>
+        <h2 class="card-title">{article.title}</h2>
         <p class="card-teaser">{article.teaser}</p>
         <div class="card-meta">
           <span class="card-date">{date}</span>
@@ -210,7 +210,7 @@ const label = typeLabels[type] || typeLabels.article;
               data-en="Read on LinkedIn"
               data-es="Leer en LinkedIn"
             >
-              Read on LinkedIn
+              Read on LinkedIn<span class="sr-only">: {article.title} (opens in a new tab)</span>
             </a>
           )}
         </div>
@@ -259,7 +259,7 @@ const label = typeLabels[type] || typeLabels.article;
   .card-badge--imagequote { color: var(--color-carbon);        background: var(--color-maiz); }
   .card-badge--tip        { color: var(--color-jade-deep);     background: var(--color-jade-soft); }
   .card-badge--creative   {
-    color: #FFFFFF;
+    color: var(--brand-navy);
     background: linear-gradient(90deg, var(--color-jade) 0%, var(--color-terracota) 100%);
   }
 
@@ -290,8 +290,8 @@ const label = typeLabels[type] || typeLabels.article;
     bottom: 0.5rem;
     right: 0.5rem;
     font-size: var(--text-xs);
-    color: rgba(255, 255, 255, 0.78);
-    background: rgba(31, 36, 33, 0.55);
+    color: #fff;
+    background: rgba(27, 54, 93, .75);
     padding: 2px 6px;
     border-radius: 4px;
   }
@@ -328,10 +328,18 @@ const label = typeLabels[type] || typeLabels.article;
 
   .card-meta--padded { padding: var(--space-md); padding-top: 0.75rem; }
 
+  /* navy text, gold underline (gold is never text on a light ground); 44px target */
   .card-link {
     margin-left: auto;
     font-weight: 600;
-    color: var(--color-jade-deep);
+    color: var(--brand-navy);
+    text-decoration: underline;
+    text-decoration-color: var(--brand-gold);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
   }
 
   /* Featured card */
@@ -387,7 +395,7 @@ const label = typeLabels[type] || typeLabels.article;
     width: 130px;
     transform: rotate(38deg);
     background: var(--color-jade);
-    color: #FFFFFF;
+    color: var(--brand-navy);
     text-align: center;
     z-index: 2;
     box-shadow: 0 2px 6px rgba(31, 36, 33, 0.18);
@@ -450,7 +458,7 @@ const label = typeLabels[type] || typeLabels.article;
     font-family: var(--font-mono);
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--color-jade);
+    color: var(--brand-navy);
   }
 
   /* Creative card — gradient badge, hover reveals fuller teaser */

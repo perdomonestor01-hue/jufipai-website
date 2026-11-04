@@ -1,0 +1,360 @@
+---
+// Homepage body for / (EN) and /es/ (ES). Approved prototype jufipai-relaunch (2026-11-04).
+// Order: hero -> customer banner -> systems (featured + five A-Z) -> how we work -> FAQ -> CTA.
+// The footer newsletter follows from Base; the gap fix in global.css joins it to the CTA.
+import Hero from './Hero.astro';
+import CustomerBanner from './CustomerBanner.astro';
+import SystemCard from './SystemCard.astro';
+import { CALENDLY_URL, HOME, type Lang } from '../data/home';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const c = HOME[lang];
+const fe = c.featured;
+// A-Z by the title in the page language (ES order differs from EN).
+const cases = [...c.cases].sort((x, y) => x.title.localeCompare(y.title, lang));
+---
+
+<Hero eyebrow={c.eyebrow} headline={c.h1} lede={c.lede} cta={c.cta} see={c.see} />
+
+<CustomerBanner lang={lang} />
+
+<section class="services-section" id="systems">
+  <div class="services-inner">
+    <span class="section-label label-style">{c.label}</span>
+    <h2 class="services-headline">{c.h2}</h2>
+    <p class="services-intro">{c.intro}</p>
+    <div class="case-grid">
+      <SystemCard
+        featured
+        flag={c.featuredFlag}
+        img={fe.img}
+        alt={fe.alt}
+        title={fe.title}
+        problemLabel={c.p}
+        builtLabel={c.b}
+        resultLabel={c.r}
+        problem={fe.problem}
+        built={fe.built}
+        result={fe.result}
+        featuresLabel={fe.featL}
+        features={fe.feats}
+      />
+      {cases.map((s) => (
+        <SystemCard
+          img={s.img}
+          alt={`${c.sampleAlt}: ${s.title}`}
+          title={s.title}
+          problemLabel={c.p}
+          builtLabel={c.b}
+          resultLabel={c.r}
+          problem={s.problem}
+          built={s.built}
+          result={s.result}
+        />
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="band band--white">
+  <div class="wrap">
+    <span class="label-style">{c.howL}</span>
+    <h2 class="services-headline">{c.howH}</h2>
+    <ol class="steps3">
+      {c.how.map(([h, p]) => (
+        <li><h3>{h}</h3><p>{p}</p></li>
+      ))}
+    </ol>
+    <div class="builder">
+      <div class="avatar" aria-hidden="true">
+        <img class="brand-mark" src="/brand/logo.svg" width="40" height="40" alt="" />
+      </div>
+      <p><strong>{c.whoStrong}</strong><br />{c.whoText}</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="narrow">
+    <span class="label-style">{c.faqL}</span>
+    <h2 class="services-headline">{c.faqH}</h2>
+    <div class="faq">
+      {c.faq.map(([q, a], i) => (
+        <details open={i === 0}>
+          <summary>{q}</summary>
+          <p>{a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="bottom-cta">
+  <div class="cta-inner">
+    <div>
+      <h2 class="cta-headline">{c.endH}</h2>
+      <p class="cta-sub">{c.endS}</p>
+    </div>
+    <div class="cta-actions">
+      <a href={CALENDLY_URL} class="cta-btn">{c.cta}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ---------- systems ---------- */
+  .services-section {
+    padding: var(--space-xl) 0;
+    background: var(--bg-primary);
+    scroll-margin-top: var(--nav-height);
+  }
+
+  .services-inner,
+  .wrap {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+  }
+
+  .narrow {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+  }
+
+  .section-label {
+    display: block;
+    margin-bottom: var(--space-md);
+  }
+
+  .services-headline {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--text-primary);
+    margin: var(--space-sm) 0 var(--space-xs);
+    max-width: 38rem;
+    letter-spacing: -0.01em;
+  }
+
+  .services-intro {
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--text-muted);
+    margin: 0 0 var(--space-lg);
+    max-width: 40rem;
+  }
+
+  .case-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+
+  /* ---------- how we work + who builds it ---------- */
+  .band {
+    padding: var(--space-xl) 0;
+  }
+
+  .band--white {
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-arena);
+    border-bottom: 1px solid var(--color-arena);
+  }
+
+  .steps3 {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-md) 0 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+    counter-reset: s;
+  }
+
+  .steps3 li {
+    counter-increment: s;
+    background: var(--color-papel);
+    border: 1px solid var(--color-arena);
+    border-radius: var(--radius-card);
+    padding: var(--space-md);
+  }
+
+  .steps3 li::before {
+    content: counter(s);
+    display: inline-grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--brand-gold);
+    color: var(--brand-navy);
+    font-family: var(--font-mono);
+    font-size: var(--text-small);
+    margin-bottom: var(--space-xs);
+  }
+
+  .steps3 h3 {
+    font-size: 1.125rem;
+    margin: 0 0 .25rem;
+  }
+
+  .steps3 p {
+    margin: 0;
+    font-size: var(--text-small);
+    color: var(--text-muted);
+  }
+
+  .builder {
+    display: flex;
+    gap: var(--space-md);
+    align-items: center;
+    margin-top: var(--space-lg);
+    padding: var(--space-md);
+    border: 1px solid var(--color-arena);
+    border-radius: var(--radius-card);
+    background: var(--color-papel);
+  }
+
+  .avatar {
+    flex: 0 0 auto;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    background: var(--brand-navy);
+    display: grid;
+    place-items: center;
+  }
+
+  .avatar .brand-mark {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .builder p {
+    margin: 0;
+    font-size: var(--text-small);
+  }
+
+  .builder strong {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    color: var(--text-primary);
+  }
+
+  /* ---------- FAQ ---------- */
+  .faq {
+    margin-top: var(--space-md);
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .faq details {
+    background: var(--color-surface);
+    border: 1px solid var(--color-arena);
+    border-radius: 12px;
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .faq summary {
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.0625rem;
+    color: var(--text-primary);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .faq p {
+    margin: var(--space-xs) 0 var(--space-xs);
+    font-size: var(--text-small);
+  }
+
+  /* ---------- bottom CTA ---------- */
+  .bottom-cta {
+    padding: var(--space-2xl) 0;
+    background: var(--brand-navy);
+  }
+
+  .cta-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+  }
+
+  .cta-headline {
+    font-family: var(--font-display);
+    font-size: var(--text-section);
+    color: var(--text-on-dark);
+    margin-bottom: 0.25rem;
+  }
+
+  .cta-sub {
+    font-size: var(--text-small);
+    color: var(--text-on-dark-muted);
+  }
+
+  .cta-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-shrink: 0;
+  }
+
+  .cta-btn {
+    font-size: var(--text-small);
+    font-weight: 600;
+    color: var(--brand-navy);
+    background: var(--brand-gold);
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    transition: background var(--duration-base) var(--ease-spring), transform var(--duration-base) var(--ease-spring);
+  }
+
+  .cta-btn:hover {
+    color: var(--brand-navy);
+    background: var(--brand-gold-light);
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 900px) {
+    .case-grid,
+    .steps3 {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .cta-inner {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .cta-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .cta-btn {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>
