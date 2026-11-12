@@ -1,162 +1,728 @@
 // ============================================================
-// JufipAI Contact Form — Google Apps Script
+// JufipAI website — Google Apps Script (container-bound to the leads spreadsheet)
 // ============================================================
-// Deploy: Extensions > Apps Script > Deploy > Web app
-// Execute as: Me | Access: Anyone
-// Paste the deployment URL into contact.astro (SHEET_URL)
-// After updating: Deploy > Manage deployments > Edit > New version > Deploy
+// Replaces the original contact-form script ENTIRELY (operator decision 2026-11-12).
+// Deploy: Extensions > Apps Script > paste this file as Code.gs + appsscript.json (timeZone
+//   America/Chicago) > Deploy > Manage deployments > Edit > New version > Deploy.
+//   Web app: Execute as: Me | Access: Anyone. Then run installTriggers() once from the editor.
+//
+// Requests (JSON, Content-Type text/plain, from jufipai.com):
+//   {type:'book_call', email, locale, source:'home_book'}     src/scripts/book-call.ts
+//   {type:'subscribe', email, locale, source:'footer_inline'} src/scripts/newsletter.ts
+// Anything else writes nothing and sends nothing. The response is always {"result":"ok"}.
+//
+// Tabs (created with a header row if missing; never the active sheet):
+//   "Book a call":  Requested (CT) | Email | Locale | Source | Welcome sent | Alert sent
+//   "Subscribers":  Subscribed (CT) | Email | Locale | Source
+//
+// Layout of this file:
+//   1. emails.gs — the APPROVED email templates (prototype marker 2026-11-12), verbatim.
+//      Do not edit between the BEGIN/END lines: the approved prototype is the spec.
+//   2. Server code — doPost, sheet writes, welcome guards, weekly digest, installTriggers.
 // ============================================================
 
+// ===== BEGIN emails.gs (approved 2026-11-12, verbatim — do not edit) =====
+/**
+ * Book a call — the two INTERNAL emails to contact@jufipai.com, written once.
+ *
+ *   instantAlertEmail(row, sheetUrl)              -> { subject, htmlBody, textBody }
+ *   weeklyReportEmail(rows, weekStart, weekEnd)   -> { subject, htmlBody, textBody }
+ *
+ * Pure functions: no GmailApp, SpreadsheetApp, Utilities or network calls in here, so the SAME
+ * file runs in Apps Script (V8) and in Node (prototype renderer, node:vm). The caller sends:
+ *   var m = instantAlertEmail(row, SHEET_LINK);
+ *   GmailApp.sendEmail('contact@jufipai.com', m.subject, m.textBody, { htmlBody: m.htmlBody, name: 'JufipAI site' });
+ *
+ * English only, flat counts, no AI. Every interpolated value is HTML-escaped: the email address
+ * is typed by a website visitor, so '<i>sam</i>@example.com' must arrive as text.
+ * Email-safe HTML: tables + inline styles, no <script>, no external CSS, no <style> block.
+ * Brand: navy #1b365d, gold #c5a44e (never as text on a light background), ink #2c3345, muted #4a5468.
+ */
+
+var SHEET_LINK = '#'; // Phase 2: the "Book a call" tab URL, passed in as sheetUrl.
+
+var BC_NAVY = '#1b365d';
+var BC_GOLD = '#c5a44e';
+var BC_INK = '#2c3345';
+var BC_MUTED = '#4a5468';
+var BC_RED = '#a3372a';
+var BC_TZ = 'America/Chicago';
+
+var BC_TH = 'style="text-align:left;padding:8px 10px;border-bottom:2px solid ' + BC_NAVY + ';font-size:13px;color:' + BC_NAVY + ';"';
+var BC_TD = 'style="padding:8px 10px;border-bottom:1px solid #e8e2d5;font-size:14px;color:' + BC_INK + ';vertical-align:top;"';
+var BC_TD_ADDR = 'style="padding:8px 10px;border-bottom:1px solid #e8e2d5;font-size:14px;color:' + BC_INK + ';vertical-align:top;word-break:break-word;overflow-wrap:anywhere;"';
+var BC_TDK = 'style="padding:8px 10px;border-bottom:1px solid #e8e2d5;font-size:14px;color:' + BC_MUTED + ';width:110px;vertical-align:top;"';
+
+/** Address cell: break inside the address only when it is long (>40 chars), so ordinary
+ *  addresses never split mid-word at phone width but a very long one cannot widen the card. */
+function bcAddrTd(email) {
+  return String(email).length > 40 ? BC_TD_ADDR : BC_TD;
+}
+
+/** HTML-escape any value (null/undefined -> ''). */
+function bcEscape(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/** One line of plain text: control characters (CR, LF, tab, ...) become a space. */
+function bcLine(value) {
+  return String(value == null ? '' : value).replace(/[\u0000-\u001f\u007f]+/g, ' ').trim();
+}
+
+/** Date | ISO string | epoch ms -> Date, or null. Works across realms (no instanceof). */
+function bcDate(value) {
+  if (value == null || value === '') return null;
+  var d = (typeof value === 'object' && typeof value.getTime === 'function') ? new Date(value.getTime()) : new Date(value);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function bcParts(date, options) {
+  var opts = { timeZone: BC_TZ };
+  for (var k in options) opts[k] = options[k];
+  var out = {};
+  var parts = new Intl.DateTimeFormat('en-US', opts).formatToParts(date);
+  for (var i = 0; i < parts.length; i++) out[parts[i].type] = parts[i].value;
+  return out;
+}
+
+/** "Wed Nov 11, 1:42 PM CT" in America/Chicago. */
+function bcTime(value) {
+  var d = bcDate(value);
+  if (!d) return '—';
+  var p = bcParts(d, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+  return p.weekday + ' ' + p.month + ' ' + p.day + ', ' + p.hour + ':' + p.minute + ' ' + p.dayPeriod.toUpperCase() + ' CT';
+}
+
+/** "Nov 2–8", or "Oct 26–Nov 1" across a month boundary. weekEnd = last day INCLUDED. */
+function bcRange(weekStart, weekEnd) {
+  var a = bcDate(weekStart), b = bcDate(weekEnd);
+  if (!a || !b) return '—';
+  var pa = bcParts(a, { month: 'short', day: 'numeric' });
+  var pb = bcParts(b, { month: 'short', day: 'numeric' });
+  return pa.month + ' ' + pa.day + '–' + (pa.month === pb.month ? '' : pb.month + ' ') + pb.day;
+}
+
+function bcLanguage(locale) {
+  return String(locale || '').toLowerCase() === 'es' ? 'Spanish' : 'English';
+}
+
+function bcWhere(source) {
+  if (source === 'home_book') return 'Home page · Book a call';
+  return bcLine(source) || 'Website';
+}
+
+function bcPlural(n, word) {
+  return n + ' ' + word + (n === 1 ? '' : 's');
+}
+
+/** Only plain addresses become mailto links; anything odd stays escaped text. */
+function bcAddressHtml(email) {
+  var e = bcLine(email);
+  if (/^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/.test(e)) {
+    return '<a href="mailto:' + bcEscape(e) + '" style="color:' + BC_NAVY + ';">' + bcEscape(e) + '</a>';
+  }
+  return bcEscape(e);
+}
+
+/** The email card: hidden preheader + white card with the navy/gold header. No canvas. */
+function bcCard(preheader, title, bodyHtml) {
+  return '' +
+    '<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">' + bcEscape(preheader) + '</div>\n' +
+    '<table role="presentation" class="card" width="640" align="center" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:640px;background:#ffffff;border-radius:10px;overflow:hidden;">\n' +
+    '  <tr><td class="pad" style="background:' + BC_NAVY + ';padding:16px 24px;">\n' +
+    '    <span style="font-family:Georgia,\'Times New Roman\',serif;font-size:20px;font-weight:bold;color:#ffffff;">Jufip<span style="color:' + BC_GOLD + ';">AI</span></span>\n' +
+    '    <span style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#c9d2e0;">&nbsp;&nbsp;' + bcEscape(title) + '</span>\n' +
+    '  </td></tr>\n' +
+    '  <tr><td style="height:3px;line-height:3px;font-size:0;background:' + BC_GOLD + ';">&nbsp;</td></tr>\n' +
+    '  <tr><td class="pad" style="padding:24px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:22px;color:' + BC_INK + ';">' + bodyHtml + '</td></tr>\n' +
+    '</table>\n';
+}
+
+/**
+ * Instant alert, sent the moment a visitor submits the "Book a call" form.
+ * @param {{email:string, locale:string, requestedAt:(Date|string|number), source:string}} row
+ * @param {string=} sheetUrl  link for the "Open the sheet" button (default SHEET_LINK)
+ */
+function instantAlertEmail(row, sheetUrl) {
+  row = row || {};
+  var email = bcLine(row.email);
+  var lang = bcLanguage(row.locale);
+  var when = bcTime(row.requestedAt);
+  var where = bcWhere(row.source);
+  var link = bcLine(sheetUrl || SHEET_LINK);
+  if (!/^(https:\/\/|#)/.test(link)) link = '#';
+
+  var subject = 'New call request: ' + email;
+  var preheader = email + ' · ' + lang + ' · ' + when;
+
+  var body = '\n' +
+    '    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;">\n' +
+    '      <tr><td ' + BC_TDK + '>Email</td><td ' + bcAddrTd(email) + '>' + bcAddressHtml(email) + '</td></tr>\n' +
+    '      <tr><td ' + BC_TDK + '>Language</td><td ' + BC_TD + '>' + bcEscape(lang) + '</td></tr>\n' +
+    '      <tr><td ' + BC_TDK + '>Time</td><td ' + BC_TD + '>' + bcEscape(when) + '</td></tr>\n' +
+    '      <tr><td ' + BC_TDK + '>Where</td><td ' + BC_TD + '>' + bcEscape(where) + '</td></tr>\n' +
+    '    </table>\n' +
+    '    <p style="margin:18px 0 18px;">Calendly will email you separately if they book a time.</p>\n' +
+    '    <a href="' + bcEscape(link) + '" style="display:inline-block;padding:10px 18px;background:' + BC_NAVY + ';color:#ffffff;text-decoration:none;font-weight:bold;border-radius:6px;">Open the sheet</a>';
+
+  var text = [
+    'New call request',
+    '',
+    'Email:    ' + email,
+    'Language: ' + lang,
+    'Time:     ' + when,
+    'Where:    ' + where,
+    '',
+    'Calendly will email you separately if they book a time.',
+    '',
+    'Open the sheet: ' + link,
+  ].join('\n');
+
+  return { subject: subject, htmlBody: bcCard(preheader, 'New call request', body), textBody: text };
+}
+
+/**
+ * Weekly digest, Monday 8:00 AM CT, covering the previous Monday–Sunday.
+ * @param {Array<{email:string, locale:string, requestedAt:(Date|string|number), bookedAt:(Date|string|number|null)}>} rows
+ * @param {Date|string|number} weekStart  first day of the week (included)
+ * @param {Date|string|number} weekEnd    last day of the week (included)
+ */
+function weeklyReportEmail(rows, weekStart, weekEnd) {
+  rows = (rows || []).slice();
+  var range = bcRange(weekStart, weekEnd);
+  var title = 'Book a call · weekly · Mon 8:00 AM CT';
+
+  if (rows.length === 0) {
+    var none = 'No call requests last week.';
+    return {
+      subject: 'Book a call — ' + range + ': no requests',
+      htmlBody: bcCard(none, title,
+        '\n    <p style="margin:0;font-size:16px;"><b style="color:' + BC_NAVY + ';">' + bcEscape(range) + ':</b> ' + bcEscape(none) + '</p>'),
+      textBody: 'Book a call · weekly\n' + range + ': ' + none,
+    };
+  }
+
+  var ms = function (v) { var d = bcDate(v); return d ? d.getTime() : 0; };
+  rows.sort(function (a, b) {
+    var ab = bcDate(a.bookedAt) ? 1 : 0, bb = bcDate(b.bookedAt) ? 1 : 0;
+    return ab !== bb ? ab - bb : ms(a.requestedAt) - ms(b.requestedAt); // not booked first, then oldest first
+  });
+  var total = rows.length;
+  var booked = 0;
+  for (var i = 0; i < rows.length; i++) if (bcDate(rows[i].bookedAt)) booked++;
+  var open = total - booked;
+
+  var subject = 'Book a call — ' + range + ': ' + bcPlural(total, 'request') + ', ' + booked + ' booked';
+  var preheader = bcPlural(total, 'request') + ', ' + booked + ' booked, ' + open + ' to follow up';
+  var summary = bcPlural(total, 'request') + ' · ' + booked + ' booked · ' + open + ' not booked';
+
+  var rowsHtml = '';
+  var textNot = [], textBooked = [];
+  for (var j = 0; j < rows.length; j++) {
+    var r = rows[j];
+    var email = bcLine(r.email);
+    var meta = bcLanguage(r.locale) + ' · requested ' + bcTime(r.requestedAt);
+    var b = bcDate(r.bookedAt);
+    var status = b
+      ? 'Booked — ' + bcEscape(bcTime(b))
+      : '<b style="color:' + BC_RED + ';">Not booked — follow up</b>';
+    rowsHtml += '\n      <tr><td ' + bcAddrTd(email) + '>' + bcEscape(email) +
+      '<br><span style="font-size:12px;color:' + BC_MUTED + ';">' + bcEscape(meta) + '</span></td><td ' + BC_TD + '>' + status + '</td></tr>';
+    if (b) textBooked.push('- ' + email + ' — ' + meta + ' · booked ' + bcTime(b));
+    else textNot.push('- ' + email + ' — ' + meta);
+  }
+
+  var body = '\n' +
+    '    <p style="margin:0 0 16px;font-size:16px;"><b style="color:' + BC_NAVY + ';">' + bcEscape(range) + ':</b> ' + bcEscape(summary) + '</p>\n' +
+    '    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;">\n' +
+    '      <tr><th scope="col" ' + BC_TH + '>Request</th><th scope="col" ' + BC_TH + '>Status</th></tr>' + rowsHtml + '\n' +
+    '    </table>\n' +
+    '    <p style="margin:16px 0 0;font-size:12px;line-height:18px;color:' + BC_MUTED + ';">Booked = a Calendly confirmation for this email reached contact@jufipai.com.</p>';
+
+  var text = ['Book a call · weekly', range + ': ' + summary, ''];
+  if (textNot.length) text.push('NOT BOOKED — FOLLOW UP', textNot.join('\n'), '');
+  if (textBooked.length) text.push('BOOKED', textBooked.join('\n'), '');
+  text.push('Booked = a Calendly confirmation for this email reached contact@jufipai.com.');
+
+  return { subject: subject, htmlBody: bcCard(preheader, title, body), textBody: text.join('\n') };
+}
+
+/**
+ * Welcome email to the VISITOR, sent when the "Book a call" form is submitted (type 'book_call').
+ * Replaces sendWelcomeEmail() from google-apps-script.txt for this flow: same intent (we received
+ * it, here is what happens next, the 30-minute calendar link, while-you-wait links, LinkedIn) but
+ * the form collects no name, so there is no "Hi <name>" — and the visitor has usually just seen
+ * the calendar, so the copy covers both "already booked" and "not booked yet".
+ * English only (site is English-only since 2026-11-11). Every interpolated value is escaped.
+ * Caller (Phase 2, not built):
+ *   var m = welcomeEmail(row);
+ *   GmailApp.sendEmail(row.email, m.subject, m.textBody, { htmlBody: m.htmlBody, name: 'JufipAI' });
+ * @param {{email:string}} row
+ */
+var BC_CALENDLY = 'https://calendly.com/contact-jufipai/30min';
+
+function welcomeEmail(row) {
+  row = row || {};
+  var email = bcLine(row.email);
+  var subject = 'JufipAI — We received your call request';
+  var preheader = 'Pick a 30-minute time on our calendar, or we will follow up by email.';
+  var P = 'style="margin:0 0 16px;font-size:15px;line-height:23px;color:' + BC_INK + ';"';
+  var LINK = 'style="color:' + BC_NAVY + ';font-weight:bold;"';
+  var TILE = 'style="padding:12px 14px;border:1px solid #e8e2d5;border-radius:8px;font-size:14px;line-height:20px;color:' + BC_INK + ';"';
+
+  var body = '\n' +
+    '    <h1 style="margin:0 0 6px;font-family:Georgia,\'Times New Roman\',serif;font-size:24px;line-height:30px;font-weight:normal;color:' + BC_NAVY + ';">We received your call request.</h1>\n' +
+    '    <p style="margin:0 0 20px;font-size:15px;color:' + BC_MUTED + ';">Here is what happens next.</p>\n' +
+    '    <p ' + P + '>We have your request from <span style="font-weight:bold;overflow-wrap:anywhere;word-break:break-word;">' + bcEscape(email) + '</span>.</p>\n' +
+    '    <p ' + P + '>Already picked a time? Calendly emails the confirmation and calendar invite separately — nothing else to do. Not yet? The calendar is one tap away:</p>\n' +
+    '    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 6px;"><tr><td style="background:' + BC_NAVY + ';border-radius:6px;">' +
+    '<a href="' + BC_CALENDLY + '" target="_blank" style="display:inline-block;padding:13px 24px;font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;color:#ffffff;text-decoration:none;border-radius:6px;">Pick a 30-minute time</a>' +
+    '</td></tr></table>\n' +
+    '    <p style="margin:0 0 24px;font-size:13px;color:' + BC_MUTED + ';">30 minutes · No commitment · Free</p>\n' +
+    '    <p ' + P + '>If you do not pick a time, we will follow up by email.</p>\n' +
+    '    <p style="margin:24px 0 10px;font-size:13px;font-weight:bold;letter-spacing:0.06em;text-transform:uppercase;color:' + BC_NAVY + ';">Before the call</p>\n' +
+    '    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;border-spacing:0 8px;">\n' +
+    '      <tr><td ' + TILE + '><a href="https://jufipai.com/#systems" ' + LINK + '>See the systems we build</a><br>Property management first, then the rest.</td></tr>\n' +
+    '      <tr><td ' + TILE + '><a href="https://jufipai.com/writing/" ' + LINK + '>Read our writing</a><br>Notes on the systems we build.</td></tr>\n' +
+    '      <tr><td ' + TILE + '><a href="https://www.linkedin.com/company/jufipai" target="_blank" ' + LINK + '>Follow JufipAI on LinkedIn</a><br>Automation tips and industry notes.</td></tr>\n' +
+    '    </table>\n' +
+    '    <p style="margin:24px 0 0;font-size:15px;color:' + BC_INK + ';">— The JufipAI team</p>\n' +
+    '    <p style="margin:20px 0 0;padding-top:14px;border-top:1px solid #e8e2d5;font-size:12px;line-height:18px;color:' + BC_MUTED + ';">Custom AI and automation for small teams.<br>' +
+    '<a href="https://jufipai.com" style="color:' + BC_NAVY + ';">jufipai.com</a> · <a href="https://www.linkedin.com/company/jufipai" style="color:' + BC_NAVY + ';">LinkedIn</a> · <a href="https://jufipai.com/writing/" style="color:' + BC_NAVY + ';">Writing</a></p>';
+
+  var text = [
+    'We received your call request.',
+    'Here is what happens next.',
+    '',
+    'We have your request from ' + email + '.',
+    '',
+    'Already picked a time? Calendly emails the confirmation and calendar invite separately — nothing else to do.',
+    'Not yet? Pick a 30-minute time: ' + BC_CALENDLY,
+    '30 minutes · No commitment · Free',
+    '',
+    'If you do not pick a time, we will follow up by email.',
+    '',
+    'Before the call',
+    '- See the systems we build: https://jufipai.com/#systems',
+    '- Read our writing: https://jufipai.com/writing/',
+    '- Follow JufipAI on LinkedIn: https://www.linkedin.com/company/jufipai',
+    '',
+    '— The JufipAI team',
+    'Custom AI and automation for small teams. https://jufipai.com',
+  ].join('\n');
+
+  return { subject: subject, htmlBody: bcCard(preheader, 'Book a call', body), textBody: text };
+}
+// ===== END emails.gs =====
+
+// ============================================================
+// 2. Server code
+// ============================================================
+
+var JF_CONTACT = 'contact@jufipai.com';
+var JF_NAME_INTERNAL = 'JufipAI site'; // From name on internal mail (as in the approved review banner)
+var JF_NAME_VISITOR = 'JufipAI';       // From name on the visitor welcome
+var JF_TZ = 'America/Chicago';
+
+var JF_TAB_BOOK = 'Book a call';
+var JF_TAB_SUBS = 'Subscribers';
+var JF_HEAD_BOOK = ['Requested (CT)', 'Email', 'Locale', 'Source', 'Welcome sent', 'Alert sent'];
+var JF_HEAD_SUBS = ['Subscribed (CT)', 'Email', 'Locale', 'Source'];
+
+var JF_MAX_BODY_BYTES = 1024;
+var JF_FIELDS = ['type', 'email', 'locale', 'source', 'website', 'company_url_2'];
+var JF_EMAIL_RE = /^[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9.-]{1,190}\.[A-Za-z]{2,24}$/;
+var JF_SOURCE_RE = /^[a-z0-9_]{1,32}$/;
+
+var JF_WELCOME_DEDUPE_DAYS = 30;
+var JF_WELCOME_HOUR_CAP = 20;
+var JF_WELCOME_DAY_CAP = 100;
+var JF_MIN_MAIL_QUOTA = 50;      // welcome only while MailApp.getRemainingDailyQuota() > this
+var JF_CACHE_TTL_S = 21600;      // 6 h (CacheService maximum)
+var JF_SUB_DEDUPE_MS = 6 * 3600 * 1000;
+var JF_SCAN_ROWS = 2000;         // dedupe scans the most recent N rows only
+var JF_LOCK_MS = 20000;
+var JF_ALERT_HOUR_CAP = 30;      // instant alerts to contact@ per CT hour
+var JF_MAIL_FLOOR = 5;           // at or below this quota, only the digest + cap alert may send
+
+// ---------- entry point ----------
+
+/** Web-app POST. Always answers {"result":"ok"}; never echoes an error to the caller. */
 function doPost(e) {
   try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    var data = JSON.parse(e.postData.contents);
-    var name = data.name || '';
-    var email = data.email || '';
-    var message = data.message || '';
-
-    // Write to sheet
-    sheet.appendRow([name, email, message, new Date()]);
-
-    // Send welcome email
-    if (email) {
-      sendWelcomeEmail(name, email);
-    }
-
-    return ContentService
-      .createTextOutput(JSON.stringify({ result: 'success' }))
-      .setMimeType(ContentService.MimeType.JSON);
-
+    var req = jfParseRequest(e);
+    if (req) jfDispatch(req);
   } catch (err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ result: 'error', error: err.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
+    console.error('[doPost] ' + (err && err.stack ? err.stack : err));
+  }
+  return ContentService.createTextOutput(JSON.stringify({ result: 'ok' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+/** Body -> sanitized request, or null (oversize, not JSON, honeypot, bad type, bad email). */
+function jfParseRequest(e) {
+  var raw = e && e.postData && e.postData.contents;
+  if (typeof raw !== 'string' || raw.length === 0) return null;
+  if (raw.length > JF_MAX_BODY_BYTES || jfUtf8Bytes(raw) > JF_MAX_BODY_BYTES) return null;
+
+  var data;
+  try { data = JSON.parse(raw); } catch (parseErr) { return null; }
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return null;
+
+  var f = {};
+  for (var i = 0; i < JF_FIELDS.length; i++) {
+    var k = JF_FIELDS[i];
+    var v = Object.prototype.hasOwnProperty.call(data, k) ? data[k] : '';
+    f[k] = typeof v === 'string' ? v : '';
+  }
+
+  if (f.website.trim() !== '' || f.company_url_2.trim() !== '') return null; // honeypot: drop silently
+  if (f.type !== 'book_call' && f.type !== 'subscribe') return null;
+
+  var email = f.email.trim();
+  if (email.length > 254 || !JF_EMAIL_RE.test(email)) return null;
+
+  return {
+    type: f.type,
+    email: email,
+    locale: f.locale === 'es' ? 'es' : 'en',
+    source: JF_SOURCE_RE.test(f.source) ? f.source : 'unknown',
+  };
+}
+
+function jfDispatch(req) {
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(JF_LOCK_MS)) {
+    // Never lose a lead: record the validated row without dedupe and send nothing.
+    console.error('[doPost] lock busy after ' + JF_LOCK_MS + ' ms; row recorded unlocked, no email (type ' + req.type + ')');
+    jfAppendBusy(req, new Date());
+    return;
+  }
+  try {
+    if (req.type === 'book_call') jfBookCall(req, new Date());
+    else if (req.type === 'subscribe') jfSubscribe(req, new Date());
+  } finally {
+    lock.releaseLock();
   }
 }
 
-function sendWelcomeEmail(name, email) {
-  var firstName = name.split(' ')[0] || 'there';
+// ---------- book_call ----------
 
-  var htmlBody = '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#e8e8e8;">'
-    + '<div style="max-width:620px;margin:0 auto;padding:20px 0;">'
+function jfBookCall(req, now) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = jfTab(ss, JF_TAB_BOOK, JF_HEAD_BOOK);
+  var key = req.email.toLowerCase();
 
-    // Top accent bar
-    + '<div style="height:4px;background:linear-gradient(90deg,#14B8A6 0%,#0F8A7E 100%);border-radius:4px 4px 0 0;"></div>'
+  // Decide the welcome BEFORE appending, so this row cannot count as its own duplicate.
+  var decision = jfWelcomeDecision(sheet, key, now);
 
-    // Main container
-    + '<div style="background:#ffffff;font-family:Georgia,\'Times New Roman\',serif;">'
+  // 1. Row first — the lead is recorded even if every send below fails.
+  sheet.appendRow([now, jfCell(req.email), jfCell(req.locale), jfCell(req.source), 'pending', 'pending']);
+  var rowNum = sheet.getLastRow();
+  sheet.getRange(rowNum, 1).setNumberFormat('yyyy-mm-dd hh:mm');
+  var sheetUrl = jfSheetUrl(ss, sheet);
 
-    // Header
-    + '<div style="padding:36px 48px 28px;text-align:center;">'
-    + '<span style="font-family:\'Courier New\',monospace;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;color:#1A1A1A;font-weight:bold;">JufipAI</span>'
-    + '<div style="width:40px;height:2px;background:#14B8A6;margin:12px auto 0;"></div>'
-    + '</div>'
+  // 2. Instant alert to contact@ (approved template) — capped per hour, skipped near zero quota.
+  var props = PropertiesService.getScriptProperties();
+  var alertKey = jfAlertHourKey(now);
+  var alertStatus;
+  if (MailApp.getRemainingDailyQuota() <= JF_MAIL_FLOOR) alertStatus = 'no: mail quota low';
+  else if (Number(props.getProperty(alertKey) || 0) >= JF_ALERT_HOUR_CAP) alertStatus = 'no: alert cap (' + JF_ALERT_HOUR_CAP + '/h)';
+  else {
+    try {
+      var a = instantAlertEmail({ email: req.email, locale: req.locale, requestedAt: now, source: req.source }, sheetUrl);
+      jfSend(JF_CONTACT, a, JF_NAME_INTERNAL);
+      props.setProperty(alertKey, String(Number(props.getProperty(alertKey) || 0) + 1));
+      alertStatus = 'yes';
+    } catch (alertErr) {
+      console.error('[book_call] alert send failed: ' + alertErr);
+      alertStatus = 'no: send failed';
+    }
+  }
+  sheet.getRange(rowNum, 6).setValue(alertStatus);
+  if (alertStatus.indexOf('cap') !== -1 || alertStatus.indexOf('quota') !== -1) jfCapAlertOnce(now, alertStatus.replace(/^no: /, ''));
 
-    // Hero
-    + '<div style="padding:0 48px 32px;text-align:center;">'
-    + '<h1 style="font-family:Georgia,serif;font-size:26px;font-weight:400;color:#1A1A1A;margin:0 0 12px;line-height:1.3;">We received your inquiry.</h1>'
-    + '<p style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:15px;color:#8C8C8C;margin:0;">Here\'s what happens next.</p>'
-    + '</div>'
-
-    // Divider
-    + '<div style="margin:0 48px;height:1px;background:#f0f0f0;"></div>'
-
-    // Body
-    + '<div style="padding:32px 48px;">'
-    + '<p style="font-size:16px;color:#3D3D3D;line-height:1.8;margin:0 0 20px;">Hi ' + firstName + ', thank you for reaching out. A member of our team will review your project details and respond within 24 hours.</p>'
-    + '<p style="font-size:16px;color:#3D3D3D;line-height:1.8;margin:0 0 28px;">If you\'d like to move faster, you can schedule a 30-minute consultation directly on our calendar:</p>'
-
-    // Primary CTA
-    + '<div style="text-align:center;margin:0 0 36px;">'
-    + '<a href="https://calendly.com/contact-jufipai/30min" target="_blank" style="display:inline-block;background:#14B8A6;color:#ffffff;font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:16px;font-weight:600;text-decoration:none;padding:16px 44px;border-radius:8px;letter-spacing:0.02em;">Schedule Your Free Consultation</a>'
-    + '<p style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:12px;color:#8C8C8C;margin:10px 0 0;">30 minutes &middot; No commitment &middot; 100% free</p>'
-    + '</div>'
-    + '</div>'
-
-    // Divider
-    + '<div style="margin:0 48px;height:1px;background:#f0f0f0;"></div>'
-
-    // While you wait section
-    + '<div style="padding:32px 48px;">'
-    + '<p style="font-family:\'Courier New\',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#14B8A6;margin:0 0 16px;">While you wait</p>'
-
-    // Blog cards
-    + '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 28px;">'
-    + '<tr>'
-    + '<td width="48%" valign="top" style="padding-right:12px;">'
-    + '<div style="background:#FAFAF8;border-radius:8px;padding:20px;">'
-    + '<p style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#14B8A6;margin:0 0 8px;">Latest Articles</p>'
-    + '<p style="font-family:Georgia,serif;font-size:15px;color:#1A1A1A;line-height:1.4;margin:0 0 12px;">How AI is replacing spreadsheet chaos in 2026.</p>'
-    + '<a href="https://jufipai.com/writing" style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:13px;color:#14B8A6;text-decoration:none;font-weight:500;">Read our blog &rarr;</a>'
-    + '</div>'
-    + '</td>'
-    + '<td width="48%" valign="top" style="padding-left:12px;">'
-    + '<div style="background:#FAFAF8;border-radius:8px;padding:20px;">'
-    + '<p style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#14B8A6;margin:0 0 8px;">Our Work</p>'
-    + '<p style="font-family:Georgia,serif;font-size:15px;color:#1A1A1A;line-height:1.4;margin:0 0 12px;">Real automation systems for staffing, construction &amp; property.</p>'
-    + '<a href="https://jufipai.com/about" style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:13px;color:#14B8A6;text-decoration:none;font-weight:500;">Learn about us &rarr;</a>'
-    + '</div>'
-    + '</td>'
-    + '</tr>'
-    + '</table>'
-
-    // LinkedIn follow
-    + '<div style="text-align:center;padding:8px 0 0;">'
-    + '<p style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14px;color:#3D3D3D;margin:0 0 14px;">Follow us for automation tips and industry insights:</p>'
-    + '<a href="https://www.linkedin.com/company/jufipai" target="_blank" style="display:inline-block;font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14px;font-weight:500;color:#14B8A6;text-decoration:none;border:1.5px solid #14B8A6;padding:10px 28px;border-radius:100px;">Follow JufipAI on LinkedIn</a>'
-    + '</div>'
-    + '</div>'
-
-    // Divider
-    + '<div style="margin:0 48px;height:1px;background:#f0f0f0;"></div>'
-
-    // Signature
-    + '<div style="padding:28px 48px;">'
-    + '<table cellpadding="0" cellspacing="0" border="0"><tr>'
-    + '<td style="padding-right:16px;vertical-align:top;">'
-    + '<div style="width:48px;height:48px;border-radius:50%;background:#FAFAF8;text-align:center;line-height:48px;font-family:Georgia,serif;font-size:22px;color:#8C8C8C;">F</div>'
-    + '</td>'
-    + '<td style="vertical-align:top;">'
-    + '<p style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:15px;font-weight:600;color:#1A1A1A;margin:0 0 2px;">Fabien Perdomo</p>'
-    + '<p style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:13px;color:#8C8C8C;margin:0;">Founder, JufipAI &middot; Dallas, TX</p>'
-    + '</td>'
-    + '</tr></table>'
-    + '</div>'
-
-    // Footer
-    + '<div style="padding:20px 48px 28px;background:#FAFAF8;border-top:1px solid #f0f0f0;">'
-    + '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>'
-    + '<td>'
-    + '<p style="font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:12px;color:#8C8C8C;margin:0;line-height:1.6;">'
-    + 'Custom AI and automation for small teams.<br>'
-    + '<a href="https://jufipai.com" style="color:#14B8A6;text-decoration:none;">jufipai.com</a>'
-    + ' &middot; <a href="https://www.linkedin.com/company/jufipai" style="color:#14B8A6;text-decoration:none;">LinkedIn</a>'
-    + ' &middot; <a href="https://jufipai.com/writing" style="color:#14B8A6;text-decoration:none;">Blog</a>'
-    + '</p>'
-    + '</td>'
-    + '<td style="text-align:right;">'
-    + '<p style="font-family:\'Courier New\',monospace;font-size:11px;color:#CCCCCC;margin:0;letter-spacing:0.05em;">JUFIPAI</p>'
-    + '</td>'
-    + '</tr></table>'
-    + '</div>'
-
-    // End main container
-    + '</div>'
-
-    // Bottom accent bar
-    + '<div style="height:4px;background:linear-gradient(90deg,#0F8A7E 0%,#14B8A6 100%);border-radius:0 0 4px 4px;"></div>'
-    + '</div>'
-    + '</body></html>';
-
-  MailApp.sendEmail({
-    to: email,
-    subject: 'JufipAI — We received your inquiry',
-    htmlBody: htmlBody,
-    name: 'Fabien Perdomo | JufipAI'
-  });
+  // 3. Welcome to the visitor, only when every guard passes.
+  // Quota re-read AFTER the alert: the alert itself spends one send.
+  if (decision === 'yes' && MailApp.getRemainingDailyQuota() <= Math.max(JF_MIN_MAIL_QUOTA, JF_MAIL_FLOOR)) decision = 'no: mail quota low';
+  var status = decision;
+  if (decision === 'yes') {
+    try {
+      jfSend(req.email, welcomeEmail({ email: req.email }), JF_NAME_VISITOR);
+      jfCountWelcome(now);
+      CacheService.getScriptCache().put(jfWelcomeCacheKey(key), '1', JF_CACHE_TTL_S);
+    } catch (welErr) {
+      console.error('[book_call] welcome send failed: ' + welErr);
+      status = 'no: send failed';
+    }
+  } else if (decision.indexOf('cap') !== -1 || decision.indexOf('quota') !== -1) {
+    jfCapAlertOnce(now, decision.replace(/^no: /, ''));
+  }
+  sheet.getRange(rowNum, 5).setValue(status);
 }
 
-// ============================================================
-// Sheet headers (Row 1):
-// A: Full Name | B: Email Address | C: Project Description | D: Timestamp
-// ============================================================
+/** 'yes', or 'no: <reason>' — the value written to "Welcome sent". */
+function jfWelcomeDecision(sheet, key, now) {
+  if (CacheService.getScriptCache().get(jfWelcomeCacheKey(key))) return 'no: welcomed in last 30 days';
+
+  var cutoff = now.getTime() - JF_WELCOME_DEDUPE_DAYS * 86400000;
+  var rows = jfRecentRows(sheet, 5);
+  for (var i = 0; i < rows.length; i++) {
+    var t = jfTime(rows[i][0]);
+    if (t >= cutoff && jfCellText(rows[i][1]).toLowerCase() === key && String(rows[i][4]) === 'yes') {
+      return 'no: welcomed in last 30 days';
+    }
+  }
+
+  var props = PropertiesService.getScriptProperties();
+  var hourN = Number(props.getProperty(jfHourKey(now)) || 0);
+  var dayN = Number(props.getProperty(jfDayKey(now)) || 0);
+  if (dayN >= JF_WELCOME_DAY_CAP) return 'no: daily cap (' + JF_WELCOME_DAY_CAP + ')';
+  if (hourN >= JF_WELCOME_HOUR_CAP) return 'no: hourly cap (' + JF_WELCOME_HOUR_CAP + ')';
+  if (MailApp.getRemainingDailyQuota() <= JF_MIN_MAIL_QUOTA) return 'no: mail quota low';
+  return 'yes';
+}
+
+function jfWelcomeCacheKey(lowerEmail) {
+  return 'wel:' + jfSha256Hex(lowerEmail);
+}
+
+function jfHourKey(now) { return 'welcap:h:' + Utilities.formatDate(now, JF_TZ, 'yyyyMMddHH'); }
+function jfDayKey(now) { return 'welcap:d:' + Utilities.formatDate(now, JF_TZ, 'yyyyMMdd'); }
+function jfAlertKey(now) { return 'welcap:alert:' + Utilities.formatDate(now, JF_TZ, 'yyyyMMdd'); }
+function jfAlertHourKey(now) { return 'alertcap:h:' + Utilities.formatDate(now, JF_TZ, 'yyyyMMddHH'); }
+
+function jfCountWelcome(now) {
+  var props = PropertiesService.getScriptProperties();
+  var hk = jfHourKey(now), dk = jfDayKey(now), ak = jfAlertKey(now);
+  props.setProperty(hk, String(Number(props.getProperty(hk) || 0) + 1));
+  props.setProperty(dk, String(Number(props.getProperty(dk) || 0) + 1));
+  // Drop counters from earlier hours/days so script properties stay small.
+  var keys = props.getKeys();
+  for (var i = 0; i < keys.length; i++) {
+    if (keys[i].indexOf('welcap:') === 0 && keys[i] !== hk && keys[i] !== dk && keys[i] !== ak) props.deleteProperty(keys[i]);
+    else if (keys[i].indexOf('alertcap:') === 0 && keys[i] !== jfAlertHourKey(now)) props.deleteProperty(keys[i]);
+  }
+}
+
+/** One plain alert to contact@ the first time any send guard (welcome or alert) trips on a CT day. */
+function jfCapAlertOnce(now, reason) {
+  var props = PropertiesService.getScriptProperties();
+  var ak = jfAlertKey(now);
+  if (props.getProperty(ak)) return;
+  props.setProperty(ak, '1');
+  try {
+    if (MailApp.getRemainingDailyQuota() < 1) return;
+    var day = Utilities.formatDate(now, JF_TZ, 'yyyy-MM-dd');
+    var text = [
+      'Book a call emails paused on ' + day + ' (CT).',
+      '',
+      'Reason: ' + reason + '.',
+      'Call requests are still recorded on the "' + JF_TAB_BOOK + '" tab.',
+      'Rows without an email show the reason in the "Welcome sent" and "Alert sent" columns.',
+      '',
+      'Limits: welcome ' + JF_WELCOME_HOUR_CAP + ' per hour and ' + JF_WELCOME_DAY_CAP + ' per day; instant alert ' + JF_ALERT_HOUR_CAP + ' per hour; mail quota above ' + JF_MIN_MAIL_QUOTA + ' for welcomes, above ' + JF_MAIL_FLOOR + ' for alerts.',
+      'This alert sends once per day.',
+    ].join('\n');
+    MailApp.sendEmail({ to: JF_CONTACT, subject: 'Book a call — emails paused (' + reason + ')', body: text, name: JF_NAME_INTERNAL });
+  } catch (capErr) {
+    console.error('[book_call] cap alert failed: ' + capErr);
+  }
+}
+
+/** Lock busy: record the validated row anyway (formula-guarded), no dedupe, no email. */
+function jfAppendBusy(req, now) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (req.type === 'book_call') {
+    jfTab(ss, JF_TAB_BOOK, JF_HEAD_BOOK).appendRow([now, jfCell(req.email), jfCell(req.locale), jfCell(req.source), 'no: busy', 'no: busy']);
+  } else if (req.type === 'subscribe') {
+    jfTab(ss, JF_TAB_SUBS, JF_HEAD_SUBS).appendRow([now, jfCell(req.email), jfCell(req.locale), jfCell(req.source)]);
+  }
+}
+
+// ---------- subscribe ----------
+
+function jfSubscribe(req, now) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = jfTab(ss, JF_TAB_SUBS, JF_HEAD_SUBS);
+  var key = req.email.toLowerCase();
+  var cache = CacheService.getScriptCache();
+  var ck = 'sub:' + jfSha256Hex(key);
+  if (cache.get(ck)) return;
+
+  var cutoff = now.getTime() - JF_SUB_DEDUPE_MS;
+  var rows = jfRecentRows(sheet, 2);
+  for (var i = 0; i < rows.length; i++) {
+    if (jfTime(rows[i][0]) >= cutoff && jfCellText(rows[i][1]).toLowerCase() === key) {
+      cache.put(ck, '1', JF_CACHE_TTL_S);
+      return;
+    }
+  }
+  sheet.appendRow([now, jfCell(req.email), jfCell(req.locale), jfCell(req.source)]);
+  sheet.getRange(sheet.getLastRow(), 1).setNumberFormat('yyyy-mm-dd hh:mm');
+  cache.put(ck, '1', JF_CACHE_TTL_S);
+  // No email to anyone on subscribe.
+}
+
+// ---------- weekly digest ----------
+
+/** Time trigger, Monday 08:00 CT: last Monday–Sunday (complete CT days) to contact@. */
+function weeklyBookCallReport() {
+  var now = new Date();
+  var week = jfLastWeek(now);
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = jfTab(ss, JF_TAB_BOOK, JF_HEAD_BOOK);
+
+  var rows = [];
+  var all = jfRecentRows(sheet, 3);
+  for (var i = 0; i < all.length; i++) {
+    var d = all[i][0];
+    if (jfTime(d) === 0) continue;
+    var day = Utilities.formatDate(new Date(jfTime(d)), JF_TZ, 'yyyy-MM-dd');
+    if (day < week.startDay || day > week.endDay) continue;
+    var email = jfCellText(all[i][1]);
+    if (!JF_EMAIL_RE.test(email)) continue;
+    rows.push({ email: email, locale: jfCellText(all[i][2]), requestedAt: new Date(jfTime(d)), bookedAt: null });
+  }
+
+  if (rows.length) {
+    var booked = jfCalendlyBookings();
+    for (var j = 0; j < rows.length; j++) {
+      var hits = booked[rows[j].email.toLowerCase()] || [];
+      var from = rows[j].requestedAt.getTime() - 10 * 60000; // booking can land just before the row
+      for (var h = 0; h < hits.length; h++) {
+        if (hits[h] >= from && (!rows[j].bookedAt || hits[h] < rows[j].bookedAt.getTime())) rows[j].bookedAt = new Date(hits[h]);
+      }
+    }
+  }
+
+  var m = weeklyReportEmail(rows, week.start, week.end);
+  jfSend(JF_CONTACT, m, JF_NAME_INTERNAL);
+}
+
+/** {startDay,endDay:'yyyy-MM-dd' CT, start,end: Date at 12:00 UTC of those days} for the last complete Mon–Sun. */
+function jfLastWeek(now) {
+  var p = Utilities.formatDate(now, JF_TZ, 'yyyy-MM-dd-u').split('-'); // u: 1 = Monday … 7 = Sunday
+  var y = Number(p[0]), mo = Number(p[1]) - 1, d = Number(p[2]), dow = Number(p[3]);
+  var thisMon = Date.UTC(y, mo, d - (dow - 1), 12);
+  var start = new Date(thisMon - 7 * 86400000);
+  var end = new Date(thisMon - 86400000);
+  return { start: start, end: end, startDay: jfUtcDay(start), endDay: jfUtcDay(end) };
+}
+
+function jfUtcDay(date) {
+  return date.getUTCFullYear() + '-' + ('0' + (date.getUTCMonth() + 1)).slice(-2) + '-' + ('0' + date.getUTCDate()).slice(-2);
+}
+
+/**
+ * Calendly notifications in the owner's Gmail, last 14 days -> { lowercased address: [ms, …] }.
+ * The search query is a FIXED string — a visitor address is never interpolated into it. Addresses
+ * are matched exactly against the ones extracted from each fetched message body.
+ */
+function jfCalendlyBookings() {
+  var out = {};
+  var threads = GmailApp.search('from:calendly.com newer_than:14d', 0, 200);
+  for (var i = 0; i < threads.length; i++) {
+    var msgs = threads[i].getMessages();
+    for (var j = 0; j < msgs.length; j++) {
+      var msg = msgs[j];
+      if (!/calendly\.com/i.test(String(msg.getFrom()))) continue;
+      if (/cancel/i.test(String(msg.getSubject()))) continue;
+      var t = jfTime(msg.getDate());
+      var found = String(msg.getPlainBody()).match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,24}/g) || [];
+      for (var k = 0; k < found.length; k++) {
+        var addr = found[k].toLowerCase();
+        (out[addr] = out[addr] || []).push(t);
+      }
+    }
+  }
+  return out;
+}
+
+/** Run once from the editor: replaces this script's weekly trigger (Monday 08:00, script time zone CT). */
+function installTriggers() {
+  var triggers = ScriptApp.getProjectTriggers();
+  for (var i = 0; i < triggers.length; i++) {
+    if (triggers[i].getHandlerFunction() === 'weeklyBookCallReport') ScriptApp.deleteTrigger(triggers[i]);
+  }
+  ScriptApp.newTrigger('weeklyBookCallReport')
+    .timeBased()
+    .onWeekDay(ScriptApp.WeekDay.MONDAY)
+    .atHour(8)
+    .nearMinute(0)
+    .everyWeeks(1)
+    .create();
+  if (Session.getScriptTimeZone() !== JF_TZ) {
+    console.error('[installTriggers] script time zone is ' + Session.getScriptTimeZone() + ', expected ' + JF_TZ + ' (appsscript.json)');
+  }
+}
+
+// ---------- helpers ----------
+
+/** Named tab, created with a bold frozen header row when missing. Never the active sheet. */
+function jfTab(ss, name, header) {
+  var sheet = ss.getSheetByName(name);
+  if (!sheet) {
+    sheet = ss.insertSheet(name);
+    sheet.appendRow(header);
+    sheet.getRange(1, 1, 1, header.length).setFontWeight('bold');
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+/** Last JF_SCAN_ROWS data rows (header excluded), first `cols` columns. */
+function jfRecentRows(sheet, cols) {
+  var last = sheet.getLastRow();
+  if (last < 2) return [];
+  var first = Math.max(2, last - JF_SCAN_ROWS + 1);
+  return sheet.getRange(first, 1, last - first + 1, cols).getValues();
+}
+
+function jfSheetUrl(ss, sheet) {
+  return ss.getUrl() + '#gid=' + sheet.getSheetId();
+}
+
+/** Formula-injection guard: every visitor-derived cell is forced to text with a leading "'". */
+function jfCell(value) {
+  return "'" + bcLine(value);
+}
+
+/** Cell value back to plain text (a "'" text marker, if returned, is removed). */
+function jfCellText(value) {
+  var s = String(value == null ? '' : value);
+  return s.charAt(0) === "'" ? s.slice(1) : s;
+}
+
+function jfTime(value) {
+  var d = bcDate(value);
+  return d ? d.getTime() : 0;
+}
+
+function jfSend(to, m, name) {
+  MailApp.sendEmail({ to: to, subject: bcLine(m.subject), body: m.textBody, htmlBody: m.htmlBody, name: name });
+}
+
+function jfSha256Hex(s) {
+  var bytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, s, Utilities.Charset.UTF_8);
+  var hex = '';
+  for (var i = 0; i < bytes.length; i++) hex += ('0' + (bytes[i] & 0xff).toString(16)).slice(-2);
+  return hex;
+}
+
+function jfUtf8Bytes(s) {
+  var n = 0;
+  for (var i = 0; i < s.length; i++) {
+    var c = s.charCodeAt(i);
+    if (c < 0x80) n += 1;
+    else if (c < 0x800) n += 2;
+    else if (c >= 0xd800 && c <= 0xdbff) { n += 4; i++; }
+    else n += 3;
+  }
+  return n;
+}
