@@ -529,7 +529,7 @@ function jfCapAlertOnce(now, reason) {
       'Limits: welcome ' + JF_WELCOME_HOUR_CAP + ' per hour and ' + JF_WELCOME_DAY_CAP + ' per day; instant alert ' + JF_ALERT_HOUR_CAP + ' per hour; mail quota above ' + JF_MIN_MAIL_QUOTA + ' for welcomes, above ' + JF_MAIL_FLOOR + ' for alerts.',
       'This alert sends once per day.',
     ].join('\n');
-    MailApp.sendEmail({ to: JF_CONTACT, subject: 'Book a call — emails paused (' + reason + ')', body: text, name: JF_NAME_INTERNAL });
+    jfSend(JF_CONTACT, { subject: 'Book a call — emails paused (' + reason + ')', textBody: text }, JF_NAME_INTERNAL);
   } catch (capErr) {
     console.error('[book_call] cap alert failed: ' + capErr);
   }
@@ -704,8 +704,34 @@ function jfTime(value) {
   return d ? d.getTime() : 0;
 }
 
+// Every email leaves FROM contact@jufipai.com.
+// - Owner account has contact@ as a Gmail "Send mail as" alias (the original 2025 setup):
+//   send through Gmail with from = contact@.
+// - Script owned by contact@ itself (no alias needed): MailApp already sends as contact@.
+// Either way Reply-To is contact@, so a reply never lands in a personal inbox.
 function jfSend(to, m, name) {
-  MailApp.sendEmail({ to: to, subject: bcLine(m.subject), body: m.textBody, htmlBody: m.htmlBody, name: name });
+  var subject = bcLine(m.subject);
+  if (jfContactIsAlias()) {
+    var opts = { from: JF_CONTACT, name: name, replyTo: JF_CONTACT };
+    if (m.htmlBody) opts.htmlBody = m.htmlBody;
+    GmailApp.sendEmail(to, subject, m.textBody, opts);
+    return;
+  }
+  var o = { to: to, subject: subject, body: m.textBody, name: name, replyTo: JF_CONTACT };
+  if (m.htmlBody) o.htmlBody = m.htmlBody;
+  MailApp.sendEmail(o);
+}
+
+function jfContactIsAlias() {
+  try {
+    var aliases = GmailApp.getAliases() || [];
+    for (var i = 0; i < aliases.length; i++) {
+      if (String(aliases[i]).toLowerCase() === JF_CONTACT) return true;
+    }
+  } catch (e) {
+    console.error('[send] getAliases failed: ' + e);
+  }
+  return false;
 }
 
 function jfSha256Hex(s) {
