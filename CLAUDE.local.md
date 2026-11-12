@@ -21,13 +21,18 @@ python3 ~/agents/security-lib/scan_secrets.py .
 
 ## Architecture (relaunch 2026-11)
 
-- `src/pages/` — `index.astro` (EN), `es/index.astro` (ES, usted), `writing.astro` (EN only).
-  `/about` and `/contact` are redirects to `/` (`astro.config.mjs` `redirects`).
-- `src/data/home.ts` — ALL homepage copy, EN + ES. Edit copy here, not in components.
-- `src/components/` — Header, Footer (inline newsletter), Hero, HomePage, CustomerBanner,
-  SystemCard (featured + standard), ContentCard (writing cards).
-- `src/scripts/newsletter.ts` — the only client script for the form (external module, CSP-safe).
-- `src/layouts/Base.astro` — lang, hreflang, og:image, JSON-LD (name/url/logo only), CSP meta.
+- **English-only since 2026-11-11.** `src/pages/` — `index.astro`, `writing.astro`.
+  `/about`, `/contact` and `/es` are redirects to `/` (`astro.config.mjs` `redirects`).
+- `src/data/home.ts` — ALL homepage copy. Spanish strings are kept but unused.
+- `src/components/` — Header, Footer (inline newsletter), Hero, HomePage, BookCall (booking
+  section `#book`: email → embedded Calendly → "You're booked" + Before-the-call tiles),
+  CustomerBanner ("Trusted by", bottom of home), SystemCard, ContentCard (writing cards).
+- `src/scripts/` — `newsletter.ts` (footer, `type:'subscribe'`), `book-call.ts` (`type:'book_call'`,
+  listens for Calendly `calendly.event_scheduled` from origin https://calendly.com only),
+  `sheet-endpoint.ts` (the one Apps Script URL). All external modules, CSP-safe.
+- `src/layouts/Base.astro` — lang, og:image, JSON-LD (name/url/logo only), CSP meta
+  (`frame-src https://calendly.com` for the booking embed).
+- Approved prototype for the booking flow: `~/prototypes/jufipai-website-book-call/` (2026-11-11).
 - `src/styles/` — `tokens.css` (brand tokens) + `global.css`.
 - `public/brand/` — official logo lockup, cropped customer logo, synthetic system screenshots.
 

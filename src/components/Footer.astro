@@ -3,7 +3,7 @@
 // (no load-time modal), official lockup, "Built in the USA", neutral (no city or state).
 // The newsletter posts to the same Apps Script endpoint EmailCapture/NewsletterModal used
 // (type: 'subscribe'), so the real subscribe flow keeps working.
-import { CALENDLY_URL, CHROME, type Lang } from '../data/home';
+import { bookHref, CHROME, type Lang } from '../data/home';
 
 interface Props {
   lang?: Lang;
@@ -64,7 +64,7 @@ const msg =
     </div>
     <div class="footer-right">
       <a href="https://www.linkedin.com/company/jufipai" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-      <a href={CALENDLY_URL}>{t.touch}</a>
+      <a href={bookHref(lang, Astro.url.pathname)}>{t.touch}</a>
       <span class="footer-copy">&copy; {year}</span>
     </div>
   </div>

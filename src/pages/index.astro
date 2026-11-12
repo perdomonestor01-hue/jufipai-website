@@ -1,5 +1,5 @@
 ---
-// Homepage (EN). Approved prototype jufipai-relaunch (2026-11-04). Spanish twin: src/pages/es/index.astro.
+// Homepage. Approved prototype jufipai-relaunch (2026-11-04). English-only since 2026-11-11 (/es -> /).
 import Base from '../layouts/Base.astro';
 import HomePage from '../components/HomePage.astro';
 import { HOME } from '../data/home';
@@ -7,6 +7,6 @@ import { HOME } from '../data/home';
 const c = HOME.en;
 ---
 
-<Base title={c.title} description={c.desc} lang="en" enPath="/" esPath="/es/">
+<Base title={c.title} description={c.desc} lang="en">
   <HomePage lang="en" />
 </Base>

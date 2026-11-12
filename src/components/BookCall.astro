@@ -1,0 +1,901 @@
+---
+// Home-page booking section (#book), EN + ES. Replaces the old bottom "Book a call" band.
+// Email first; after submit the form is replaced by a confirmation line and the Calendly
+// calendar is embedded below it (built by src/scripts/book-call.ts — external module, CSP
+// script-src 'self'; Base.astro allows frame-src https://calendly.com). Embedding keeps the
+// visitor on jufipai.com, so Calendly's cookie banner never shows (hide_gdpr_banner=1 only
+// works in embed mode). No-JS fallback: the "go straight to the calendar" link.
+import { BOOK, CALENDLY_URL, type Lang } from '../data/home';
+import { fetchArticles } from '../lib/api';
+
+interface Props {
+  lang: Lang;
+  headline: string;
+  sub: string;
+}
+
+const { lang, headline, sub } = Astro.props;
+const t = BOOK[lang];
+
+// "Before the call" tiles (success panel). Articles come from the same loader + sanitizer as
+// /writing/ (src/lib/api.ts, unchanged): titles are stripped of HTML, links pass its LinkedIn
+// allowlist or fall back to /writing/. Empty today ([]), so the tile shows its fallback line.
+const LINKEDIN = 'https://www.linkedin.com/company/jufipai';
+const THUMBS = ['property', 'clock', 'application'];
+const latest = (await fetchArticles()).slice(0, 2);
+---
+
+<section class="book-section" id="book" aria-labelledby="book-h">
+  <div class="book-inner">
+    <div class="book-copy">
+      <h2 class="book-h" id="book-h">{headline}</h2>
+      <p class="book-sub">{sub}</p>
+      <ol class="book-steps" role="list" aria-label={t.stepsLabel}>
+        {t.steps.map((s, i) => (
+          <li class:list={['book-step', { 'is-current': i === 0 }]} data-step={i + 1} aria-current={i === 0 ? 'step' : undefined}>
+            <span class="book-step-n" aria-hidden="true">
+              <span class="book-step-num">{i + 1}</span>
+              <svg class="book-step-check" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" focusable="false"><path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="sr-only book-step-done" hidden>{t.stepsDone[i]}</span>
+            <span class="book-step-t">{s}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <div class="book-actions" id="book-actions">
+      <form
+        class="book-form"
+        id="book-form"
+        novalidate
+        data-lang={lang}
+        data-calendly={CALENDLY_URL}
+        data-frame-title={t.frameTitle}
+        data-msg-invalid={t.invalid}
+        data-msg-pending={t.pending}
+        aria-busy="false"
+      >
+        <label for="book-email">{t.label}</label>
+        <div class="book-row">
+          <span class="book-field">
+          <input
+            id="book-email"
+            type="email"
+            name="email"
+            autocomplete="email"
+            inputmode="email"
+            placeholder={t.ph}
+            aria-describedby="book-status book-privacy"
+            required
+          />
+          <svg class="book-valid" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <!-- Honeypot: must stay empty -->
+          <input type="text" name="company_url_2" class="book-honeypot" tabindex="-1" aria-hidden="true" autocomplete="off" />
+          <button type="submit" class="book-btn">
+            <span class="book-btn-label">{t.button}</span>
+            <span class="book-btn-busy"><span class="book-spinner" aria-hidden="true"></span>{t.busy}</span>
+          </button>
+        </div>
+        <p class="book-status" id="book-status" role="status" aria-live="polite"></p>
+        <p class="book-privacy" id="book-privacy">{t.privacy}</p>
+      </form>
+
+      <noscript><p class="book-skip">
+        {t.skip} <a href={CALENDLY_URL}>{t.skipLink} <span aria-hidden="true">&rarr;</span></a>
+      </p></noscript>
+    </div>
+  </div>
+
+  <div class="book-after" id="book-after" hidden>
+    <p class="book-confirm" id="book-confirm" tabindex="-1">{t.confirm}</p>
+    <div class="book-frame" id="book-frame">
+      <!-- static placeholder until the Calendly iframe fires load (no shimmer) -->
+      <div class="book-ph" aria-hidden="true">
+        <span class="ph ph-sm"></span>
+        <span class="ph ph-title"></span>
+        <span class="ph ph-sub"></span>
+        <span class="ph-grid">{Array.from({ length: 35 }, () => <span class="ph ph-day"></span>)}</span>
+      </div>
+    </div>
+    <p class="book-cookies">
+      {t.cookies} <a href="https://calendly.com/privacy" target="_blank" rel="noopener">{t.privacyLink}</a>
+    </p>
+  </div>
+
+  <!-- shown when Calendly posts calendly.event_scheduled (origin https://calendly.com only) -->
+  <div class="book-done-wrap" id="book-done" hidden>
+    <div class="book-done">
+      <svg class="book-done-icon" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" focusable="false">
+        <rect x="3" y="7" width="26" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="2" />
+        <path d="M4 9l12 9 12-9" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+      </svg>
+      <h3 class="book-done-h" id="book-done-h" tabindex="-1">{t.doneH}</h3>
+      <p class="book-done-p">{t.doneBefore} <strong id="book-done-email"></strong>{t.doneAfter}</p>
+      <p class="book-done-small">
+        {t.doneSpam} <a href="mailto:contact@jufipai.com">contact@jufipai.com</a>.
+      </p>
+
+      <h4 class="book-next-h">{t.nextH}</h4>
+      <ul class="book-next" role="list">
+        <li>
+          <a class="book-tile" href="#systems">
+            <span class="book-thumbs">
+              {THUMBS.map((n) => <img src={`/brand/systems/${n}.png`} width="1200" height="627" alt="" loading="lazy" decoding="async" />)}
+            </span>
+            <span class="book-tile-t">{t.nextSystems.t}</span>
+            <span class="book-tile-p">{t.nextSystems.p}</span>
+          </a>
+        </li>
+        <li>
+          {latest.length === 0 ? (
+            <a class="book-tile" href="/writing/">
+              <span class="book-tile-t">{t.nextWriting.t}</span>
+              <span class="book-tile-p">{t.nextWriting.p}</span>
+            </a>
+          ) : (
+            /* with articles: no whole-card link (links cannot nest); heading + title links instead */
+            <div class="book-tile book-tile--list">
+              <a class="book-tile-t book-tile-link" href="/writing/">{t.nextWriting.t}</a>
+              <ul class="book-tile-articles" role="list">
+                {latest.map((a) => (
+                  <li><a href={a.linkedinUrl ?? '/writing/'}>{a.title}</a></li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </li>
+        <li>
+          <a class="book-tile" href={LINKEDIN} target="_blank" rel="noopener noreferrer">
+            <svg class="book-li" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+              <rect x="1" y="1" width="22" height="22" rx="4" fill="currentColor" />
+              <path d="M6.2 9.6h2.6V18H6.2zM7.5 5.6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM10.4 9.6h2.5v1.15h.04c.35-.66 1.2-1.36 2.46-1.36 2.63 0 3.12 1.73 3.12 3.98V18h-2.6v-4.1c0-.98-.02-2.24-1.37-2.24-1.37 0-1.58 1.07-1.58 2.17V18h-2.57z" fill="#ffffff" />
+            </svg>
+            <span class="book-tile-t">{t.nextLinkedIn.t}</span>
+            <span class="book-tile-p">{t.nextLinkedIn.p}</span>
+            <span class="sr-only">{t.newTab}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script src="../scripts/book-call.ts"></script>
+
+<style>
+  /* navy band right after the systems, gold hairlines top and bottom (business card) */
+  .book-section {
+    position: relative;
+    padding: var(--space-xl) 0;
+    background: var(--brand-navy);
+    scroll-margin-top: var(--nav-height);
+  }
+
+  .book-section::before,
+  .book-section::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--brand-gold-line);
+  }
+
+  .book-section::before { top: 0; }
+  .book-section::after { bottom: 0; }
+
+  .book-inner,
+  .book-after {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+  }
+
+  /* stacked by default; two columns from 900px (copy + steps | form card) */
+  .book-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    align-items: center;
+  }
+
+  @media (min-width: 900px) {
+    .book-inner {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 30rem);
+      gap: var(--space-xl);
+    }
+  }
+
+  /* 1 -> 2 -> 3: gold circles, navy numerals, light labels on navy, gold connector */
+  .book-steps {
+    list-style: none;
+    margin: var(--space-lg) 0 0;
+    padding: 0;
+    display: flex;
+    gap: var(--space-md);
+  }
+
+  .book-steps li {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .6rem;
+  }
+
+  /* connector: faint gold track (::after) + solid gold fill (::before) that grows on progress */
+  .book-steps li:not(:last-child)::after,
+  .book-steps li:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    top: 22px;
+    left: 56px;
+    right: calc(-1 * var(--space-md) + 8px);
+    height: 2px;
+  }
+
+  .book-steps li:not(:last-child)::after {
+    background: rgba(197, 164, 78, .3);
+  }
+
+  .book-steps li:not(:last-child)::before {
+    z-index: 1;
+    background: var(--brand-gold);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 250ms ease-out;
+  }
+
+  .book-steps li.is-done:not(:last-child)::before {
+    transform: scaleX(1);
+  }
+
+  .book-step-n {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--brand-gold);
+    color: var(--brand-navy);
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    /* upcoming step: gold outline, gold numeral (gold on navy ~5:1) */
+    background: transparent;
+    color: var(--brand-gold);
+    border: 2px solid var(--brand-gold);
+    box-sizing: border-box;
+    transition: background-color 250ms ease-out, color 250ms ease-out, box-shadow 250ms ease-out;
+  }
+
+  /* current step: gold fill, navy numeral, thin gold ring */
+  .book-step.is-current .book-step-n {
+    background: var(--brand-gold);
+    color: var(--brand-navy);
+    box-shadow: 0 0 0 3px var(--brand-navy), 0 0 0 5px var(--brand-gold);
+  }
+
+  /* done: gold fill, navy check */
+  .book-step.is-done .book-step-n {
+    background: var(--brand-gold);
+    color: var(--brand-navy);
+  }
+
+  .book-step-check {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 250ms ease-out;
+  }
+
+  .book-step-num {
+    transition: opacity 250ms ease-out;
+  }
+
+  .book-step.is-done .book-step-check { opacity: 1; }
+  .book-step.is-done .book-step-num { opacity: 0; }
+
+  .book-step-t {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    line-height: 1.25;
+    color: var(--text-on-dark);
+  }
+
+  .book-h {
+    font-family: var(--font-display);
+    font-size: var(--text-section);
+    color: var(--text-on-dark);
+    margin-bottom: 0.25rem;
+  }
+
+  .book-sub {
+    font-size: var(--text-small);
+    color: var(--text-on-dark-muted);
+  }
+
+  .book-actions {
+    min-width: 0;
+  }
+
+  .book-actions[hidden] {
+    display: none;
+  }
+
+  /* white card on navy: navy text, gold top rule, navy focus rings (gold on white is ~2.3:1) */
+  .book-form {
+    background: var(--color-surface);
+    border-top: 3px solid var(--brand-gold);
+    border-radius: var(--radius-card);
+    padding: var(--space-md);
+  }
+
+  .book-form label {
+    display: block;
+    font-size: var(--text-small);
+    font-weight: 600;
+    color: var(--brand-navy);
+    margin-bottom: var(--space-xs);
+  }
+
+  .book-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .book-field {
+    position: relative;
+    flex: 0 0 auto;
+    min-width: 0;
+    display: flex;
+  }
+
+  .book-form input[type='email'] {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    min-height: 48px;
+    font: inherit;
+    font-size: 1rem;
+    padding: .65rem 2.75rem .65rem 1rem; /* right padding: the check never sits on text */
+    transition: border-color 200ms ease-out, box-shadow 200ms ease-out;
+    border-radius: var(--radius-pill);
+    border: 1px solid #8a93a6;
+    background: var(--color-surface);
+    color: var(--brand-navy);
+  }
+
+  .book-form input[type='email']::placeholder {
+    color: #6b7385;
+  }
+
+  /* focus: 2px navy edge (1px border + 1px inset ring, no layout shift) + faint gold glow.
+     The navy edge is the >=3:1 indicator on white; the glow is decoration. */
+  .book-form input[type='email']:focus {
+    outline: none;
+    border-color: var(--brand-navy);
+    box-shadow: 0 0 0 1px var(--brand-navy), 0 0 0 5px rgba(197, 164, 78, .25);
+  }
+
+  .book-form button:focus-visible {
+    outline: 3px solid var(--brand-navy);
+    outline-offset: 2px;
+  }
+
+  .book-form input[aria-invalid='true'] {
+    border-color: var(--status-error);
+    box-shadow: 0 0 0 1px var(--status-error);
+  }
+
+  .book-form input[aria-invalid='true']:focus {
+    box-shadow: 0 0 0 1px var(--status-error), 0 0 0 5px rgba(163, 55, 42, .15);
+  }
+
+  /* live validity: small navy check inside the right edge once the address is complete */
+  .book-valid {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    margin-top: -9px;
+    color: var(--brand-navy);
+    opacity: 0;
+    transform: scale(.8);
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+    pointer-events: none;
+  }
+
+  .book-field.is-valid .book-valid {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .book-honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  /* gold fill, NAVY text (white on gold fails AA) — same as the hero CTA.
+     Grid stack: label and busy state share one cell, so the width never changes on swap. */
+  .book-form button {
+    display: inline-grid;
+    place-items: center;
+    min-height: 48px;
+    font: inherit;
+    font-size: var(--text-small);
+    font-weight: 600;
+    color: var(--brand-navy);
+    background: var(--brand-gold);
+    border: 0;
+    border-radius: var(--radius-pill);
+    padding: .65rem 1.5rem;
+    cursor: pointer;
+    transition: background var(--duration-base) var(--ease-spring), transform var(--duration-base) var(--ease-spring);
+  }
+
+  .book-form button:hover {
+    background: var(--brand-gold-light);
+    transform: translateY(-1px);
+  }
+
+  .book-form button:disabled {
+    cursor: default;
+    transform: none;
+  }
+
+  .book-btn-label,
+  .book-btn-busy {
+    grid-area: 1 / 1;
+  }
+
+  .book-btn-busy {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    visibility: hidden;
+  }
+
+  .book-form[aria-busy='true'] .book-btn-label { visibility: hidden; }
+  .book-form[aria-busy='true'] .book-btn-busy { visibility: visible; }
+  .book-form[aria-busy='true'] button { background: var(--brand-gold-light); }
+
+  .book-spinner {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgba(27, 54, 93, .25);
+    border-top-color: var(--brand-navy);
+    animation: book-spin .8s linear infinite;
+  }
+
+  @keyframes book-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* fade-out of the form card / fade-in of the calendar (driven by book-call.ts) */
+  .book-actions {
+    transition: opacity 200ms ease-out;
+  }
+
+  .book-actions.is-leaving {
+    opacity: 0;
+  }
+
+  .book-confirm,
+  .book-frame {
+    transition: opacity 250ms ease-out, transform 250ms ease-out;
+  }
+
+  .book-after.is-entering .book-confirm {
+    opacity: 0;
+  }
+
+  .book-after.is-entering .book-frame {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  .book-status {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--brand-navy);
+    line-height: 1.4;
+    min-height: 1.4em;
+    margin: var(--space-xs) 0 0;
+  }
+
+  .book-status.is-error {
+    color: #a3372a;
+  }
+
+  /* "saving" is announced to screen readers; the button already shows it visually.
+     Transparent (not removed) so the line keeps its height and the card does not jump. */
+  .book-status.is-pending {
+    color: transparent;
+  }
+
+  .book-privacy {
+    font-size: var(--text-xs);
+    color: var(--color-carbon-soft);
+    margin: 0;
+  }
+
+  /* on navy: light text, gold underline, white focus ring */
+  .book-skip {
+    margin-top: var(--space-sm);
+    font-size: var(--text-small);
+    color: var(--text-on-dark-muted);
+  }
+
+  .book-skip a {
+    color: var(--text-on-dark);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--brand-gold);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    min-height: 44px;
+  }
+
+  .book-skip a:hover {
+    color: var(--brand-gold-light);
+  }
+
+  .book-skip a:focus-visible,
+  .book-confirm:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .book-after {
+    margin-top: var(--space-lg);
+  }
+
+  /* muted line on navy: #c9c2b3 on #1b365d ~ 7:1 */
+  .book-cookies {
+    margin: var(--space-xs) 0 0;
+    font-size: var(--text-xs);
+    color: var(--text-on-dark-muted);
+  }
+
+  .book-cookies a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--text-on-dark);
+    text-decoration: underline;
+    text-decoration-color: var(--brand-gold);
+    text-underline-offset: 3px;
+  }
+
+  .book-cookies a:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  .book-after[hidden] {
+    display: none;
+  }
+
+  .book-confirm {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--text-on-dark);
+    margin: 0 0 var(--space-md);
+  }
+
+  .book-frame {
+    position: relative;
+    background: #ffffff;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  .book-frame :global(iframe) {
+    display: block;
+    width: 100%;
+    height: 1060px;
+    border: 0;
+    border-radius: var(--radius-card);
+    background: #ffffff;
+  }
+
+  @media (min-width: 900px) {
+    .book-frame :global(iframe) {
+      height: 900px;
+    }
+  }
+
+  /* static placeholder (light blocks), removed on iframe load */
+  .book-ph {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 56px var(--space-md);
+  }
+
+  .ph {
+    display: block;
+    background: #f2efe8;
+    border-radius: 6px;
+  }
+
+  .ph-sm { width: 120px; height: 14px; }
+  .ph-title { width: min(320px, 80%); height: 26px; }
+  .ph-sub { width: min(220px, 60%); height: 14px; margin-bottom: 28px; }
+
+  .ph-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 36px);
+    gap: 14px;
+  }
+
+  .ph-day { width: 36px; height: 36px; border-radius: 50%; }
+
+  /* ---------- booked (success panel) ---------- */
+  .book-done-wrap {
+    max-width: var(--max-width);
+    margin: var(--space-lg) auto 0;
+    padding: 0 var(--space-md);
+  }
+
+  .book-done-wrap[hidden] {
+    display: none;
+  }
+
+  .book-done {
+    max-width: 54rem;
+    background: var(--color-surface);
+    border-top: 3px solid var(--brand-gold);
+    border-radius: var(--radius-card);
+    padding: var(--space-lg) var(--space-md);
+    color: var(--text-body);
+    transition: opacity 250ms ease-out, transform 250ms ease-out;
+  }
+
+  .book-done-wrap.is-entering .book-done {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  .book-after.is-leaving .book-confirm,
+  .book-after.is-leaving .book-frame,
+  .book-after.is-leaving .book-cookies {
+    opacity: 0;
+  }
+
+  .book-cookies {
+    transition: opacity 250ms ease-out;
+  }
+
+  .book-done-icon {
+    display: block;
+    color: var(--brand-navy);
+    margin-bottom: var(--space-sm);
+  }
+
+  .book-done-h {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    color: var(--brand-navy);
+    margin: 0 0 var(--space-xs);
+    scroll-margin-top: calc(var(--nav-height) + 5rem);
+  }
+
+  .book-done-h:focus-visible {
+    outline: 3px solid var(--brand-navy);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  .book-done-p {
+    margin: 0 0 var(--space-xs);
+    overflow-wrap: anywhere;
+  }
+
+  .book-done-p strong {
+    color: var(--brand-navy);
+  }
+
+  .book-done-small {
+    font-size: var(--text-small);
+    color: var(--color-carbon-soft);
+    margin: 0;
+  }
+
+  .book-done-small a {
+    color: var(--brand-navy);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--brand-gold);
+    text-underline-offset: 3px;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  /* ---------- "Before the call" tiles ---------- */
+  .book-next-h {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--brand-navy);
+    margin: var(--space-md) 0 var(--space-sm);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-arena);
+  }
+
+  .book-next {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+
+  @media (min-width: 900px) {
+    .book-next { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+
+  .book-next > li { display: flex; min-width: 0; }
+
+  .book-tile {
+    flex: 1;
+    min-height: 44px;
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-arena);
+    border-top: 3px solid var(--color-arena);
+    border-radius: 12px;
+    background: var(--color-surface);
+    color: var(--brand-navy);
+    text-decoration: none;
+    transition: border-top-color 200ms ease-out;
+  }
+
+  a.book-tile:hover,
+  .book-tile--list:hover {
+    border-top-color: var(--brand-gold);
+    color: var(--brand-navy);
+  }
+
+  a.book-tile:focus-visible,
+  .book-tile-link:focus-visible,
+  .book-tile-articles a:focus-visible {
+    outline: 3px solid var(--brand-navy);
+    outline-offset: 2px;
+  }
+
+  .book-tile-t {
+    font-weight: 600;
+    font-size: var(--text-small);
+    color: var(--brand-navy);
+  }
+
+  .book-tile-link {
+    text-decoration: underline;
+    text-decoration-color: var(--brand-gold);
+    text-underline-offset: 3px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .book-tile-p {
+    font-size: var(--text-xs);
+    line-height: 1.5;
+    color: var(--color-carbon-soft);
+  }
+
+  .book-tile-articles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: var(--text-xs);
+  }
+
+  .book-tile-articles a {
+    color: var(--brand-navy);
+    text-decoration: underline;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .book-thumbs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: .25rem;
+  }
+
+  .book-thumbs img {
+    width: 33%;
+    max-width: 72px;
+    height: 40px;
+    object-fit: cover;
+    object-position: top left;
+    border-radius: 4px;
+    border: 1px solid var(--color-arena);
+  }
+
+  .book-li {
+    color: var(--brand-navy);
+    margin-bottom: .25rem;
+  }
+
+  /* reduced motion: everything is instant, no transforms, no spin */
+  @media (prefers-reduced-motion: reduce) {
+    .book-section *,
+    .book-section *::before,
+    .book-section *::after {
+      transition: none !important;
+      animation: none !important;
+    }
+
+    .book-after.is-entering .book-frame { transform: none; }
+    .book-done-wrap.is-entering .book-done { transform: none; }
+    .book-field .book-valid { transform: none; }
+    .book-spinner { display: none; }
+  }
+
+  @media (max-width: 640px) {
+    /* phone header wraps to 136px; land the section below it */
+    .book-section {
+      scroll-margin-top: 136px;
+    }
+
+    .book-done-h {
+      scroll-margin-top: 220px;
+    }
+
+    .book-steps {
+      gap: var(--space-xs);
+      margin-top: var(--space-md);
+    }
+
+    .book-steps li:not(:last-child)::after,
+    .book-steps li:not(:last-child)::before {
+      left: 48px;
+      right: calc(-1 * var(--space-xs) + 4px);
+    }
+
+    .book-step-n {
+      width: 40px;
+      height: 40px;
+      font-size: 1.15rem;
+    }
+
+    .book-steps li:not(:last-child)::after,
+    .book-steps li:not(:last-child)::before { top: 20px; }
+
+    .book-step-t {
+      font-size: .95rem;
+    }
+
+    .book-form button {
+      width: 100%;
+    }
+  }
+</style>

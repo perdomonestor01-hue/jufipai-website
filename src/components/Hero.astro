@@ -1,18 +1,18 @@
 ---
 // Homepage hero — approved prototype jufipai-relaunch (2026-11-04).
+// Book-a-call prototype rev 3: the gold "Book a call" CTA is gone; booking is #book after the systems.
 // Asymmetric 7/5 grid kept from the previous hero; copy, eyebrow and gold CTA are new.
 // The papel-picado pattern, pull-quote marks and hand-drawn arrow are gone (not in the spec).
-import { CALENDLY_URL } from '../data/home';
+
 
 interface Props {
   eyebrow: string;
   headline: string;
   lede: string;
-  cta: string;
   see: string;
 }
 
-const { eyebrow, headline, lede, cta, see } = Astro.props;
+const { eyebrow, headline, lede, see } = Astro.props;
 ---
 
 <section class="hero">
@@ -25,7 +25,6 @@ const { eyebrow, headline, lede, cta, see } = Astro.props;
     <div class="hero-right">
       <p class="hero-quote">{lede}</p>
       <div class="hero-actions">
-        <a href={CALENDLY_URL} class="cta-btn">{cta}</a>
         <a href="#systems" class="hero-cta">{see} <span class="arrow" aria-hidden="true">&darr;</span></a>
       </div>
     </div>
@@ -101,27 +100,6 @@ const { eyebrow, headline, lede, cta, see } = Astro.props;
     margin-top: var(--space-md);
   }
 
-  /* gold fill, NAVY text (white on gold fails AA) */
-  .cta-btn {
-    font-size: var(--text-small);
-    font-weight: 600;
-    color: var(--brand-navy);
-    background: var(--brand-gold);
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--radius-pill);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 44px;
-    transition: background var(--duration-base) var(--ease-spring), transform var(--duration-base) var(--ease-spring);
-  }
-
-  .cta-btn:hover {
-    color: var(--brand-navy);
-    background: var(--brand-gold-light);
-    transform: translateY(-1px);
-  }
 
   .hero-cta {
     font-family: var(--font-body);
@@ -161,18 +139,13 @@ const { eyebrow, headline, lede, cta, see } = Astro.props;
   }
 
   @media (max-width: 640px) {
-    /* phone header wraps to three rows (lockup, CTA + EN/ES, nav): ~200px measured */
+    /* phone header wraps to two rows (lockup, nav): 136px measured (rev 7, no CTA, no EN/ES) */
     .hero {
-      padding: calc(200px + var(--space-lg)) 0 var(--space-xl);
+      padding: calc(136px + var(--space-lg)) 0 var(--space-xl);
     }
 
     .hero-headline {
       font-size: clamp(2.25rem, 10vw, 3rem);
-    }
-
-    .cta-btn {
-      width: 100%;
-      text-align: center;
     }
   }
 </style>
