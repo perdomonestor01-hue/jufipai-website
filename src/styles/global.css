@@ -210,3 +210,7 @@ main:has(> .bottom-cta:last-child) + .site-footer .nl-inline::before {
   height: 1px;
   background: var(--brand-gold-line);
 }
+
+/* book-call prototype rev 3: the home page ends on the light "Trusted by" band; the navy footer
+   starts right under it (no light gap between two light grounds and the footer). */
+main:has(> .customers:last-child) + .site-footer { margin-top: 0; }

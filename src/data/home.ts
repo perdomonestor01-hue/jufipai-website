@@ -1,3 +1,4 @@
+// Spanish copy kept but unused since 2026-11-11 (site is English-only).
 // Homepage copy, EN + ES, copied verbatim from the approved prototype
 // (~/prototypes/jufipai-relaunch-APPROVED-20261104/build.js, HOME). One source for both
 // languages so they stay in step. The approved prototype is the spec: change copy there first.
@@ -211,3 +212,55 @@ export const CHROME = {
     nlB: 'Suscribirme',
   },
 } as const;
+
+/** Booking section at the bottom of the home page (#book). Email first, then the Calendly
+ *  calendar opens inline below it (no trip to calendly.com, so no Calendly cookie banner). */
+export const BOOK = {
+  en: {
+    button: 'Pick a 30-minute time',
+    skip: 'Prefer to skip?',
+    skipLink: 'Go straight to the calendar',
+    confirm: 'Pick a time below.',
+    frameTitle: 'Pick a time for your call',
+    stepsLabel: 'How booking works',
+    steps: ['Pick a time', '30-minute call'],
+    stepsDone: ['Step 1 done', 'Step 2 done'],
+    doneH: "You're booked.",
+    doneP: 'Calendly emailed you the invitation, with the time and the call link.',
+    doneSpam: 'Not there in a few minutes? Check your spam folder, or write to',
+    nextH: 'Before the call',
+    nextSystems: { t: 'See the systems', p: 'Six systems running every day.' },
+    nextWriting: { t: 'Read our writing', p: 'Notes on the systems we build.' },
+    nextLinkedIn: { t: 'Connect on LinkedIn', p: 'Follow along as we ship.' },
+    newTab: '(opens in a new tab)',
+    cookies: 'Scheduling is provided by Calendly, which uses cookies. By booking, you accept them.',
+    privacyLink: 'Privacy notice',
+  },
+  es: {
+    button: 'Elija un horario de 30 minutos',
+    skip: '¿Prefiere saltar este paso?',
+    skipLink: 'Vaya directo al calendario',
+    confirm: 'Elija un horario abajo.',
+    frameTitle: 'Elija un horario para su llamada',
+    stepsLabel: 'Cómo se agenda',
+    steps: ['Elija un horario', 'Llamada de 30 minutos'],
+    stepsDone: ['Paso 1 listo', 'Paso 2 listo'],
+    doneH: 'Su llamada está agendada.',
+    doneP: 'Calendly le envió la invitación por correo, con la hora y el enlace de la llamada.',
+    doneSpam: '¿No le llegó en unos minutos? Revise la carpeta de spam o escriba a',
+    nextH: 'Antes de la llamada',
+    nextSystems: { t: 'Vea los sistemas', p: 'Seis sistemas funcionando todos los días.' },
+    nextWriting: { t: 'Lea lo que escribimos', p: 'Notas sobre los sistemas que construimos.' },
+    nextLinkedIn: { t: 'Conéctese en LinkedIn', p: 'Siga lo que vamos lanzando.' },
+    newTab: '(se abre en una pestaña nueva)',
+    cookies: 'La agenda la proporciona Calendly, que usa cookies. Al agendar, usted las acepta.',
+    privacyLink: 'Aviso de privacidad',
+  },
+} as const;
+
+/** Every "Book a call" link points at the booking section on the home page of its language.
+ *  On that home page itself the link is just "#book". */
+export function bookHref(lang: Lang, currentPath: string): string {
+  const home = lang === 'es' ? '/es/' : '/';
+  return currentPath === home || currentPath === home.replace(/\/$/, '') ? '#book' : `${home}#book`;
+}

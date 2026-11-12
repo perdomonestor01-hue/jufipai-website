@@ -1,8 +1,8 @@
 // Footer newsletter (inline form). Bundled as an external module so it runs under
 // CSP script-src 'self' — no inline handlers (L83), no inline <script>.
 // Posts to the same Apps Script endpoint the site has always used for subscribers.
-const SHEET_URL =
-  'https://script.google.com/macros/s/AKfycbxJo9lyHS2-qwIF1f8OPh5nli51jP3ZzagZ0MInGnk-7g69iSqQw8T0QHpDiBbkUVFt/exec';
+import { SHEET_URL } from './sheet-endpoint';
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function wireNewsletter(): void {

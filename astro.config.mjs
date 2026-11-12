@@ -12,6 +12,8 @@ export default defineConfig({
   redirects: {
     '/about': '/',
     '/contact': '/',
+    // English-only since 2026-11-11 (operator): the Spanish home redirects to /.
+    '/es': '/',
   },
   vite: {
     build: {

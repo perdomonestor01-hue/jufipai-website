@@ -1,18 +1,15 @@
 ---
 // Site header — approved prototype jufipai-relaunch (2026-11-04): opaque navy, gold hairline,
-// official dark-background lockup, gold "Book a call", EN/ES as real links (/ <-> /es/).
-// No client script: the language is the URL, not localStorage.
-import { CALENDLY_URL, CHROME, type Lang } from '../data/home';
+// official dark-background lockup.
+// Book-a-call prototype rev 3: no header booking button (booking lives in #book after the systems).
+// Rev 7: English-only site (operator 2026-11-11) — the EN/ES toggle is gone. No client script.
+import { CHROME, type Lang } from '../data/home';
 
 interface Props {
   lang?: Lang;
-  /** English URL of this page, e.g. "/" */
-  enPath?: string;
-  /** Spanish URL of this page when one exists, e.g. "/es/" */
-  esPath?: string;
 }
 
-const { lang = 'en', enPath = Astro.url.pathname, esPath } = Astro.props;
+const { lang = 'en' } = Astro.props;
 const t = CHROME[lang];
 const currentPath = Astro.url.pathname;
 
@@ -35,30 +32,6 @@ const isActive = (href: string) => !href.includes('#') && currentPath.startsWith
         <a href={href} class:list={[{ active: isActive(href) }]} aria-current={isActive(href) ? 'page' : undefined}>{label}</a>
       ))}
     </nav>
-
-    <div class="header-right">
-      <a class="header-subscribe" href={CALENDLY_URL}>{t.cta}</a>
-      <div class="lang-toggle" role="group" aria-label={t.langLabel}>
-        <a
-          href={enPath}
-          hreflang="en"
-          lang="en"
-          class:list={[{ active: lang === 'en' }]}
-          aria-current={lang === 'en' ? 'true' : undefined}
-          aria-label="English">EN</a
-        >
-        {esPath && (
-          <a
-            href={esPath}
-            hreflang="es"
-            lang="es"
-            class:list={[{ active: lang === 'es' }]}
-            aria-current={lang === 'es' ? 'true' : undefined}
-            aria-label="Español">ES</a
-          >
-        )}
-      </div>
-    </div>
   </div>
 </header>
 
@@ -105,34 +78,7 @@ const isActive = (href: string) => !href.includes('#') && currentPath.startsWith
     min-height: 44px;
   }
 
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-  }
 
-  /* gold fill, NAVY text (white on gold fails AA). Hover = light gold. */
-  .header-subscribe {
-    font-family: var(--font-body);
-    font-size: var(--text-small);
-    font-weight: 600;
-    color: var(--brand-navy);
-    background: var(--brand-gold);
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-pill);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    box-sizing: border-box;
-    transition: background var(--duration) var(--ease), transform var(--duration) var(--ease);
-  }
-
-  .header-subscribe:hover {
-    color: var(--brand-navy);
-    background: var(--brand-gold-light);
-    transform: translateY(-1px);
-  }
 
   .site-nav {
     display: flex;
@@ -166,35 +112,6 @@ const isActive = (href: string) => !href.includes('#') && currentPath.startsWith
     background: var(--brand-gold);
   }
 
-  .lang-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 2px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 6px;
-    padding: 2px;
-  }
-
-  .lang-toggle a {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    padding: 4px 8px;
-    color: var(--text-on-dark-muted);
-    text-decoration: none;
-    border-radius: 4px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 44px;
-    min-width: 32px;
-    box-sizing: border-box;
-  }
-
-  .lang-toggle a.active {
-    background: rgba(197, 164, 78, .28);
-    color: var(--text-on-dark);
-  }
-
   @media (max-width: 640px) {
     .site-header {
       height: auto;
@@ -212,11 +129,6 @@ const isActive = (href: string) => !href.includes('#') && currentPath.startsWith
       width: 100%;
       justify-content: center;
       gap: var(--space-md);
-    }
-
-    .header-subscribe {
-      padding: 0.4rem 0.85rem;
-      font-size: var(--text-xs);
     }
   }
 
