@@ -1,10 +1,10 @@
 ---
-// Home-page booking section (#book), EN + ES. Replaces the old bottom "Book a call" band.
-// Email first; after submit the form is replaced by a confirmation line and the Calendly
-// calendar is embedded below it (built by src/scripts/book-call.ts — external module, CSP
-// script-src 'self'; Base.astro allows frame-src https://calendly.com). Embedding keeps the
-// visitor on jufipai.com, so Calendly's cookie banner never shows (hide_gdpr_banner=1 only
-// works in embed mode). No-JS fallback: the "go straight to the calendar" link.
+// Home-page booking section (#book), EN + ES. Booking only — no email is collected here.
+// One button; on click it is replaced by a short line and the Calendly calendar embedded below it
+// (built by src/scripts/book-call.ts — external module, CSP script-src 'self'; Base.astro allows
+// frame-src https://calendly.com). Embedding keeps the visitor on jufipai.com, so Calendly's cookie
+// banner never shows (hide_gdpr_banner=1 only works in embed mode). No-JS fallback: the
+// "go straight to the calendar" link.
 import { BOOK, CALENDLY_URL, type Lang } from '../data/home';
 import { fetchArticles } from '../lib/api';
 
@@ -45,42 +45,14 @@ const latest = (await fetchArticles()).slice(0, 2);
     </div>
 
     <div class="book-actions" id="book-actions">
-      <form
-        class="book-form"
-        id="book-form"
-        novalidate
-        data-lang={lang}
+      <div
+        class="book-start"
+        id="book-start"
         data-calendly={CALENDLY_URL}
         data-frame-title={t.frameTitle}
-        data-msg-invalid={t.invalid}
-        data-msg-pending={t.pending}
-        aria-busy="false"
       >
-        <label for="book-email">{t.label}</label>
-        <div class="book-row">
-          <span class="book-field">
-          <input
-            id="book-email"
-            type="email"
-            name="email"
-            autocomplete="email"
-            inputmode="email"
-            placeholder={t.ph}
-            aria-describedby="book-status book-privacy"
-            required
-          />
-          <svg class="book-valid" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-          <!-- Honeypot: must stay empty -->
-          <input type="text" name="company_url_2" class="book-honeypot" tabindex="-1" aria-hidden="true" autocomplete="off" />
-          <button type="submit" class="book-btn">
-            <span class="book-btn-label">{t.button}</span>
-            <span class="book-btn-busy"><span class="book-spinner" aria-hidden="true"></span>{t.busy}</span>
-          </button>
-        </div>
-        <p class="book-status" id="book-status" role="status" aria-live="polite"></p>
-        <p class="book-privacy" id="book-privacy">{t.privacy}</p>
-      </form>
+        <button type="button" class="book-btn" id="book-open">{t.button}</button>
+      </div>
 
       <noscript><p class="book-skip">
         {t.skip} <a href={CALENDLY_URL}>{t.skipLink} <span aria-hidden="true">&rarr;</span></a>
@@ -112,7 +84,7 @@ const latest = (await fetchArticles()).slice(0, 2);
         <path d="M4 9l12 9 12-9" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
       </svg>
       <h3 class="book-done-h" id="book-done-h" tabindex="-1">{t.doneH}</h3>
-      <p class="book-done-p">{t.doneBefore} <strong id="book-done-email"></strong>{t.doneAfter}</p>
+      <p class="book-done-p">{t.doneP}</p>
       <p class="book-done-small">
         {t.doneSpam} <a href="mailto:contact@jufipai.com">contact@jufipai.com</a>.
       </p>
@@ -193,7 +165,7 @@ const latest = (await fetchArticles()).slice(0, 2);
     padding: 0 var(--space-md);
   }
 
-  /* stacked by default; two columns from 900px (copy + steps | form card) */
+  /* stacked by default; two columns from 900px (copy + steps | button) */
   .book-inner {
     display: grid;
     grid-template-columns: 1fr;
@@ -208,7 +180,7 @@ const latest = (await fetchArticles()).slice(0, 2);
     }
   }
 
-  /* 1 -> 2 -> 3: gold circles, navy numerals, light labels on navy, gold connector */
+  /* 1 -> 2: gold circles, navy numerals, light labels on navy, gold connector */
   .book-steps {
     list-style: none;
     margin: var(--space-lg) 0 0;
@@ -329,107 +301,12 @@ const latest = (await fetchArticles()).slice(0, 2);
     display: none;
   }
 
-  /* white card on navy: navy text, gold top rule, navy focus rings (gold on white is ~2.3:1) */
-  .book-form {
-    background: var(--color-surface);
-    border-top: 3px solid var(--brand-gold);
-    border-radius: var(--radius-card);
-    padding: var(--space-md);
-  }
-
-  .book-form label {
-    display: block;
-    font-size: var(--text-small);
-    font-weight: 600;
-    color: var(--brand-navy);
-    margin-bottom: var(--space-xs);
-  }
-
-  .book-row {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-  }
-
-  .book-field {
-    position: relative;
-    flex: 0 0 auto;
-    min-width: 0;
-    display: flex;
-  }
-
-  .book-form input[type='email'] {
-    flex: 1 1 auto;
-    width: 100%;
-    min-width: 0;
-    min-height: 48px;
-    font: inherit;
-    font-size: 1rem;
-    padding: .65rem 2.75rem .65rem 1rem; /* right padding: the check never sits on text */
-    transition: border-color 200ms ease-out, box-shadow 200ms ease-out;
-    border-radius: var(--radius-pill);
-    border: 1px solid #8a93a6;
-    background: var(--color-surface);
-    color: var(--brand-navy);
-  }
-
-  .book-form input[type='email']::placeholder {
-    color: #6b7385;
-  }
-
-  /* focus: 2px navy edge (1px border + 1px inset ring, no layout shift) + faint gold glow.
-     The navy edge is the >=3:1 indicator on white; the glow is decoration. */
-  .book-form input[type='email']:focus {
-    outline: none;
-    border-color: var(--brand-navy);
-    box-shadow: 0 0 0 1px var(--brand-navy), 0 0 0 5px rgba(197, 164, 78, .25);
-  }
-
-  .book-form button:focus-visible {
-    outline: 3px solid var(--brand-navy);
-    outline-offset: 2px;
-  }
-
-  .book-form input[aria-invalid='true'] {
-    border-color: var(--status-error);
-    box-shadow: 0 0 0 1px var(--status-error);
-  }
-
-  .book-form input[aria-invalid='true']:focus {
-    box-shadow: 0 0 0 1px var(--status-error), 0 0 0 5px rgba(163, 55, 42, .15);
-  }
-
-  /* live validity: small navy check inside the right edge once the address is complete */
-  .book-valid {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    margin-top: -9px;
-    color: var(--brand-navy);
-    opacity: 0;
-    transform: scale(.8);
-    transition: opacity 200ms ease-out, transform 200ms ease-out;
-    pointer-events: none;
-  }
-
-  .book-field.is-valid .book-valid {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  .book-honeypot {
-    position: absolute;
-    left: -9999px;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-  }
-
-  /* gold fill, NAVY text (white on gold fails AA) — same as the hero CTA.
-     Grid stack: label and busy state share one cell, so the width never changes on swap. */
-  .book-form button {
-    display: inline-grid;
-    place-items: center;
+  /* gold fill, NAVY text (white on gold fails AA) — same as the hero CTA and the old submit.
+     Sits directly on navy, so the focus ring is white. */
+  .book-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     min-height: 48px;
     font: inherit;
     font-size: var(--text-small);
@@ -443,46 +320,17 @@ const latest = (await fetchArticles()).slice(0, 2);
     transition: background var(--duration-base) var(--ease-spring), transform var(--duration-base) var(--ease-spring);
   }
 
-  .book-form button:hover {
+  .book-btn:hover {
     background: var(--brand-gold-light);
     transform: translateY(-1px);
   }
 
-  .book-form button:disabled {
-    cursor: default;
-    transform: none;
+  .book-btn:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 3px;
   }
 
-  .book-btn-label,
-  .book-btn-busy {
-    grid-area: 1 / 1;
-  }
-
-  .book-btn-busy {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    visibility: hidden;
-  }
-
-  .book-form[aria-busy='true'] .book-btn-label { visibility: hidden; }
-  .book-form[aria-busy='true'] .book-btn-busy { visibility: visible; }
-  .book-form[aria-busy='true'] button { background: var(--brand-gold-light); }
-
-  .book-spinner {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    border: 2px solid rgba(27, 54, 93, .25);
-    border-top-color: var(--brand-navy);
-    animation: book-spin .8s linear infinite;
-  }
-
-  @keyframes book-spin {
-    to { transform: rotate(360deg); }
-  }
-
-  /* fade-out of the form card / fade-in of the calendar (driven by book-call.ts) */
+  /* fade-out of the button / fade-in of the calendar (driven by book-call.ts) */
   .book-actions {
     transition: opacity 200ms ease-out;
   }
@@ -503,31 +351,6 @@ const latest = (await fetchArticles()).slice(0, 2);
   .book-after.is-entering .book-frame {
     opacity: 0;
     transform: translateY(8px);
-  }
-
-  .book-status {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--brand-navy);
-    line-height: 1.4;
-    min-height: 1.4em;
-    margin: var(--space-xs) 0 0;
-  }
-
-  .book-status.is-error {
-    color: #a3372a;
-  }
-
-  /* "saving" is announced to screen readers; the button already shows it visually.
-     Transparent (not removed) so the line keeps its height and the card does not jump. */
-  .book-status.is-pending {
-    color: transparent;
-  }
-
-  .book-privacy {
-    font-size: var(--text-xs);
-    color: var(--color-carbon-soft);
-    margin: 0;
   }
 
   /* on navy: light text, gold underline, white focus ring */
@@ -713,10 +536,6 @@ const latest = (await fetchArticles()).slice(0, 2);
     overflow-wrap: anywhere;
   }
 
-  .book-done-p strong {
-    color: var(--brand-navy);
-  }
-
   .book-done-small {
     font-size: var(--text-small);
     color: var(--color-carbon-soft);
@@ -856,8 +675,7 @@ const latest = (await fetchArticles()).slice(0, 2);
 
     .book-after.is-entering .book-frame { transform: none; }
     .book-done-wrap.is-entering .book-done { transform: none; }
-    .book-field .book-valid { transform: none; }
-    .book-spinner { display: none; }
+    .book-btn:hover { transform: none; }
   }
 
   @media (max-width: 640px) {
@@ -894,7 +712,7 @@ const latest = (await fetchArticles()).slice(0, 2);
       font-size: .95rem;
     }
 
-    .book-form button {
+    .book-btn {
       width: 100%;
     }
   }
